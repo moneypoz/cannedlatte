@@ -1,7 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
+import RankCard from '../../components/RankCard.astro';
 import Disclosure from '../../components/Disclosure.astro';
-import { allProducts, bestPages, fullName, fmt, milkLabel } from '../../lib/products';
+import { allProducts, bestPages, fullName } from '../../lib/products';
 
 export async function getStaticPaths() {
   const products = await allProducts();
@@ -18,28 +19,16 @@ const jsonLd = {
 };
 ---
 <Base title={page.title} description={`${page.title}, ranked from real label data. ${page.intro}`} jsonLd={jsonLd}>
-  <p class="eyebrow">Ranked from the database · updated {updated}</p>
-  <h1>{page.title}</h1>
-  <p class="lede">{page.intro}</p>
-  <div class="tablewrap">
-    <table>
-      <thead><tr><th>#</th><th>Product</th><th>{page.metricLabel}</th><th>Caffeine</th><th>Sugar</th><th>Milk</th><th>Per can</th></tr></thead>
-      <tbody>
-        {list.map((p, i) => (
-          <tr>
-            <td class="num">{i + 1}</td>
-            <td><a href={`/latte/${p.id}`}>{fullName(p.data)}</a>{!p.data.verified && <> <span class="pill unverified">unverified</span></>}</td>
-            <td class="num"><strong>{page.metric(p.data)}</strong></td>
-            <td class="num">{fmt.mg(p.data.caffeineMg)}</td>
-            <td class="num">{fmt.g(p.data.sugarG)}</td>
-            <td>{milkLabel[p.data.milk]}</td>
-            <td class="num">{fmt.usd(p.data.pricePerCan)}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+  <div class="center">
+    <span class="status"><span class="dot"></span><b>{list.length} cans</b> · ranked from the database · updated {updated}</span>
+    <h1>{page.title}</h1>
+    <p class="lede">{page.intro}</p>
+  </div>
+  <div class="tabs" aria-label="Rankings">
+    {bestPages.map((b) => <a href={`/best/${b.slug}`} class:list={[b.slug === page.slug && 'active']}>{b.short}</a>)}
+  </div>
+  <div class="feed">
+    {list.map((p, i) => <RankCard product={p} rank={i + 1} stat={page.metric(p.data)} />)}
   </div>
   <Disclosure />
-  <h2>Other rankings</h2>
-  <ul>{bestPages.filter((b) => b.slug !== page.slug).map((b) => <li><a href={`/best/${b.slug}`}>{b.title}</a></li>)}</ul>
 </Base>

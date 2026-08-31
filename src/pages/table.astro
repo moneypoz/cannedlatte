@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import ProductTable from '../components/ProductTable.astro';
+import Disclosure from '../components/Disclosure.astro';
+import { allProducts } from '../lib/products';
+const products = await allProducts();
+---
+<Base title="Full table" description="Every canned latte and canned coffee we track in one sortable table: size, caffeine, sugar, protein, milk, price per can.">
+  <p class="eyebrow">{products.length} products · click a column to sort</p>
+  <h1>The full table</h1>
+  <p class="lede">Everything in the database, including black cold brews and coffee energy drinks. Empty cells are specs we haven't verified yet.</p>
+  <ProductTable products={products} showType={true} />
+  <Disclosure />
+</Base>

@@ -40,6 +40,7 @@ export const typeLabel: Record<P['type'], string> = {
 export const bestPages = [
   {
     slug: 'least-sugar',
+    short: 'Least sugar',
     title: 'Canned lattes with the least sugar',
     intro: 'Sorted by grams of sugar per can, lowest first. Products without a verified sugar figure are listed at the end.',
     filter: (p: P) => p.type === 'latte',
@@ -49,6 +50,7 @@ export const bestPages = [
   },
   {
     slug: 'most-caffeine',
+    short: 'Most caffeine',
     title: 'Canned lattes with the most caffeine',
     intro: 'Sorted by milligrams of caffeine per can, highest first. For reference, a 12 oz drip coffee is roughly 140–200 mg.',
     filter: (p: P) => p.type === 'latte',
@@ -58,6 +60,7 @@ export const bestPages = [
   },
   {
     slug: 'oat-milk',
+    short: 'Oat milk',
     title: 'Oat milk canned lattes',
     intro: 'Every dairy-free latte in a can made with oat milk, sorted by caffeine.',
     filter: (p: P) => p.milk === 'oat',
@@ -67,6 +70,7 @@ export const bestPages = [
   },
   {
     slug: 'high-protein',
+    short: 'Most protein',
     title: 'High-protein canned lattes',
     intro: 'Sorted by grams of protein per can. Anything over 10 g is doing double duty as a snack.',
     filter: (p: P) => p.type === 'latte' && (p.proteinG ?? 0) > 0,
@@ -76,6 +80,7 @@ export const bestPages = [
   },
   {
     slug: 'cheapest-per-can',
+    short: 'Cheapest',
     title: 'Cheapest canned lattes per can',
     intro: 'Price per can at the brand\'s own site or the most common retailer, lowest first. Grocery prices vary; treat these as a ranking, not a quote.',
     filter: (p: P) => p.type === 'latte' && p.pricePerCan != null,
@@ -85,6 +90,7 @@ export const bestPages = [
   },
   {
     slug: 'no-added-sugar',
+    short: 'No added sugar',
     title: 'Canned lattes with no added sugar',
     intro: 'Lattes sweetened only by the milk itself or by whole ingredients like dates. Sorted by caffeine.',
     filter: (p: P) => p.addedSugar === false,
@@ -94,6 +100,7 @@ export const bestPages = [
   },
   {
     slug: 'dairy-free',
+    short: 'Dairy-free',
     title: 'Dairy-free canned lattes',
     intro: 'Oat and almond milk lattes, sorted by caffeine.',
     filter: (p: P) => p.dairyFree,

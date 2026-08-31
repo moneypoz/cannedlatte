@@ -23,9 +23,9 @@ const jsonLd = {
   <h1>How much caffeine is in {name}?</h1>
   <p class="lede"><strong>{p.caffeineMg} mg per can.</strong>{perOz && ` That's ${perOz} mg per ounce.`}{p.caffeineNote && ` ${p.caffeineNote}.`}</p>
   <div class="stats">
-    <div class="stat"><div class="n">{p.caffeineMg} mg</div><div class="l">per can</div></div>
-    {perOz && <div class="stat"><div class="n">{perOz}</div><div class="l">mg per oz</div></div>}
-    <div class="stat"><div class="n">#{rank}</div><div class="l">of {all.length} tracked, most caffeine first</div></div>
+    <div class="stat-card"><div class="n">{p.caffeineMg} mg</div><div class="l">per can</div></div>
+    {perOz && <div class="stat-card"><div class="n">{perOz}</div><div class="l">mg per oz</div></div>}
+    <div class="stat-card"><div class="n">#{rank}</div><div class="l">of {all.length} tracked, most caffeine first</div></div>
   </div>
   <h2>For comparison</h2>
   <p>A 12 oz drip coffee is typically 140–200 mg. A single espresso shot is around 65–75 mg. The FDA's guideline for healthy adults is up to 400 mg a day, so {name} is roughly {Math.round((p.caffeineMg! / 400) * 100)}% of that in one can.</p>

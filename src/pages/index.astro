@@ -1,93 +1,120 @@
 ---
 import Base from '../layouts/Base.astro';
-import ProductTable from '../components/ProductTable.astro';
+import RankCard from '../components/RankCard.astro';
 import Disclosure from '../components/Disclosure.astro';
 import { allProducts, bestPages } from '../lib/products';
 
 const products = await allProducts();
-const lattes = products.filter((p) => p.data.type === 'latte');
-const withCaf = lattes.filter((p) => p.data.caffeineMg != null);
-const withSugar = lattes.filter((p) => p.data.sugarG != null);
-const maxCaf = withCaf.reduce((m, p) => Math.max(m, p.data.caffeineMg!), 0);
-const minSugar = withSugar.reduce((m, p) => Math.min(m, p.data.sugarG!), 999);
+const byCaffeine = [...products].sort((a, b) => (b.data.caffeineMg ?? -1) - (a.data.caffeineMg ?? -1));
 const brands = new Set(products.map((p) => p.data.brandSlug)).size;
 const updated = products.map((p) => p.data.updated).sort().at(-1);
-
+const newest = products.filter((p) => p.data.launched).sort((a, b) => b.data.launched!.localeCompare(a.data.launched!)).slice(0, 3);
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'Canned Latte',
   url: 'https://cannedlatte.com',
-  description: 'Every latte in a can, compared by caffeine, sugar, protein, milk and price.',
+  description: 'Every latte in a can, ranked by caffeine, sugar, protein and price.',
 };
 ---
-<Base title="Canned Latte" description="Every canned latte compared: caffeine, sugar, protein, milk type and price per can, from La Colombe to Death Wish to NOBL. Sort the table, pick your can." jsonLd={jsonLd}>
-  <p class="eyebrow">Updated {updated} · {products.length} products · {brands} brands</p>
-  <h1>Every latte in a can, compared.</h1>
-  <p class="lede">Caffeine, sugar, protein, milk and price per can, in one sortable table. Click a column to sort. Click a product for the full label and where to buy it.</p>
-
-  <div class="stats">
-    <div class="stat"><div class="n">{lattes.length}</div><div class="l">canned lattes tracked</div></div>
-    <div class="stat"><div class="n">{maxCaf} mg</div><div class="l">most caffeine in a can</div></div>
-    <div class="stat"><div class="n">{minSugar} g</div><div class="l">least sugar in a can</div></div>
-    <div class="stat"><div class="n">{products.filter((p) => p.data.dairyFree).length}</div><div class="l">dairy-free options</div></div>
+<Base title="Canned Latte" description="Every canned latte ranked by caffeine, sugar, protein, milk type and price per can. La Colombe, Death Wish, NOBL, Wandering Bear and more. Pick your can." jsonLd={jsonLd}>
+  <div class="center">
+    <span class="status"><span class="dot"></span><b>{products.length} cans</b> · {brands} brands · updated {updated} · <a href="/new" style="color:var(--primary);font-weight:600">new →</a></span>
+    <h1>Every latte in a can, <span class="hl">ranked.</span></h1>
+    <p class="lede">Real label numbers, sorted the way you actually choose: most caffeine, least sugar, cheapest, most protein.</p>
   </div>
 
-  <div class="filters">
-    <label>Type
-      <select id="f-type">
-        <option value="">All</option>
-        <option value="latte" selected>Lattes only</option>
-        <option value="black">Black cold brew</option>
-        <option value="nitro">Nitro</option>
-        <option value="energy">Coffee energy drinks</option>
-      </select>
-    </label>
-    <label>Milk
-      <select id="f-milk">
-        <option value="">Any</option>
-        <option value="dairyfree">Dairy-free</option>
-        <option value="oat">Oat</option>
-        <option value="dairy">Dairy</option>
-      </select>
-    </label>
-    <span class="meta" id="f-count"></span>
+  <label class="search" for="q">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="Search a brand or can" autocomplete="off" />
+  </label>
+
+  <div class="tabs" role="tablist" aria-label="Sort">
+    <button role="tab" aria-selected="true" data-sort="caf" data-label="mg">Most caffeine</button>
+    <button role="tab" aria-selected="false" data-sort="sugar" data-label="g sugar">Least sugar</button>
+    <button role="tab" aria-selected="false" data-sort="price" data-label="/can">Cheapest</button>
+    <button role="tab" aria-selected="false" data-sort="protein" data-label="g protein">Most protein</button>
   </div>
 
-  <ProductTable products={products} showType={true} />
+  <div class="pills" role="group" aria-label="Filter">
+    <button class="pill" aria-pressed="true" data-filter="latte">Lattes</button>
+    <button class="pill" aria-pressed="false" data-filter="oat">Oat milk</button>
+    <button class="pill" aria-pressed="false" data-filter="dairyfree">Dairy-free</button>
+    <button class="pill" aria-pressed="false" data-filter="noadded">No added sugar</button>
+    <button class="pill" aria-pressed="false" data-filter="all">Everything</button>
+    <a class="pill" href="/table">Full table →</a>
+  </div>
+
+  <div class="feed" id="feed">
+    {byCaffeine.map((p, i) => <RankCard product={p} rank={i + 1} />)}
+  </div>
+  <p class="meta center" id="empty" hidden>No cans match. Try another filter.</p>
   <Disclosure />
 
-  <h2>Shortcuts</h2>
+  <div class="row-link"><h2 style="margin:0">Newest cans</h2><a class="more" href="/new">See all →</a></div>
+  <div class="feed">
+    {newest.map((p, i) => <RankCard product={p} rank={i + 1} stat={p.data.launched} />)}
+  </div>
+
+  <h2>Rankings</h2>
   <div class="grid">
     {bestPages.map((b) => (
-      <a class="card" href={`/best/${b.slug}`} style="text-decoration:none;color:inherit">
+      <a class="card" href={`/best/${b.slug}`}>
         <h3>{b.title}</h3>
-        <p style="font-size:14.5px;color:var(--ink-2);margin:0">{b.intro.split('.')[0]}.</p>
+        <p style="margin:0">{b.intro.split('.')[0]}.</p>
       </a>
     ))}
   </div>
 
   <h2>How we get the numbers</h2>
-  <p>Every spec starts from the brand's own label, site, or press release and is date-stamped on the product page. Products marked <span class="pill unverified">unverified</span> haven't been checked against a physical can yet; we buy and photograph each one and update the record when we do. Caffeine in coffee varies batch to batch, so treat every figure as typical rather than exact.</p>
+  <p>Every spec starts from the brand's label, site, or press release and is date-stamped on the product page. Cans marked <span class="tag warn">unverified</span> haven't been checked against a physical label yet; we buy and photograph each one and update the record when we do. Caffeine varies batch to batch, so treat every figure as typical rather than exact.</p>
 </Base>
 
 <script>
-  const type = document.getElementById('f-type') as HTMLSelectElement;
-  const milk = document.getElementById('f-milk') as HTMLSelectElement;
-  const count = document.getElementById('f-count')!;
-  const rows = Array.from(document.querySelectorAll<HTMLTableRowElement>('#products tbody tr'));
-  const apply = () => {
-    let n = 0;
-    rows.forEach((r) => {
-      const okType = !type.value || r.dataset.type === type.value;
-      const okMilk = !milk.value || (milk.value === 'dairyfree' ? r.dataset.dairyfree === '1' : milk.value === 'dairy' ? r.dataset.dairyfree === '0' : r.dataset.milk === milk.value);
-      const show = okType && okMilk;
-      r.hidden = !show;
-      if (show) n++;
-    });
-    count.textContent = `${n} shown`;
+  const feed = document.getElementById('feed')!;
+  const cards = Array.from(feed.querySelectorAll<HTMLElement>('.rank'));
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.tabs [data-sort]'));
+  const pills = Array.from(document.querySelectorAll<HTMLButtonElement>('.pills [data-filter]'));
+  const q = document.getElementById('q') as HTMLInputElement;
+  const empty = document.getElementById('empty')!;
+  let sort = 'caf', filter = 'latte';
+  const fmtStat = (key: string, v: string) => {
+    if (v === '') return '—';
+    if (key === 'caf') return `${v} mg`;
+    if (key === 'sugar') return `${v} g sugar`;
+    if (key === 'protein') return `${v} g protein`;
+    if (key === 'price') return `$${Number(v).toFixed(2)}/can`;
+    return v;
   };
-  type.addEventListener('change', apply);
-  milk.addEventListener('change', apply);
+  const apply = () => {
+    const term = q.value.trim().toLowerCase();
+    const asc = sort === 'sugar' || sort === 'price';
+    const visible = cards.filter((c) => {
+      const d = c.dataset;
+      const okF = filter === 'all' || (filter === 'latte' && d.type === 'latte') || (filter === 'oat' && d.milk === 'oat') || (filter === 'dairyfree' && d.dairyfree === '1') || (filter === 'noadded' && d.noadded === '1');
+      const okQ = !term || (d.name ?? '').includes(term);
+      return okF && okQ;
+    });
+    visible.sort((a, b) => {
+      const va = a.dataset[sort] === '' ? null : Number(a.dataset[sort]);
+      const vb = b.dataset[sort] === '' ? null : Number(b.dataset[sort]);
+      if (va == null && vb == null) return 0;
+      if (va == null) return 1;
+      if (vb == null) return -1;
+      return asc ? va - vb : vb - va;
+    });
+    cards.forEach((c) => { c.hidden = true; });
+    visible.forEach((c, i) => {
+      c.hidden = false;
+      c.dataset.rank = String(i + 1);
+      c.querySelector('.pos')!.textContent = `#${i + 1}`;
+      c.querySelector('[data-stat]')!.textContent = fmtStat(sort, c.dataset[sort] ?? '');
+      feed.appendChild(c);
+    });
+    empty.hidden = visible.length > 0;
+  };
+  tabs.forEach((t) => t.addEventListener('click', () => { sort = t.dataset.sort!; tabs.forEach((x) => x.setAttribute('aria-selected', String(x === t))); apply(); }));
+  pills.forEach((p) => p.addEventListener('click', () => { filter = p.dataset.filter!; pills.forEach((x) => x.setAttribute('aria-pressed', String(x === p))); apply(); }));
+  q.addEventListener('input', apply);
   apply();
 </script>

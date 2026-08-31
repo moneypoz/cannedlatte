@@ -1,0 +1,28 @@
+---
+import type { Product } from '../lib/products';
+import { fmt, milkLabel, typeLabel, fullName } from '../lib/products';
+interface Props { product: Product; rank: number; stat?: string; }
+const { product, rank, stat } = Astro.props;
+const p = product.data;
+const initials = p.brand.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+const headline = stat ?? fmt.mg(p.caffeineMg);
+---
+<a class="rank" href={`/latte/${product.id}`}
+   data-rank={rank}
+   data-type={p.type} data-milk={p.milk} data-dairyfree={p.dairyFree ? 1 : 0} data-noadded={p.addedSugar === false ? 1 : 0}
+   data-caf={p.caffeineMg ?? ''} data-sugar={p.sugarG ?? ''} data-protein={p.proteinG ?? ''} data-price={p.pricePerCan ?? ''}
+   data-name={fullName(p).toLowerCase()}>
+  <span class="pos">#{rank}</span>
+  <span class="avatar">{p.image ? <img src={p.image} alt="" loading="lazy" /> : initials}</span>
+  <span class="body">
+    <span class="top"><span class="name">{fullName(p)}</span><span class="stat" data-stat>{headline}</span></span>
+    <span class="desc">{p.summary}</span>
+    <span class="meta">
+      <span class="tag">{typeLabel[p.type]}</span>
+      <span><b>{milkLabel[p.milk]}</b></span>
+      <span class="sep"></span><span>{fmt.g(p.sugarG)} sugar</span>
+      <span class="sep"></span><span>{fmt.usd(p.pricePerCan)}/can</span>
+      {!p.verified && <span class="tag warn">unverified</span>}
+    </span>
+  </span>
+</a>

@@ -54,18 +54,18 @@ const jsonLd = [
 ].filter(Boolean) as Record<string, unknown>[];
 ---
 <Base title={name} description={desc} jsonLd={jsonLd}>
-  <p class="eyebrow"><a href={`/brands/${p.brandSlug}`}>{p.brand}</a> · <span class:list={['pill', p.type]}>{typeLabel[p.type]}</span>{!p.verified && <> <span class="pill unverified">specs unverified</span></>}</p>
+  <p class="eyebrow"><a href={`/brands/${p.brandSlug}`}>{p.brand}</a> · <span class="tag">{typeLabel[p.type]}</span>{!p.verified && <> <span class="tag warn">specs unverified</span></>}</p>
   <h1>{name}</h1>
   <p class="lede">{p.summary}</p>
 
-  {p.image && <img src={p.image} alt={`${name} can`} width="480" style="max-width:100%;border-radius:6px;border:1px solid var(--line)" />}
+  {p.image && <img class="hero" src={p.image} alt={`${name} can`} width="480" />}
 
   <div class="stats">
-    <div class="stat"><div class="n">{fmt.mg(p.caffeineMg)}</div><div class="l">caffeine</div></div>
-    <div class="stat"><div class="n">{fmt.g(p.sugarG)}</div><div class="l">sugar{p.addedSugar === false ? ' (none added)' : ''}</div></div>
-    <div class="stat"><div class="n">{fmt.g(p.proteinG)}</div><div class="l">protein</div></div>
-    <div class="stat"><div class="n">{fmt.oz(p.sizeOz)}</div><div class="l">can size</div></div>
-    <div class="stat"><div class="n">{fmt.usd(p.pricePerCan)}</div><div class="l">per can{p.packPrice ? ` (${fmt.usd(p.packPrice)} / ${p.packSize})` : ''}</div></div>
+    <div class="stat-card"><div class="n">{fmt.mg(p.caffeineMg)}</div><div class="l">caffeine</div></div>
+    <div class="stat-card"><div class="n">{fmt.g(p.sugarG)}</div><div class="l">sugar{p.addedSugar === false ? ' (none added)' : ''}</div></div>
+    <div class="stat-card"><div class="n">{fmt.g(p.proteinG)}</div><div class="l">protein</div></div>
+    <div class="stat-card"><div class="n">{fmt.oz(p.sizeOz)}</div><div class="l">can size</div></div>
+    <div class="stat-card"><div class="n">{fmt.usd(p.pricePerCan)}</div><div class="l">per can{p.packPrice ? ` (${fmt.usd(p.packPrice)} / ${p.packSize})` : ''}</div></div>
   </div>
 
   <BuyLinks product={p} />

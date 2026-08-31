@@ -21,8 +21,8 @@ const { products, sortable = true, showType = false } = Astro.props;
   <tbody>
     {products.map(({ id, data: p }) => (
       <tr data-type={p.type} data-milk={p.milk} data-dairyfree={p.dairyFree ? '1' : '0'}>
-        <td><a href={`/latte/${id}`}>{p.brand} {p.name}</a>{!p.verified && <> <span class="pill unverified" title="Specs from brand site or press release, not yet checked against a label">unverified</span></>}</td>
-        {showType && <td><span class:list={['pill', p.type]}>{typeLabel[p.type]}</span></td>}
+        <td><a href={`/latte/${id}`}>{p.brand} {p.name}</a>{!p.verified && <> <span class="tag warn" title="Specs from brand site or press release, not yet checked against a label">unverified</span></>}</td>
+        {showType && <td><span class="tag">{typeLabel[p.type]}</span></td>}
         <td class="num" data-v={p.sizeOz ?? ''}>{fmt.oz(p.sizeOz)}</td>
         <td class="num" data-v={p.caffeineMg ?? ''}>{fmt.mg(p.caffeineMg)}</td>
         <td class="num" data-v={p.sugarG ?? ''}>{fmt.g(p.sugarG)}</td>
