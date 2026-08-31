@@ -32,6 +32,7 @@ const jsonLd = {
     <button class="pill" aria-pressed="true" data-filter="latte">Lattes</button>
     <button class="pill" aria-pressed="false" data-filter="oat">Oat milk</button>
     <button class="pill" aria-pressed="false" data-filter="dairyfree">Dairy-free</button>
+    <button class="pill" aria-pressed="false" data-filter="hiprotein">High protein</button>
     <button class="pill" aria-pressed="false" data-filter="noadded">No added sugar</button>
     <button class="pill" aria-pressed="false" data-filter="all">Everything</button>
     <span class="meta" id="f-count" style="align-self:center;margin-left:auto;white-space:nowrap"></span>
@@ -78,7 +79,7 @@ const jsonLd = {
     let n = 0;
     rows.forEach((r) => {
       const d = r.dataset;
-      const okF = filter === 'all' || (filter === 'latte' && d.type === 'latte') || (filter === 'oat' && d.milk === 'oat') || (filter === 'dairyfree' && d.dairyfree === '1') || (filter === 'noadded' && d.noadded === '1');
+      const okF = filter === 'all' || (filter === 'latte' && d.type === 'latte') || (filter === 'oat' && d.milk === 'oat') || (filter === 'dairyfree' && d.dairyfree === '1') || (filter === 'hiprotein' && d.hiprotein === '1') || (filter === 'noadded' && d.noadded === '1');
       const okQ = !term || (d.name ?? '').includes(term);
       r.hidden = !(okF && okQ);
       if (!r.hidden) n++;
