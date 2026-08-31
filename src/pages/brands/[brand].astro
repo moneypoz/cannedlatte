@@ -1,0 +1,23 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProductTable from '../../components/ProductTable.astro';
+import Disclosure from '../../components/Disclosure.astro';
+import { allProducts } from '../../lib/products';
+
+export async function getStaticPaths() {
+  const products = await allProducts();
+  const slugs = [...new Set(products.map((p) => p.data.brandSlug))];
+  return slugs.map((brand) => ({ params: { brand }, props: { items: products.filter((p) => p.data.brandSlug === brand) } }));
+}
+const { items } = Astro.props;
+const name = items[0].data.brand;
+const buy = items.flatMap((p) => p.data.buyLinks).find((l) => l.affiliate) ?? items[0].data.buyLinks[0];
+---
+<Base title={`${name} canned lattes`} description={`Every ${name} latte in a can: ${items.map((p) => p.data.name).join(', ')}. Caffeine, sugar, milk and price compared.`}>
+  <p class="eyebrow">Brand · {items.length} products</p>
+  <h1>{name} canned lattes</h1>
+  <p class="lede">Every {name} can we track, side by side. Click a column to sort.</p>
+  {buy && <p><a class="btn" href={buy.url} rel={buy.affiliate ? 'sponsored nofollow noopener' : 'noopener'} target="_blank">Shop {name}</a></p>}
+  <ProductTable products={items} showType={true} />
+  <Disclosure />
+</Base>

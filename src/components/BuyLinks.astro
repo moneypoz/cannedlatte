@@ -1,0 +1,13 @@
+---
+import type { P } from '../lib/products';
+interface Props { product: P }
+const { product } = Astro.props;
+---
+{product.buyLinks.length > 0 && (
+  <div class="buy">
+    {product.buyLinks.map((l, i) => (
+      <a class:list={['btn', i > 0 && 'secondary']} href={l.url} rel={l.affiliate ? 'sponsored nofollow noopener' : 'noopener'} target="_blank">Buy at {l.label}</a>
+    ))}
+  </div>
+)}
+{product.retailers.length > 0 && <p class="meta">Also sold at: {product.retailers.join(', ')}</p>}

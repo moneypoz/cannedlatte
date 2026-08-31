@@ -1,0 +1,43 @@
+{
+  "type": "latte",
+  "sizeOz": null,
+  "caffeineMg": 120,
+  "sugarG": null,
+  "addedSugar": null,
+  "proteinG": null,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": 3.17,
+  "packPrice": 38,
+  "packSize": 12,
+  "retailers": [
+    "La Colombe",
+    "Whole Foods"
+  ],
+  "buyLinks": [
+    {
+      "label": "La Colombe",
+      "url": "https://www.lacolombe.com/collections/lattes",
+      "affiliate": false
+    },
+    {
+      "label": "Target",
+      "url": "https://www.target.com/s?searchTerm=la+colombe+draft+latte",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-08-31",
+  "sources": [
+    "https://www.lacolombe.com/collections/lattes",
+    "https://www.fooddive.com/news/la-colombe-ready-to-drink-lattes-new-recipe/816692/"
+  ],
+  "brand": "La Colombe",
+  "brandSlug": "la-colombe",
+  "name": "Oatmilk Vanilla Draft Latte",
+  "flavor": "Vanilla",
+  "caffeineNote": "Brand lists 100\u2013150 mg",
+  "milk": "oat",
+  "dairyFree": true,
+  "summary": "Dairy-free Draft Latte on oat milk. Costs about $0.33 more per can than the dairy version."
+}

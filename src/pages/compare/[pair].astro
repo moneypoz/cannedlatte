@@ -1,0 +1,47 @@
+---
+import Base from '../../layouts/Base.astro';
+import Disclosure from '../../components/Disclosure.astro';
+import BuyLinks from '../../components/BuyLinks.astro';
+import { allProducts, comparePairs, fullName, fmt, milkLabel } from '../../lib/products';
+
+export async function getStaticPaths() {
+  const products = await allProducts();
+  const byId = new Map(products.map((p) => [p.id, p]));
+  return comparePairs
+    .filter(([a, b]) => byId.has(a) && byId.has(b))
+    .map(([a, b]) => ({ params: { pair: `${a}-vs-${b}` }, props: { a: byId.get(a)!, b: byId.get(b)! } }));
+}
+const { a, b } = Astro.props;
+const A = a.data, B = b.data;
+const na = fullName(A), nb = fullName(B);
+const rows: [string, string, string][] = [
+  ['Caffeine', fmt.mg(A.caffeineMg), fmt.mg(B.caffeineMg)],
+  ['Sugar', fmt.g(A.sugarG), fmt.g(B.sugarG)],
+  ['Protein', fmt.g(A.proteinG), fmt.g(B.proteinG)],
+  ['Can size', fmt.oz(A.sizeOz), fmt.oz(B.sizeOz)],
+  ['Milk', milkLabel[A.milk], milkLabel[B.milk]],
+  ['Dairy-free', A.dairyFree ? 'Yes' : 'No', B.dairyFree ? 'Yes' : 'No'],
+  ['Storage', A.refrigerated ? 'Refrigerated' : 'Shelf-stable', B.refrigerated ? 'Refrigerated' : 'Shelf-stable'],
+  ['Price per can', fmt.usd(A.pricePerCan), fmt.usd(B.pricePerCan)],
+];
+const verdictBits: string[] = [];
+if (A.caffeineMg != null && B.caffeineMg != null && A.caffeineMg !== B.caffeineMg) verdictBits.push(`${A.caffeineMg > B.caffeineMg ? na : nb} has more caffeine (${Math.abs(A.caffeineMg - B.caffeineMg)} mg more)`);
+if (A.sugarG != null && B.sugarG != null && A.sugarG !== B.sugarG) verdictBits.push(`${A.sugarG < B.sugarG ? na : nb} has less sugar (${Math.abs(A.sugarG - B.sugarG)} g less)`);
+if (A.pricePerCan != null && B.pricePerCan != null && A.pricePerCan !== B.pricePerCan) verdictBits.push(`${A.pricePerCan < B.pricePerCan ? na : nb} is cheaper per can`);
+---
+<Base title={`${na} vs ${nb}`} description={`${na} vs ${nb}: caffeine, sugar, protein, milk and price side by side.`}>
+  <p class="eyebrow">Head to head</p>
+  <h1>{na} vs {nb}</h1>
+  {verdictBits.length > 0 && <p class="lede">{verdictBits.join('. ')}.</p>}
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th></th><th><a href={`/latte/${a.id}`}>{na}</a></th><th><a href={`/latte/${b.id}`}>{nb}</a></th></tr></thead>
+      <tbody>{rows.map(([k, va, vb]) => <tr><th>{k}</th><td class="num">{va}</td><td class="num">{vb}</td></tr>)}</tbody>
+    </table>
+  </div>
+  <div class="grid">
+    <div class="card"><h3>{na}</h3><p style="font-size:15px">{A.summary}</p><BuyLinks product={A} /></div>
+    <div class="card"><h3>{nb}</h3><p style="font-size:15px">{B.summary}</p><BuyLinks product={B} /></div>
+  </div>
+  <Disclosure />
+</Base>

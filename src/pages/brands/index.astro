@@ -1,0 +1,17 @@
+---
+import Base from '../../layouts/Base.astro';
+import { allProducts } from '../../lib/products';
+const products = await allProducts();
+const brands = [...new Map(products.map((p) => [p.data.brandSlug, p.data.brand])).entries()].sort((a, b) => a[1].localeCompare(b[1]));
+---
+<Base title="Brands" description="Every brand making a latte in a can, with their full lineups compared.">
+  <h1>Brands</h1>
+  <div class="grid">
+    {brands.map(([slug, name]) => (
+      <a class="card" href={`/brands/${slug}`} style="text-decoration:none;color:inherit">
+        <h3>{name}</h3>
+        <p class="meta" style="margin:0">{products.filter((p) => p.data.brandSlug === slug).length} products</p>
+      </a>
+    ))}
+  </div>
+</Base>

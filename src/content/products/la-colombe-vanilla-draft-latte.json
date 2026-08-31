@@ -1,0 +1,44 @@
+{
+  "type": "latte",
+  "sizeOz": null,
+  "caffeineMg": 120,
+  "sugarG": 15,
+  "addedSugar": true,
+  "proteinG": 7,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": 2.83,
+  "packPrice": 34,
+  "packSize": 12,
+  "retailers": [
+    "La Colombe",
+    "Target",
+    "Walmart"
+  ],
+  "buyLinks": [
+    {
+      "label": "La Colombe",
+      "url": "https://www.lacolombe.com/collections/lattes",
+      "affiliate": false
+    },
+    {
+      "label": "Target",
+      "url": "https://www.target.com/s?searchTerm=la+colombe+draft+latte",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-08-31",
+  "sources": [
+    "https://www.lacolombe.com/collections/lattes",
+    "https://www.fooddive.com/news/la-colombe-ready-to-drink-lattes-new-recipe/816692/"
+  ],
+  "brand": "La Colombe",
+  "brandSlug": "la-colombe",
+  "name": "Vanilla Draft Latte",
+  "flavor": "Vanilla",
+  "caffeineNote": "Brand lists 100\u2013150 mg",
+  "milk": "lactose-free dairy",
+  "dairyFree": false,
+  "summary": "Vanilla version of the Draft Latte. The 2026 reformulation cut sugar to 15 g, less than half of a typical flavored dairy coffee."
+}

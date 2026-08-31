@@ -1,0 +1,46 @@
+{
+  "type": "latte",
+  "sizeOz": 11,
+  "caffeineMg": 120,
+  "sugarG": 16,
+  "addedSugar": true,
+  "proteinG": null,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Amazon",
+    "Walmart",
+    "Safeway",
+    "Albertsons",
+    "Death Wish Coffee"
+  ],
+  "buyLinks": [
+    {
+      "label": "Death Wish Coffee",
+      "url": "https://www.deathwishcoffee.com/products/caramel-cold-brew-latte",
+      "affiliate": false
+    },
+    {
+      "label": "Amazon",
+      "url": "https://www.amazon.com/s?k=death+wish+cold+brew+latte",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-08-31",
+  "sources": [
+    "https://www.bevnet.com/pr/2026/04/09/death-wish-coffee-co-expands-readytodrink-lineup-with-new-betterforyou-caramel-cold-brew-latte"
+  ],
+  "brand": "Death Wish Coffee",
+  "brandSlug": "death-wish",
+  "name": "Caramel Cold Brew Latte",
+  "flavor": "Caramel",
+  "caffeineNote": "Brand says up to 120 mg",
+  "milk": "dairy",
+  "dairyFree": false,
+  "launched": "2026-04",
+  "summary": "Launched April 2026. Fair Trade Colombian cold brew, 16 g sugar, which Death Wish pitches as 65% less than the leading competitor."
+}

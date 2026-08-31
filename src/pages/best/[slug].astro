@@ -1,0 +1,45 @@
+---
+import Base from '../../layouts/Base.astro';
+import Disclosure from '../../components/Disclosure.astro';
+import { allProducts, bestPages, fullName, fmt, milkLabel } from '../../lib/products';
+
+export async function getStaticPaths() {
+  const products = await allProducts();
+  return bestPages.map((b) => ({ params: { slug: b.slug }, props: { page: b, products } }));
+}
+const { page, products } = Astro.props;
+const list = products.filter((p) => page.filter(p.data)).sort((a, b) => page.sort(a.data, b.data));
+const updated = list.map((p) => p.data.updated).sort().at(-1);
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: page.title,
+  itemListElement: list.map((p, i) => ({ '@type': 'ListItem', position: i + 1, name: fullName(p.data), url: `https://cannedlatte.com/latte/${p.id}` })),
+};
+---
+<Base title={page.title} description={`${page.title}, ranked from real label data. ${page.intro}`} jsonLd={jsonLd}>
+  <p class="eyebrow">Ranked from the database · updated {updated}</p>
+  <h1>{page.title}</h1>
+  <p class="lede">{page.intro}</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>#</th><th>Product</th><th>{page.metricLabel}</th><th>Caffeine</th><th>Sugar</th><th>Milk</th><th>Per can</th></tr></thead>
+      <tbody>
+        {list.map((p, i) => (
+          <tr>
+            <td class="num">{i + 1}</td>
+            <td><a href={`/latte/${p.id}`}>{fullName(p.data)}</a>{!p.data.verified && <> <span class="pill unverified">unverified</span></>}</td>
+            <td class="num"><strong>{page.metric(p.data)}</strong></td>
+            <td class="num">{fmt.mg(p.data.caffeineMg)}</td>
+            <td class="num">{fmt.g(p.data.sugarG)}</td>
+            <td>{milkLabel[p.data.milk]}</td>
+            <td class="num">{fmt.usd(p.data.pricePerCan)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <Disclosure />
+  <h2>Other rankings</h2>
+  <ul>{bestPages.filter((b) => b.slug !== page.slug).map((b) => <li><a href={`/best/${b.slug}`}>{b.title}</a></li>)}</ul>
+</Base>

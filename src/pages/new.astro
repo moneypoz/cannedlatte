@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import { allProducts, fullName, fmt } from '../lib/products';
+const products = (await allProducts()).filter((p) => p.data.launched).sort((a, b) => b.data.launched!.localeCompare(a.data.launched!));
+---
+<Base title="New canned lattes" description="Every new latte in a can, newest first, with specs the day it hits shelves. Death Wish, Wandering Bear, La Colombe and more.">
+  <p class="eyebrow">Launch tracker</p>
+  <h1>New canned lattes</h1>
+  <p class="lede">Newest first. When a brand drops a can, it lands here with its specs. Subscribe to the monthly roundup below.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Launched</th><th>Product</th><th>Caffeine</th><th>Sugar</th><th>Per can</th></tr></thead>
+      <tbody>{products.map((p) => (
+        <tr><td class="num">{p.data.launched}</td><td><a href={`/latte/${p.id}`}>{fullName(p.data)}</a></td><td class="num">{fmt.mg(p.data.caffeineMg)}</td><td class="num">{fmt.g(p.data.sugarG)}</td><td class="num">{fmt.usd(p.data.pricePerCan)}</td></tr>
+      ))}</tbody>
+    </table>
+  </div>
+  <h2>Monthly roundup</h2>
+  <p>One email a month: new cans, reformulations, price changes. No filler.</p>
+  <!-- Replace with your newsletter provider's embed (Buttondown, Beehiiv, Kit). Keep it a plain form so it doesn't slow the page. -->
+  <form action="#" method="post" onsubmit="return false" class="card" style="max-width:420px">
+    <label style="display:block;font-family:var(--display);font-weight:500;margin-bottom:8px">Email
+      <input type="email" name="email" required placeholder="you@example.com" style="display:block;width:100%;font:inherit;padding:8px 10px;margin-top:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)" />
+    </label>
+    <button class="btn" type="submit" style="border:0;cursor:pointer">Subscribe</button>
+    <p class="meta" style="margin:10px 0 0">Newsletter signup goes live once the provider is connected.</p>
+  </form>
+</Base>

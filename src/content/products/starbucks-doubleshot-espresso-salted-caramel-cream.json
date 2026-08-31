@@ -1,0 +1,37 @@
+{
+  "type": "latte",
+  "sizeOz": 6.5,
+  "caffeineMg": 120,
+  "sugarG": null,
+  "addedSugar": null,
+  "proteinG": null,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Grocery",
+    "Convenience",
+    "Amazon"
+  ],
+  "buyLinks": [
+    {
+      "label": "Amazon",
+      "url": "https://www.amazon.com/s?k=starbucks+doubleshot+salted+caramel",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-08-31",
+  "sources": [
+    "https://www.tastingtable.com/1744356/caffeine-content-starbucks-bottled-beverages-ranked/"
+  ],
+  "brand": "Starbucks",
+  "brandSlug": "starbucks",
+  "name": "Doubleshot Espresso, Salted Caramel Cream",
+  "flavor": "Salted caramel",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Two shots of espresso with milk and cream in a small can. The most widely available latte in a can."
+}

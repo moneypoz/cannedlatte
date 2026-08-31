@@ -1,0 +1,68 @@
+---
+import type { Product } from '../lib/products';
+import { fmt, milkLabel, typeLabel } from '../lib/products';
+interface Props { products: Product[]; sortable?: boolean; showType?: boolean; }
+const { products, sortable = true, showType = false } = Astro.props;
+---
+<div class="tablewrap">
+<table id="products" data-sortable={sortable ? 'true' : undefined}>
+  <thead>
+    <tr>
+      <th data-sort="text">Product</th>
+      {showType && <th data-sort="text">Type</th>}
+      <th data-sort="num">Size</th>
+      <th data-sort="num">Caffeine</th>
+      <th data-sort="num">Sugar</th>
+      <th data-sort="num">Protein</th>
+      <th data-sort="text">Milk</th>
+      <th data-sort="num">Per can</th>
+    </tr>
+  </thead>
+  <tbody>
+    {products.map(({ id, data: p }) => (
+      <tr data-type={p.type} data-milk={p.milk} data-dairyfree={p.dairyFree ? '1' : '0'}>
+        <td><a href={`/latte/${id}`}>{p.brand} {p.name}</a>{!p.verified && <> <span class="pill unverified" title="Specs from brand site or press release, not yet checked against a label">unverified</span></>}</td>
+        {showType && <td><span class:list={['pill', p.type]}>{typeLabel[p.type]}</span></td>}
+        <td class="num" data-v={p.sizeOz ?? ''}>{fmt.oz(p.sizeOz)}</td>
+        <td class="num" data-v={p.caffeineMg ?? ''}>{fmt.mg(p.caffeineMg)}</td>
+        <td class="num" data-v={p.sugarG ?? ''}>{fmt.g(p.sugarG)}</td>
+        <td class="num" data-v={p.proteinG ?? ''}>{fmt.g(p.proteinG)}</td>
+        <td>{milkLabel[p.milk]}</td>
+        <td class="num" data-v={p.pricePerCan ?? ''}>{fmt.usd(p.pricePerCan)}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+</div>
+<script>
+  // Click-to-sort. Empty cells (unverified specs) always sink to the bottom.
+  document.querySelectorAll<HTMLTableElement>('table[data-sortable]').forEach((table) => {
+    const ths = table.querySelectorAll<HTMLTableCellElement>('th[data-sort]');
+    ths.forEach((th, idx) => {
+      th.tabIndex = 0;
+      const run = () => {
+        const dir = th.getAttribute('aria-sort') === 'ascending' ? 'descending' : 'ascending';
+        ths.forEach((t) => t.removeAttribute('aria-sort'));
+        th.setAttribute('aria-sort', dir);
+        const kind = th.dataset.sort;
+        const rows = Array.from(table.tBodies[0].rows);
+        rows.sort((a, b) => {
+          const ca = a.cells[idx], cb = b.cells[idx];
+          if (kind === 'num') {
+            const va = ca.dataset.v === '' ? null : Number(ca.dataset.v);
+            const vb = cb.dataset.v === '' ? null : Number(cb.dataset.v);
+            if (va == null && vb == null) return 0;
+            if (va == null) return 1;
+            if (vb == null) return -1;
+            return dir === 'ascending' ? va - vb : vb - va;
+          }
+          const r = ca.textContent!.trim().localeCompare(cb.textContent!.trim());
+          return dir === 'ascending' ? r : -r;
+        });
+        rows.forEach((r) => table.tBodies[0].appendChild(r));
+      };
+      th.addEventListener('click', run);
+      th.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); run(); } });
+    });
+  });
+</script>

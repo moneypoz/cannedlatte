@@ -1,0 +1,113 @@
+---
+import Base from '../../layouts/Base.astro';
+import BuyLinks from '../../components/BuyLinks.astro';
+import Disclosure from '../../components/Disclosure.astro';
+import { allProducts, fmt, milkLabel, typeLabel, fullName } from '../../lib/products';
+
+export async function getStaticPaths() {
+  const products = await allProducts();
+  return products.map((p) => ({ params: { slug: p.id }, props: { product: p, all: products } }));
+}
+const { product, all } = Astro.props;
+const p = product.data;
+const name = fullName(p);
+const siblings = all.filter((x) => x.data.brandSlug === p.brandSlug && x.id !== product.id);
+const similar = all
+  .filter((x) => x.id !== product.id && x.data.type === p.type && x.data.milk === p.milk)
+  .slice(0, 4);
+
+const desc = [
+  `${name}: ${p.caffeineMg != null ? `${p.caffeineMg} mg caffeine` : 'caffeine TBD'}`,
+  p.sugarG != null ? `${p.sugarG} g sugar` : null,
+  p.proteinG != null ? `${p.proteinG} g protein` : null,
+  `${milkLabel[p.milk].toLowerCase()} milk`,
+  p.pricePerCan != null ? `about ${fmt.usd(p.pricePerCan)} per can` : null,
+].filter(Boolean).join(', ') + '. Full specs and where to buy.';
+
+const faqs = [
+  p.caffeineMg != null && { q: `How much caffeine is in ${name}?`, a: `${name} has about ${p.caffeineMg} mg of caffeine per ${p.sizeOz ? `${p.sizeOz} oz ` : ''}can${p.caffeineNote ? ` (${p.caffeineNote.toLowerCase()})` : ''}. A 12 oz drip coffee is typically 140–200 mg.` },
+  p.sugarG != null && { q: `How much sugar is in ${name}?`, a: `${p.sugarG} g of sugar per can${p.addedSugar === false ? ', with no added sugar' : p.addedSugar ? ', including added sugar' : ''}.` },
+  { q: `Is ${name} dairy-free?`, a: p.dairyFree ? `Yes. It's made with ${milkLabel[p.milk].toLowerCase()} milk.` : `No. It's made with ${milkLabel[p.milk].toLowerCase()} milk.` },
+  p.refrigerated && { q: `Does ${name} need to be refrigerated?`, a: `Yes. It has no shelf-stable processing and ships cold.` },
+].filter(Boolean) as { q: string; a: string }[];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name,
+    brand: { '@type': 'Brand', name: p.brand },
+    description: p.summary,
+    ...(p.image ? { image: `https://cannedlatte.com${p.image}` } : {}),
+    ...(p.pricePerCan != null ? { offers: { '@type': 'Offer', price: p.pricePerCan.toFixed(2), priceCurrency: 'USD', availability: 'https://schema.org/InStock' } } : {}),
+    additionalProperty: [
+      p.caffeineMg != null && { '@type': 'PropertyValue', name: 'Caffeine', value: p.caffeineMg, unitText: 'mg' },
+      p.sugarG != null && { '@type': 'PropertyValue', name: 'Sugar', value: p.sugarG, unitText: 'g' },
+      p.proteinG != null && { '@type': 'PropertyValue', name: 'Protein', value: p.proteinG, unitText: 'g' },
+    ].filter(Boolean),
+  },
+  faqs.length && {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+].filter(Boolean) as Record<string, unknown>[];
+---
+<Base title={name} description={desc} jsonLd={jsonLd}>
+  <p class="eyebrow"><a href={`/brands/${p.brandSlug}`}>{p.brand}</a> · <span class:list={['pill', p.type]}>{typeLabel[p.type]}</span>{!p.verified && <> <span class="pill unverified">specs unverified</span></>}</p>
+  <h1>{name}</h1>
+  <p class="lede">{p.summary}</p>
+
+  {p.image && <img src={p.image} alt={`${name} can`} width="480" style="max-width:100%;border-radius:6px;border:1px solid var(--line)" />}
+
+  <div class="stats">
+    <div class="stat"><div class="n">{fmt.mg(p.caffeineMg)}</div><div class="l">caffeine</div></div>
+    <div class="stat"><div class="n">{fmt.g(p.sugarG)}</div><div class="l">sugar{p.addedSugar === false ? ' (none added)' : ''}</div></div>
+    <div class="stat"><div class="n">{fmt.g(p.proteinG)}</div><div class="l">protein</div></div>
+    <div class="stat"><div class="n">{fmt.oz(p.sizeOz)}</div><div class="l">can size</div></div>
+    <div class="stat"><div class="n">{fmt.usd(p.pricePerCan)}</div><div class="l">per can{p.packPrice ? ` (${fmt.usd(p.packPrice)} / ${p.packSize})` : ''}</div></div>
+  </div>
+
+  <BuyLinks product={p} />
+  <Disclosure />
+
+  <div class="tablewrap">
+    <table>
+      <tbody>
+        <tr><th>Milk</th><td>{milkLabel[p.milk]}{p.dairyFree ? ' · dairy-free' : ''}</td></tr>
+        {p.flavor && <tr><th>Flavor</th><td>{p.flavor}</td></tr>}
+        {p.caffeineNote && <tr><th>Caffeine note</th><td>{p.caffeineNote}</td></tr>}
+        {p.calories != null && <tr><th>Calories</th><td>{p.calories}</td></tr>}
+        <tr><th>Storage</th><td>{p.refrigerated ? 'Refrigerated' : 'Shelf-stable'}</td></tr>
+        {p.launched && <tr><th>Launched</th><td>{p.launched}</td></tr>}
+        <tr><th>Specs updated</th><td>{p.updated}{p.verified ? ' · checked against a label' : ' · from brand site / press'}</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  {p.tastingNotes && (<><h2>Tasting notes</h2><p>{p.tastingNotes}</p></>)}
+
+  {faqs.length > 0 && (
+    <>
+      <h2>Questions</h2>
+      {faqs.map((f) => (<><h3>{f.q}</h3><p>{f.a}</p></>))}
+    </>
+  )}
+
+  {siblings.length > 0 && (
+    <>
+      <h2>More from {p.brand}</h2>
+      <ul>{siblings.map((s) => <li><a href={`/latte/${s.id}`}>{s.data.name}</a></li>)}</ul>
+    </>
+  )}
+  {similar.length > 0 && (
+    <>
+      <h2>Similar cans</h2>
+      <ul>{similar.map((s) => <li><a href={`/latte/${s.id}`}>{fullName(s.data)}</a> — {fmt.mg(s.data.caffeineMg)}, {fmt.g(s.data.sugarG)} sugar</li>)}</ul>
+    </>
+  )}
+
+  {p.sources.length > 0 && (
+    <p class="meta">Sources: {p.sources.map((s, i) => <><a href={s} rel="noopener">[{i + 1}]</a> </>)}</p>
+  )}
+</Base>

@@ -1,0 +1,36 @@
+{
+  "type": "latte",
+  "sizeOz": null,
+  "caffeineMg": null,
+  "sugarG": null,
+  "addedSugar": null,
+  "proteinG": null,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Quokka (direct)",
+    "Amazon"
+  ],
+  "buyLinks": [
+    {
+      "label": "Quokka Brew",
+      "url": "https://quokkabrew.com/",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-08-31",
+  "sources": [
+    "https://sporked.com/article/best-canned-lattes/"
+  ],
+  "brand": "Quokka Brew",
+  "brandSlug": "quokka-brew",
+  "name": "Jitter-Less Oat Milk Latte, Vanilla Dream",
+  "flavor": "Vanilla",
+  "milk": "oat",
+  "dairyFree": true,
+  "summary": "Marketed as jitter-free with L-theanine. Specs pending a label photo."
+}

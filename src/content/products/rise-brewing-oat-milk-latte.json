@@ -1,0 +1,37 @@
+{
+  "type": "latte",
+  "sizeOz": null,
+  "caffeineMg": null,
+  "sugarG": null,
+  "addedSugar": null,
+  "proteinG": null,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Target",
+    "Amazon",
+    "RISE (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "RISE Brewing",
+      "url": "https://www.risebrewingco.com/",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-08-31",
+  "sources": [
+    "https://sporked.com/article/best-canned-lattes/"
+  ],
+  "brand": "RISE Brewing Co.",
+  "brandSlug": "rise-brewing",
+  "name": "Oat Milk Latte",
+  "flavor": "Original",
+  "milk": "oat",
+  "dairyFree": true,
+  "summary": "Nitro cold brew oat latte. Scored 9/10 in Sporked's taste test. Specs pending a label photo."
+}

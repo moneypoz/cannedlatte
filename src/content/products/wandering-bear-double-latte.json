@@ -1,0 +1,43 @@
+{
+  "type": "latte",
+  "sizeOz": 8,
+  "caffeineMg": 140,
+  "sugarG": 5,
+  "addedSugar": true,
+  "proteinG": 11,
+  "calories": 100,
+  "refrigerated": false,
+  "pricePerCan": 3.99,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Whole Foods",
+    "Target",
+    "Amazon"
+  ],
+  "buyLinks": [
+    {
+      "label": "Wandering Bear",
+      "url": "https://wanderingbearcoffee.com/pages/cold-brew-lattes",
+      "affiliate": false
+    },
+    {
+      "label": "Amazon",
+      "url": "https://www.amazon.com/s?k=wandering+bear+cold+brew+latte",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-08-31",
+  "sources": [
+    "https://www.prnewswire.com/news-releases/wandering-bear-launches-protein-packed-cold-brew-latte-blending-bold-taste-with-better-health-302557518.html"
+  ],
+  "brand": "Wandering Bear",
+  "brandSlug": "wandering-bear",
+  "name": "Double Latte",
+  "flavor": "Double Latte",
+  "milk": "skim",
+  "dairyFree": false,
+  "launched": "2025-09",
+  "summary": "High-protein cold brew latte on ultra-filtered skim milk: 11 g protein, 100 calories, 0 g saturated fat. Went nationwide at Target in 2026."
+}

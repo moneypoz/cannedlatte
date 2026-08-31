@@ -1,0 +1,44 @@
+{
+  "type": "latte",
+  "sizeOz": null,
+  "caffeineMg": 175,
+  "sugarG": null,
+  "addedSugar": null,
+  "proteinG": null,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": 2.83,
+  "packPrice": 34,
+  "packSize": 12,
+  "retailers": [
+    "La Colombe",
+    "Target"
+  ],
+  "buyLinks": [
+    {
+      "label": "La Colombe",
+      "url": "https://www.lacolombe.com/collections/lattes",
+      "affiliate": false
+    },
+    {
+      "label": "Target",
+      "url": "https://www.target.com/s?searchTerm=la+colombe+draft+latte",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-08-31",
+  "sources": [
+    "https://www.lacolombe.com/collections/lattes",
+    "https://www.fooddive.com/news/la-colombe-ready-to-drink-lattes-new-recipe/816692/",
+    "https://sporked.com/article/best-canned-lattes/"
+  ],
+  "brand": "La Colombe",
+  "brandSlug": "la-colombe",
+  "name": "Triple Draft Latte",
+  "flavor": "Original, triple shot",
+  "caffeineNote": "Brand lists 150\u2013180 mg; Sporked cites 175 mg",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Three shots in the same frothy can. Sporked's top pick in its canned latte taste test."
+}

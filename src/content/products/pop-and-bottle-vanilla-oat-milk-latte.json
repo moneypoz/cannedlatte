@@ -1,0 +1,37 @@
+{
+  "type": "latte",
+  "sizeOz": 8,
+  "caffeineMg": 80,
+  "sugarG": 8,
+  "addedSugar": false,
+  "proteinG": null,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Target",
+    "Whole Foods",
+    "Thrive Market"
+  ],
+  "buyLinks": [
+    {
+      "label": "Pop & Bottle",
+      "url": "https://www.popandbottle.com/",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-08-31",
+  "sources": [
+    "https://www.popandbottle.com/pages/faq"
+  ],
+  "brand": "Pop & Bottle",
+  "brandSlug": "pop-and-bottle",
+  "name": "Vanilla Oat Milk Latte",
+  "flavor": "Vanilla",
+  "milk": "oat",
+  "dairyFree": true,
+  "summary": "Organic oat milk latte sweetened with dates rather than refined sugar. Gentle 80 mg caffeine."
+}

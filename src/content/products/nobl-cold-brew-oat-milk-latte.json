@@ -1,0 +1,35 @@
+{
+  "type": "latte",
+  "sizeOz": null,
+  "caffeineMg": 207,
+  "sugarG": 0,
+  "addedSugar": false,
+  "proteinG": null,
+  "calories": null,
+  "refrigerated": true,
+  "pricePerCan": 3.17,
+  "packPrice": 38,
+  "packSize": 12,
+  "retailers": [
+    "NOBL (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "NOBL",
+      "url": "https://drink.noblbeverages.com/products/nobl-coffee-can",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-08-31",
+  "sources": [
+    "https://drink.noblbeverages.com/products/nobl-coffee-can"
+  ],
+  "brand": "NOBL",
+  "brandSlug": "nobl",
+  "name": "Cold Brew Oat Milk Latte",
+  "flavor": "Original",
+  "milk": "oat",
+  "dairyFree": true,
+  "summary": "Just cold brew and oat milk, nitro-charged, no added sugar, and the most caffeine of any latte we track. Refrigerated, ships direct from New Hampshire."
+}

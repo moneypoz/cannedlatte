@@ -1,0 +1,37 @@
+{
+  "type": "energy",
+  "sizeOz": 15,
+  "caffeineMg": 135,
+  "sugarG": null,
+  "addedSugar": null,
+  "proteinG": null,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Grocery",
+    "Convenience",
+    "Amazon"
+  ],
+  "buyLinks": [
+    {
+      "label": "Amazon",
+      "url": "https://www.amazon.com/s?k=starbucks+doubleshot+energy+mocha",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-08-31",
+  "sources": [
+    "https://www.tastingtable.com/1744356/caffeine-content-starbucks-bottled-beverages-ranked/"
+  ],
+  "brand": "Starbucks",
+  "brandSlug": "starbucks",
+  "name": "Doubleshot Energy, Mocha",
+  "flavor": "Mocha",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Coffee-milk energy drink with added ginseng and guarana. Big can, moderate caffeine per ounce."
+}
