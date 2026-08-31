@@ -1,8 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
-import RankCard from '../../components/RankCard.astro';
 import Disclosure from '../../components/Disclosure.astro';
-import { allProducts, bestPages, fullName } from '../../lib/products';
+import { allProducts, bestPages, fullName, fmt, milkLabel } from '../../lib/products';
 
 export async function getStaticPaths() {
   const products = await allProducts();
@@ -18,17 +17,32 @@ const jsonLd = {
   itemListElement: list.map((p, i) => ({ '@type': 'ListItem', position: i + 1, name: fullName(p.data), url: `https://cannedlatte.com/latte/${p.id}` })),
 };
 ---
-<Base title={page.title} description={`${page.title}, ranked from real label data. ${page.intro}`} jsonLd={jsonLd}>
+<Base title={page.title} description={`${page.title}, from real label data. ${page.intro}`} jsonLd={jsonLd}>
   <div class="center">
-    <span class="status"><span class="dot"></span><b>{list.length} cans</b> · ranked from the database · updated {updated}</span>
+    <span class="status"><span class="dot"></span><b>{list.length} cans</b> · from the database · updated {updated}</span>
     <h1>{page.title}</h1>
     <p class="lede">{page.intro}</p>
   </div>
-  <div class="tabs" aria-label="Rankings">
-    {bestPages.map((b) => <a href={`/best/${b.slug}`} class:list={[b.slug === page.slug && 'active']}>{b.short}</a>)}
+  <div class="pills" role="group" aria-label="Lists" style="justify-content:center">
+    {bestPages.map((b) => <a href={`/best/${b.slug}`} class:list={['pill', b.slug === page.slug && 'on']}>{b.short}</a>)}
   </div>
-  <div class="feed">
-    {list.map((p, i) => <RankCard product={p} rank={i + 1} stat={page.metric(p.data)} />)}
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Product</th><th>{page.metricLabel}</th><th>Caffeine</th><th>Sugar</th><th>Protein</th><th>Milk</th><th>Per can</th></tr></thead>
+      <tbody>
+        {list.map((p) => (
+          <tr>
+            <td><a href={`/latte/${p.id}`}>{fullName(p.data)}</a>{!p.data.verified && <> <span class="tag warn">unverified</span></>}</td>
+            <td class="num"><strong style="color:var(--primary)">{page.metric(p.data)}</strong></td>
+            <td class="num">{fmt.mg(p.data.caffeineMg)}</td>
+            <td class="num">{fmt.g(p.data.sugarG)}</td>
+            <td class="num">{fmt.g(p.data.proteinG)}</td>
+            <td>{milkLabel[p.data.milk]}</td>
+            <td class="num">{fmt.usd(p.data.pricePerCan)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   </div>
   <Disclosure />
 </Base>

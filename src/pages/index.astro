@@ -1,11 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
-import RankCard from '../components/RankCard.astro';
+import ProductTable from '../components/ProductTable.astro';
 import Disclosure from '../components/Disclosure.astro';
-import { allProducts, bestPages } from '../lib/products';
+import { allProducts, bestPages, fullName, fmt } from '../lib/products';
 
 const products = await allProducts();
-const byCaffeine = [...products].sort((a, b) => (b.data.caffeineMg ?? -1) - (a.data.caffeineMg ?? -1));
 const brands = new Set(products.map((p) => p.data.brandSlug)).size;
 const updated = products.map((p) => p.data.updated).sort().at(-1);
 const newest = products.filter((p) => p.data.launched).sort((a, b) => b.data.launched!.localeCompare(a.data.launched!)).slice(0, 3);
@@ -14,14 +13,14 @@ const jsonLd = {
   '@type': 'WebSite',
   name: 'Canned Latte',
   url: 'https://cannedlatte.com',
-  description: 'Every latte in a can, ranked by caffeine, sugar, protein and price.',
+  description: 'Every latte in a can, compared by caffeine, sugar, protein, milk and price.',
 };
 ---
-<Base title="Canned Latte" description="Every canned latte ranked by caffeine, sugar, protein, milk type and price per can. La Colombe, Death Wish, NOBL, Wandering Bear and more. Pick your can." jsonLd={jsonLd}>
+<Base title="Canned Latte" description="Every canned latte compared: caffeine, sugar, protein, milk type and price per can. La Colombe, Death Wish, NOBL, Wandering Bear and more. Sort the table, pick your can." jsonLd={jsonLd}>
   <div class="center">
     <span class="status"><span class="dot"></span><b>{products.length} cans</b> · {brands} brands · updated {updated} · <a href="/new" style="color:var(--primary);font-weight:600">new →</a></span>
-    <h1>Every latte in a can, <span class="hl">ranked.</span></h1>
-    <p class="lede">Real label numbers, sorted the way you actually choose: most caffeine, least sugar, cheapest, most protein.</p>
+    <h1>Every canned latte, <span class="hl">compared.</span></h1>
+    <p class="lede">Real label numbers in one table. Click a column to sort, tap a filter to narrow it down, click a can for the full label and where to buy.</p>
   </div>
 
   <label class="search" for="q">
@@ -29,34 +28,31 @@ const jsonLd = {
     <input id="q" type="search" placeholder="Search a brand or can" autocomplete="off" />
   </label>
 
-  <div class="tabs" role="tablist" aria-label="Sort">
-    <button role="tab" aria-selected="true" data-sort="caf" data-label="mg">Most caffeine</button>
-    <button role="tab" aria-selected="false" data-sort="sugar" data-label="g sugar">Least sugar</button>
-    <button role="tab" aria-selected="false" data-sort="price" data-label="/can">Cheapest</button>
-    <button role="tab" aria-selected="false" data-sort="protein" data-label="g protein">Most protein</button>
-  </div>
-
   <div class="pills" role="group" aria-label="Filter">
     <button class="pill" aria-pressed="true" data-filter="latte">Lattes</button>
     <button class="pill" aria-pressed="false" data-filter="oat">Oat milk</button>
     <button class="pill" aria-pressed="false" data-filter="dairyfree">Dairy-free</button>
     <button class="pill" aria-pressed="false" data-filter="noadded">No added sugar</button>
     <button class="pill" aria-pressed="false" data-filter="all">Everything</button>
-    <a class="pill" href="/table">Full table →</a>
+    <span class="meta" id="f-count" style="align-self:center;margin-left:auto;white-space:nowrap"></span>
   </div>
 
-  <div class="feed" id="feed">
-    {byCaffeine.map((p, i) => <RankCard product={p} rank={i + 1} />)}
-  </div>
+  <ProductTable products={products} showType={true} />
   <p class="meta center" id="empty" hidden>No cans match. Try another filter.</p>
   <Disclosure />
 
   <div class="row-link"><h2 style="margin:0">Newest cans</h2><a class="more" href="/new">See all →</a></div>
-  <div class="feed">
-    {newest.map((p, i) => <RankCard product={p} rank={i + 1} stat={p.data.launched} />)}
+  <div class="grid">
+    {newest.map((p) => (
+      <a class="card" href={`/latte/${p.id}`}>
+        <span class="tag">{p.data.launched}</span>
+        <h3 style="margin-top:8px">{fullName(p.data)}</h3>
+        <p style="margin:0">{fmt.mg(p.data.caffeineMg)} · {fmt.g(p.data.sugarG)} sugar · {fmt.usd(p.data.pricePerCan)}/can</p>
+      </a>
+    ))}
   </div>
 
-  <h2>Rankings</h2>
+  <h2>Quick lists</h2>
   <div class="grid">
     {bestPages.map((b) => (
       <a class="card" href={`/best/${b.slug}`}>
@@ -71,49 +67,25 @@ const jsonLd = {
 </Base>
 
 <script>
-  const feed = document.getElementById('feed')!;
-  const cards = Array.from(feed.querySelectorAll<HTMLElement>('.rank'));
-  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.tabs [data-sort]'));
+  const rows = Array.from(document.querySelectorAll<HTMLTableRowElement>('#products tbody tr'));
   const pills = Array.from(document.querySelectorAll<HTMLButtonElement>('.pills [data-filter]'));
   const q = document.getElementById('q') as HTMLInputElement;
+  const count = document.getElementById('f-count')!;
   const empty = document.getElementById('empty')!;
-  let sort = 'caf', filter = 'latte';
-  const fmtStat = (key: string, v: string) => {
-    if (v === '') return '—';
-    if (key === 'caf') return `${v} mg`;
-    if (key === 'sugar') return `${v} g sugar`;
-    if (key === 'protein') return `${v} g protein`;
-    if (key === 'price') return `$${Number(v).toFixed(2)}/can`;
-    return v;
-  };
+  let filter = 'latte';
   const apply = () => {
     const term = q.value.trim().toLowerCase();
-    const asc = sort === 'sugar' || sort === 'price';
-    const visible = cards.filter((c) => {
-      const d = c.dataset;
+    let n = 0;
+    rows.forEach((r) => {
+      const d = r.dataset;
       const okF = filter === 'all' || (filter === 'latte' && d.type === 'latte') || (filter === 'oat' && d.milk === 'oat') || (filter === 'dairyfree' && d.dairyfree === '1') || (filter === 'noadded' && d.noadded === '1');
       const okQ = !term || (d.name ?? '').includes(term);
-      return okF && okQ;
+      r.hidden = !(okF && okQ);
+      if (!r.hidden) n++;
     });
-    visible.sort((a, b) => {
-      const va = a.dataset[sort] === '' ? null : Number(a.dataset[sort]);
-      const vb = b.dataset[sort] === '' ? null : Number(b.dataset[sort]);
-      if (va == null && vb == null) return 0;
-      if (va == null) return 1;
-      if (vb == null) return -1;
-      return asc ? va - vb : vb - va;
-    });
-    cards.forEach((c) => { c.hidden = true; });
-    visible.forEach((c, i) => {
-      c.hidden = false;
-      c.dataset.rank = String(i + 1);
-      c.querySelector('.pos')!.textContent = `#${i + 1}`;
-      c.querySelector('[data-stat]')!.textContent = fmtStat(sort, c.dataset[sort] ?? '');
-      feed.appendChild(c);
-    });
-    empty.hidden = visible.length > 0;
+    count.textContent = `${n} shown`;
+    empty.hidden = n > 0;
   };
-  tabs.forEach((t) => t.addEventListener('click', () => { sort = t.dataset.sort!; tabs.forEach((x) => x.setAttribute('aria-selected', String(x === t))); apply(); }));
   pills.forEach((p) => p.addEventListener('click', () => { filter = p.dataset.filter!; pills.forEach((x) => x.setAttribute('aria-pressed', String(x === p))); apply(); }));
   q.addEventListener('input', apply);
   apply();
