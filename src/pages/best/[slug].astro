@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Disclosure from '../../components/Disclosure.astro';
 import { allProducts, bestPages, fullName, fmt, milkLabel } from '../../lib/products';
+import { listContent } from '../../lib/listContent';
 
 export async function getStaticPaths() {
   const products = await allProducts();
@@ -10,12 +11,20 @@ export async function getStaticPaths() {
 const { page, products } = Astro.props;
 const list = products.filter((p) => page.filter(p.data)).sort((a, b) => page.sort(a.data, b.data));
 const updated = list.map((p) => p.data.updated).sort().at(-1);
-const jsonLd = {
+const content = listContent[page.slug];
+const jsonLd: Record<string, unknown>[] = [{
   '@context': 'https://schema.org',
   '@type': 'ItemList',
   name: page.title,
   itemListElement: list.map((p, i) => ({ '@type': 'ListItem', position: i + 1, name: fullName(p.data), url: `https://cannedlatte.com/latte/${p.id}` })),
-};
+}];
+if (content?.faqs.length) {
+  jsonLd.push({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: content.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  });
+}
 ---
 <Base title={page.title} description={`${page.title}, from real label data. ${page.intro}`} jsonLd={jsonLd}>
   <div class="center">
@@ -45,4 +54,12 @@ const jsonLd = {
     </table>
   </div>
   <Disclosure />
+  {content && (
+    <div style="max-width:62ch;margin:8px auto 0">
+      <h2>About this list</h2>
+      {content.paragraphs.map((para) => <p>{para}</p>)}
+      <h2>Questions</h2>
+      {content.faqs.map((f) => (<><h3>{f.q}</h3><p>{f.a}</p></>))}
+    </div>
+  )}
 </Base>
