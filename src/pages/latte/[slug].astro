@@ -39,11 +39,12 @@ const jsonLd = [
     brand: { '@type': 'Brand', name: p.brand },
     description: p.summary,
     ...(p.image ? { image: `https://cannedlatte.com${p.image}` } : {}),
-    ...(p.pricePerCan != null ? { offers: { '@type': 'Offer', price: p.pricePerCan.toFixed(2), priceCurrency: 'USD', availability: 'https://schema.org/InStock' } } : {}),
+    // No offers: we compare, we don't sell.
     additionalProperty: [
       p.caffeineMg != null && { '@type': 'PropertyValue', name: 'Caffeine', value: p.caffeineMg, unitText: 'mg' },
       p.sugarG != null && { '@type': 'PropertyValue', name: 'Sugar', value: p.sugarG, unitText: 'g' },
       p.proteinG != null && { '@type': 'PropertyValue', name: 'Protein', value: p.proteinG, unitText: 'g' },
+      p.pricePerCan != null && { '@type': 'PropertyValue', name: 'Typical price per can', value: p.pricePerCan.toFixed(2), unitText: 'USD' },
     ].filter(Boolean),
   },
   faqs.length && {
