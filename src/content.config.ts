@@ -33,6 +33,7 @@ const products = defineCollection({
     image: z.string().optional(),               // /images/products/<slug>.jpg once photographed
     summary: z.string(),
     tastingNotes: z.string().optional(),        // your own words, written after you drink it
+    rating: z.number().min(1).max(5).nullable().default(null),   // our 1–5 rating; set with tastingNotes after tasting
     launched: z.string().optional(),            // YYYY-MM for the /new tracker
     verified: z.boolean().default(false),       // true once specs come from a label you photographed
     updated: z.string(),                        // YYYY-MM-DD, shown on page (date-stamp every spec)

@@ -32,7 +32,7 @@ const faqs = [
 ].filter(Boolean) as { q: string; a: string }[];
 
 const jsonLd = [
-  {
+  (p.rating != null && p.tastingNotes) && {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name,
@@ -46,6 +46,7 @@ const jsonLd = [
       p.proteinG != null && { '@type': 'PropertyValue', name: 'Protein', value: p.proteinG, unitText: 'g' },
       p.pricePerCan != null && { '@type': 'PropertyValue', name: 'Typical price per can', value: p.pricePerCan.toFixed(2), unitText: 'USD' },
     ].filter(Boolean),
+    review: { '@type': 'Review', reviewRating: { '@type': 'Rating', ratingValue: p.rating, bestRating: 5 }, author: { '@type': 'Organization', name: 'Canned Latte' }, reviewBody: p.tastingNotes },
   },
   faqs.length && {
     '@context': 'https://schema.org',
@@ -95,7 +96,7 @@ jsonLd.push({
     </table>
   </div>
 
-  {p.tastingNotes && (<><h2>Tasting notes</h2><p>{p.tastingNotes}</p></>)}
+  {p.tastingNotes && (<><h2>Tasting notes</h2>{p.rating != null && <p class="meta"><b>Our rating: {p.rating}/5</b></p>}<p>{p.tastingNotes}</p></>)}
 
   {faqs.length > 0 && (
     <>
