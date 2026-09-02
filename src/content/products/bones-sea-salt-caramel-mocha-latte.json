@@ -1,0 +1,37 @@
+{
+  "type": "latte",
+  "sizeOz": 11,
+  "caffeineMg": 200,
+  "sugarG": 16,
+  "addedSugar": true,
+  "proteinG": 7,
+  "calories": 140,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Grocery",
+    "Bones (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "Bones Coffee",
+      "url": "https://www.bonescoffee.com/",
+      "affiliate": false
+    }
+  ],
+  "verified": true,
+  "updated": "2026-09-02",
+  "sources": [
+    "https://www.bonescoffee.com/"
+  ],
+  "brand": "Bones Coffee Company",
+  "brandSlug": "bones-coffee",
+  "name": "Sea Salt Caramel Mocha Latte",
+  "flavor": "Sea Salt Caramel Mocha",
+  "caffeineNote": "Label: 200 mg per can",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Sea salt caramel and mocha on dairy milk, one of the stronger cans we track at 200 mg of caffeine, with 16 g of sugar and 7 g of protein per 11 oz can at 140 calories."
+}

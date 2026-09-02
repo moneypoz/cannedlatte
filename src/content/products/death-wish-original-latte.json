@@ -2,10 +2,10 @@
   "type": "latte",
   "sizeOz": 11,
   "caffeineMg": null,
-  "sugarG": null,
-  "addedSugar": null,
-  "proteinG": null,
-  "calories": null,
+  "sugarG": 12,
+  "addedSugar": true,
+  "proteinG": 8,
+  "calories": 130,
   "refrigerated": false,
   "pricePerCan": null,
   "packPrice": null,
@@ -27,16 +27,17 @@
       "affiliate": false
     }
   ],
-  "verified": false,
-  "updated": "2026-08-31",
+  "verified": true,
+  "updated": "2026-09-02",
   "sources": [
     "https://www.bevnet.com/pr/2026/04/09/death-wish-coffee-co-expands-readytodrink-lineup-with-new-betterforyou-caramel-cold-brew-latte"
   ],
   "brand": "Death Wish Coffee",
   "brandSlug": "death-wish",
-  "name": "Classic Cold Brew Latte",
-  "flavor": "Classic",
+  "name": "Original Latte",
+  "flavor": "Original",
+  "caffeineNote": "Label: up to as much caffeine as 1.5 cups of coffee (no mg stated)",
   "milk": "dairy",
   "dairyFree": false,
-  "summary": "Classic flavor from Death Wish's original RTD latte lineup. Specs pending a label photo."
+  "summary": "The unflavored can in Death Wish's cold brew latte lineup: 12 g of sugar, 8 g of protein and 130 calories in an 11 oz can, with no caffeine figure printed on the label."
 }

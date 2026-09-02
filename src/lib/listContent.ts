@@ -19,11 +19,11 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   'most-caffeine': {
     paragraphs: [
       'Caffeine in canned lattes ranges from a gentle 80 mg to over 200 mg per can — the difference between a soda\'s worth and two strong cups of coffee. For reference, a 12 oz drip coffee is typically 140–200 mg and a single espresso shot is 65–75 mg, so the strongest cans on this list genuinely replace a large coffee-shop order.',
-      'Two things drive the number: the coffee format (cold brew concentrates and triple-shot builds carry more) and the can size. La Colombe\'s Triple Draft Latte tops our database at 230 mg per its label; NOBL\'s cold brew oat latte is second at 207 mg; most mainstream dairy lattes cluster around 100–140 mg.',
+      'Two things drive the number: the coffee format (cold brew concentrates and triple-shot builds carry more) and the can size. La Colombe\'s Triple Draft Latte tops our database at 230 mg per its label, with Projo\'s Power Coffee close behind at 225 mg and NOBL\'s cold brew oat latte at 207 mg; most mainstream dairy lattes cluster around 100–140 mg.',
       'Brands aren\'t required to print caffeine on the label, and actual content varies batch to batch, so treat every figure as typical rather than exact. Where a brand publishes a range, we note it on the product page.',
     ],
     faqs: [
-      { q: 'What is the strongest canned latte?', a: 'La Colombe\'s Triple Draft Latte is the strongest we track at 230 mg of caffeine per its label, followed by NOBL\'s Cold Brew Oat Milk Latte at about 207 mg.' },
+      { q: 'What is the strongest canned latte?', a: 'La Colombe\'s Triple Draft Latte is the strongest we track at 230 mg of caffeine per its label, followed by Projo\'s Power Coffee Vanilla Latte at 225 mg and NOBL\'s Cold Brew Oat Milk Latte at about 207 mg.' },
       { q: 'How much caffeine is safe per day?', a: 'The FDA cites up to 400 mg a day as generally safe for healthy adults — roughly two of the strongest cans on this list, or three to four typical ones.' },
     ],
   },
@@ -39,12 +39,12 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'high-protein': {
     paragraphs: [
-      'A newer corner of the category treats the canned latte as a protein snack with caffeine. Slate leads it at 20 g of protein in an 11 oz can, alongside 1 g of sugar and 100 calories. Wandering Bear is second at 11 g in an 8 oz can, also at 100 calories, which is why both brands pitch these as a morning or post-workout drink rather than a dessert. Standard dairy lattes land around 6–8 g from regular milk; oat milk lattes carry much less, usually 1–3 g.',
+      'A newer corner of the category treats the canned latte as a protein snack with caffeine. Projo leads it at 25 g of protein in an 11 oz can, from milk protein isolate and collagen. Slate follows at 20 g alongside 1 g of sugar and 100 calories, then Wandering Bear at 11 g in an 8 oz can, which is why these brands pitch their cans as a morning or post-workout drink rather than a dessert. Standard dairy lattes land around 6–8 g from regular milk; oat milk lattes carry much less, usually 1–3 g.',
       'If protein is the goal, check the sugar column at the same time — some "protein coffee" products elsewhere in the market get their palatability from sweetness. The cans ranked here keep sugar in single digits.',
     ],
     faqs: [
-      { q: 'Which canned latte has the most protein?', a: 'Slate\'s lattes lead our database at 20 g of protein per 11 oz can, ahead of Wandering Bear\'s cold brew lattes at 11 g per 8 oz can from ultra-filtered skim milk.' },
-      { q: 'Do oat milk lattes have protein?', a: 'Very little — oat milk typically carries 1–3 g per serving, versus 6–20 g for dairy-based cans.' },
+      { q: 'Which canned latte has the most protein?', a: 'Projo\'s Power Coffee Vanilla Latte leads our database at 25 g of protein per 11 oz can, ahead of Slate\'s lattes at 20 g and Wandering Bear\'s cold brew lattes at 11 g.' },
+      { q: 'Do oat milk lattes have protein?', a: 'Very little — oat milk typically carries 1–3 g per serving, versus 6–25 g for dairy-based cans.' },
     ],
   },
   'cheapest-per-can': {

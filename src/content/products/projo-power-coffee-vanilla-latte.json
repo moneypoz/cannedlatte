@@ -1,0 +1,37 @@
+{
+  "type": "latte",
+  "sizeOz": 11,
+  "caffeineMg": 225,
+  "sugarG": 4,
+  "addedSugar": true,
+  "proteinG": 25,
+  "calories": 130,
+  "refrigerated": true,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Grocery",
+    "Projo (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "Projo",
+      "url": "https://projo.com/",
+      "affiliate": false
+    }
+  ],
+  "verified": true,
+  "updated": "2026-09-02",
+  "sources": [
+    "https://projo.com/"
+  ],
+  "brand": "Projo",
+  "brandSlug": "projo",
+  "name": "Power Coffee Vanilla Latte",
+  "flavor": "Vanilla",
+  "caffeineNote": "Label: 225 mg per can",
+  "milk": "lactose-free dairy",
+  "dairyFree": false,
+  "summary": "The most protein of any can in our database at 25 g, from milk protein isolate and collagen, alongside 225 mg of caffeine and just 4 g of sugar in a refrigerated 11 oz can at 130 calories."
+}

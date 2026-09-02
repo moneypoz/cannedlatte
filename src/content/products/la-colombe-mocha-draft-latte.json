@@ -1,11 +1,11 @@
 {
   "type": "latte",
-  "sizeOz": null,
-  "caffeineMg": 120,
-  "sugarG": null,
-  "addedSugar": null,
-  "proteinG": null,
-  "calories": null,
+  "sizeOz": 11,
+  "caffeineMg": 190,
+  "sugarG": 15,
+  "addedSugar": true,
+  "proteinG": 7,
+  "calories": 160,
   "refrigerated": false,
   "pricePerCan": 2.83,
   "packPrice": 34,
@@ -25,8 +25,8 @@
       "affiliate": false
     }
   ],
-  "verified": false,
-  "updated": "2026-08-31",
+  "verified": true,
+  "updated": "2026-09-02",
   "sources": [
     "https://www.lacolombe.com/collections/lattes",
     "https://www.fooddive.com/news/la-colombe-ready-to-drink-lattes-new-recipe/816692/"
@@ -35,7 +35,7 @@
   "brandSlug": "la-colombe",
   "name": "Mocha Draft Latte",
   "flavor": "Mocha",
-  "caffeineNote": "Brand lists 100\u2013150 mg",
+  "caffeineNote": "Label: 190 mg per can",
   "milk": "dairy",
   "dairyFree": false,
   "summary": "Chocolate version of the Draft Latte."

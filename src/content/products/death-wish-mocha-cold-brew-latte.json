@@ -1,11 +1,11 @@
 {
   "type": "latte",
   "sizeOz": 11,
-  "caffeineMg": null,
-  "sugarG": null,
-  "addedSugar": null,
-  "proteinG": null,
-  "calories": null,
+  "caffeineMg": 120,
+  "sugarG": 16,
+  "addedSugar": true,
+  "proteinG": 8,
+  "calories": 140,
   "refrigerated": false,
   "pricePerCan": null,
   "packPrice": null,
@@ -27,8 +27,8 @@
       "affiliate": false
     }
   ],
-  "verified": false,
-  "updated": "2026-08-31",
+  "verified": true,
+  "updated": "2026-09-02",
   "sources": [
     "https://www.bevnet.com/pr/2026/04/09/death-wish-coffee-co-expands-readytodrink-lineup-with-new-betterforyou-caramel-cold-brew-latte"
   ],
@@ -38,5 +38,6 @@
   "flavor": "Mocha",
   "milk": "dairy",
   "dairyFree": false,
-  "summary": "Mocha flavor from Death Wish's original RTD latte lineup. Specs pending a label photo."
+  "summary": "Mocha flavor from Death Wish's original RTD latte lineup. Specs pending a label photo.",
+  "caffeineNote": "Label: up to 120 mg per can"
 }
