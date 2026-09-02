@@ -1,0 +1,36 @@
+{
+  "type": "latte",
+  "sizeOz": 8,
+  "caffeineMg": 80,
+  "sugarG": 15,
+  "addedSugar": true,
+  "proteinG": 4,
+  "calories": 120,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Grocery"
+  ],
+  "buyLinks": [
+    {
+      "label": "Laurel's",
+      "url": "https://drinklaurels.com/",
+      "affiliate": false
+    }
+  ],
+  "verified": true,
+  "updated": "2026-09-02",
+  "sources": [
+    "https://drinklaurels.com/"
+  ],
+  "brand": "Laurel's",
+  "brandSlug": "laurels",
+  "name": "Dirty Chai",
+  "flavor": "Dirty Chai",
+  "caffeineNote": "Label: 80 mg per can",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Spiced chai with a shot of espresso on A2 whole milk: 80 mg of caffeine, 15 g of sugar and 4 g of protein per 8 oz can at 120 calories."
+}

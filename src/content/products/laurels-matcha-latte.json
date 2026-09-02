@@ -1,0 +1,36 @@
+{
+  "type": "latte",
+  "sizeOz": 8,
+  "caffeineMg": 34,
+  "sugarG": 15,
+  "addedSugar": true,
+  "proteinG": 4,
+  "calories": 120,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Grocery"
+  ],
+  "buyLinks": [
+    {
+      "label": "Laurel's",
+      "url": "https://drinklaurels.com/",
+      "affiliate": false
+    }
+  ],
+  "verified": true,
+  "updated": "2026-09-02",
+  "sources": [
+    "https://drinklaurels.com/"
+  ],
+  "brand": "Laurel's",
+  "brandSlug": "laurels",
+  "name": "Matcha Latte",
+  "flavor": "Matcha",
+  "caffeineNote": "Label: 34 mg per can",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Matcha green tea on A2 whole milk, the mildest can in the range at 34 mg of caffeine, with 15 g of sugar and 4 g of protein at 120 calories."
+}

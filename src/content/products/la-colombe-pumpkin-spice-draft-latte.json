@@ -1,11 +1,11 @@
 {
   "type": "latte",
   "sizeOz": 11,
-  "caffeineMg": 230,
-  "sugarG": 15,
+  "caffeineMg": 190,
+  "sugarG": 18,
   "addedSugar": true,
   "proteinG": 7,
-  "calories": 160,
+  "calories": 170,
   "refrigerated": false,
   "pricePerCan": 2.83,
   "packPrice": 34,
@@ -29,16 +29,15 @@
   "verified": true,
   "updated": "2026-09-02",
   "sources": [
-    "https://www.lacolombe.com/collections/lattes",
-    "https://www.fooddive.com/news/la-colombe-ready-to-drink-lattes-new-recipe/816692/",
-    "https://sporked.com/article/best-canned-lattes/"
+    "https://www.lacolombe.com/collections/lattes"
   ],
   "brand": "La Colombe",
   "brandSlug": "la-colombe",
-  "name": "Triple Draft Latte",
-  "flavor": "Original, triple shot",
-  "caffeineNote": "Label: 230 mg per can",
+  "name": "Pumpkin Spice Draft Latte",
+  "flavor": "Pumpkin Spice",
+  "caffeineNote": "Label: 190 mg per can",
   "milk": "dairy",
   "dairyFree": false,
-  "summary": "Three shots in the same frothy can. Sporked's top pick in its canned latte taste test."
+  "launched": "2026-08",
+  "summary": "Seasonal pumpkin spice Draft Latte and the sweetest in the line at 18 g of sugar, with 190 mg of caffeine and 7 g of protein per 11 oz can at 170 calories."
 }

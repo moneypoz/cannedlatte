@@ -11,7 +11,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
       'Watch can size too. A 6.5 oz can with 12 g of sugar is sweeter per sip than an 11 oz can with 16 g. Where brands publish it, the full label is on each product page.',
     ],
     faqs: [
-      { q: 'Which canned latte has the least sugar?', a: 'Among cans we track, NOBL\'s Cold Brew Oat Milk Latte leads with 0 g added sugar — just cold brew and oat milk. Wandering Bear\'s lattes are the lowest among dairy options at 5–6 g per 8 oz can.' },
+      { q: 'Which canned latte has the least sugar?', a: 'Among cans we track, NOBL\'s Cold Brew Oat Milk Latte leads with 0 g added sugar — just cold brew and oat milk. Slate is the lowest-sugar dairy option at 1 g per can with none added, ahead of Wandering Bear\'s 5–6 g per 8 oz can.' },
       { q: 'Are low-sugar canned lattes unsweetened?', a: 'Not always. Some use the natural sweetness of oat milk or dates rather than added sugar, so they taste lightly sweet while showing 0 g added sugar on the label.' },
       { q: 'How much sugar is in a typical canned latte?', a: 'Flavored dairy canned coffees commonly run 15–33 g per can. The low-sugar end of the category runs 0–8 g.' },
     ],
@@ -19,11 +19,11 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   'most-caffeine': {
     paragraphs: [
       'Caffeine in canned lattes ranges from a gentle 80 mg to over 200 mg per can — the difference between a soda\'s worth and two strong cups of coffee. For reference, a 12 oz drip coffee is typically 140–200 mg and a single espresso shot is 65–75 mg, so the strongest cans on this list genuinely replace a large coffee-shop order.',
-      'Two things drive the number: the coffee format (cold brew concentrates and triple-shot builds carry more) and the can size. NOBL\'s cold brew oat latte tops our database at 207 mg; La Colombe\'s Triple Draft Latte packs 175 mg into a small nitro can; most mainstream dairy lattes cluster around 100–140 mg.',
+      'Two things drive the number: the coffee format (cold brew concentrates and triple-shot builds carry more) and the can size. La Colombe\'s Triple Draft Latte tops our database at 230 mg per its label; NOBL\'s cold brew oat latte is second at 207 mg; most mainstream dairy lattes cluster around 100–140 mg.',
       'Brands aren\'t required to print caffeine on the label, and actual content varies batch to batch, so treat every figure as typical rather than exact. Where a brand publishes a range, we note it on the product page.',
     ],
     faqs: [
-      { q: 'What is the strongest canned latte?', a: 'NOBL\'s Cold Brew Oat Milk Latte is the strongest we track at about 207 mg of caffeine per can, followed by La Colombe\'s Triple Draft Latte at about 175 mg.' },
+      { q: 'What is the strongest canned latte?', a: 'La Colombe\'s Triple Draft Latte is the strongest we track at 230 mg of caffeine per its label, followed by NOBL\'s Cold Brew Oat Milk Latte at about 207 mg.' },
       { q: 'How much caffeine is safe per day?', a: 'The FDA cites up to 400 mg a day as generally safe for healthy adults — roughly two of the strongest cans on this list, or three to four typical ones.' },
     ],
   },
@@ -39,12 +39,12 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'high-protein': {
     paragraphs: [
-      'A newer corner of the category treats the canned latte as a protein snack with caffeine. Wandering Bear leads it: ultra-filtered skim milk brings its lattes to 11 g of protein in an 8 oz can at 100 calories, which is why the brand pitches them as a morning or post-workout drink rather than a dessert. Standard dairy lattes land around 6–8 g from regular milk; oat milk lattes carry much less, usually 1–3 g.',
+      'A newer corner of the category treats the canned latte as a protein snack with caffeine. Slate leads it at 20 g of protein in an 11 oz can, alongside 1 g of sugar and 100 calories. Wandering Bear is second at 11 g in an 8 oz can, also at 100 calories, which is why both brands pitch these as a morning or post-workout drink rather than a dessert. Standard dairy lattes land around 6–8 g from regular milk; oat milk lattes carry much less, usually 1–3 g.',
       'If protein is the goal, check the sugar column at the same time — some "protein coffee" products elsewhere in the market get their palatability from sweetness. The cans ranked here keep sugar in single digits.',
     ],
     faqs: [
-      { q: 'Which canned latte has the most protein?', a: 'Wandering Bear\'s cold brew lattes lead our database at 11 g of protein per 8 oz can, from ultra-filtered skim milk.' },
-      { q: 'Do oat milk lattes have protein?', a: 'Very little — oat milk typically carries 1–3 g per serving, versus 6–11 g for dairy-based cans.' },
+      { q: 'Which canned latte has the most protein?', a: 'Slate\'s lattes lead our database at 20 g of protein per 11 oz can, ahead of Wandering Bear\'s cold brew lattes at 11 g per 8 oz can from ultra-filtered skim milk.' },
+      { q: 'Do oat milk lattes have protein?', a: 'Very little — oat milk typically carries 1–3 g per serving, versus 6–20 g for dairy-based cans.' },
     ],
   },
   'cheapest-per-can': {
