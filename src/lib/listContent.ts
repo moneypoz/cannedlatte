@@ -59,7 +59,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'no-added-sugar': {
     paragraphs: [
-      'These are the cans with a 0 in the added-sugars line: sweetness, where there is any, comes from the milk itself or from whole ingredients like dates. It\'s the shortest list in our database, which says something about the category — most canned lattes are built sweet. NOBL keeps it to literally two ingredients (cold brew and oat milk); Pop & Bottle sweetens with dates, so the label shows around 8 g of total sugar but none added.',
+      'These are the cans with a 0 in the added-sugars line: sweetness, where there is any, comes from the milk itself, from whole ingredients like dates, or from non-nutritive sweeteners that carry no sugar at all. Seven cans qualify, and they get there three different ways. NOBL keeps it to literally two ingredients (cold brew and oat milk) and shows 0 g of sugar of any kind. Slate\'s five lattes lean on stevia and monk fruit, which leaves 1 g of naturally occurring milk sugar next to 20 g of protein. Pop & Bottle sweetens with dates, so its label shows around 8 g of total sugar but none added.',
       'If a can you love isn\'t here, the least-sugar list is the neighboring compromise: several cans at 5–6 g of added sugar taste barely sweetened.',
     ],
     faqs: [
