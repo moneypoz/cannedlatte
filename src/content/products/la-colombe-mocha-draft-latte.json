@@ -38,5 +38,6 @@
   "caffeineNote": "Label: 190 mg per can",
   "milk": "dairy",
   "dairyFree": false,
+  "image": "/images/products/la-colombe-mocha-draft-latte.jpg",
   "summary": "Chocolate version of the Draft Latte."
 }
