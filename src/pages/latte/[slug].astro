@@ -2,7 +2,13 @@
 import Base from '../../layouts/Base.astro';
 import BuyLinks from '../../components/BuyLinks.astro';
 import Disclosure from '../../components/Disclosure.astro';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import { allProducts, fmt, milkLabel, typeLabel, fullName } from '../../lib/products';
+
+// Originals stay in public/ (used for the absolute JSON-LD URL); these copies under
+// src/assets/ are what Astro processes into resized WebP at build time.
+const productImages = import.meta.glob<{ default: ImageMetadata }>('../../assets/products/*.jpg', { eager: true });
 
 export async function getStaticPaths() {
   const products = await allProducts();
@@ -10,6 +16,9 @@ export async function getStaticPaths() {
 }
 const { product, all } = Astro.props;
 const p = product.data;
+const heroImage = p.image
+  ? productImages[`../../assets/products/${p.image.split('/').pop()}`]?.default
+  : undefined;
 const name = fullName(p);
 const siblings = all.filter((x) => x.data.brandSlug === p.brandSlug && x.id !== product.id);
 const similar = all
@@ -69,7 +78,7 @@ jsonLd.push({
   <h1>{name}</h1>
   <p class="lede">{p.summary}</p>
 
-  {p.image && <img class="hero" src={p.image} alt={`${name} can`} width="480" />}
+  {heroImage && <Image class="hero" src={heroImage} alt={`${name} can`} width={480} densities={[1, 2]} format="webp" loading="eager" />}
 
   <div class="stats">
     <div class="stat-card"><div class="n">{fmt.mg(p.caffeineMg)}</div><div class="l">caffeine</div></div>
