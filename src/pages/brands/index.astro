@@ -1,17 +1,50 @@
 ---
 import Base from '../../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import { allProducts } from '../../lib/products';
 const products = await allProducts();
 const brands = [...new Map(products.map((p) => [p.data.brandSlug, p.data.brand])).entries()].sort((a, b) => a[1].localeCompare(b[1]));
+
+// Brand marks taken from each brand's own site icon, normalised to 256px squares.
+// Not every brand publishes a reachable one, so cards fall back to a monogram.
+const brandLogos = import.meta.glob<{ default: ImageMetadata }>('../../assets/brands/*.png', { eager: true });
+const logoFor = (slug: string) => brandLogos[`../../assets/brands/${slug}.png`]?.default;
+const initials = (name: string) =>
+  name.replace(/[^A-Za-z0-9 ]/g, '').split(/\s+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
 ---
 <Base title="Brands" description="Every brand making a latte in a can, with their full lineups compared.">
   <h1>Brands</h1>
   <div class="grid">
     {brands.map(([slug, name]) => (
-      <a class="card" href={`/brands/${slug}`} style="text-decoration:none;color:inherit">
-        <h3>{name}</h3>
-        <p class="meta" style="margin:0">{products.filter((p) => p.data.brandSlug === slug).length} products</p>
+      <a class="card brandcard" href={`/brands/${slug}`}>
+        <span class="brandmark">
+          {logoFor(slug)
+            ? <Image src={logoFor(slug)!} alt="" width={44} height={44} densities={[1, 2]} format="webp" loading="lazy" />
+            : <span class="brandmark-initials">{initials(name)}</span>}
+        </span>
+        <span class="brandcard-body">
+          <h3>{name}</h3>
+          <p class="meta" style="margin:0">{products.filter((p) => p.data.brandSlug === slug).length} products</p>
+        </span>
       </a>
     ))}
   </div>
 </Base>
+
+<style>
+  .brandcard { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+  .brandcard h3 { margin: 0 0 2px; }
+  .brandcard-body { min-width: 0; }
+  /* Light chip so dark-on-transparent marks stay visible in both themes. */
+  .brandmark {
+    flex: 0 0 auto; width: 52px; height: 52px; border-radius: 10px;
+    background: #fff; border: 1px solid var(--border, rgba(0, 0, 0, .1));
+    display: grid; place-items: center; overflow: hidden;
+  }
+  .brandmark img { width: 44px; height: 44px; object-fit: contain; display: block; }
+  .brandmark-initials {
+    font-family: var(--display, inherit); font-weight: 700; font-size: 17px;
+    letter-spacing: .02em; color: #6b6560;
+  }
+</style>
