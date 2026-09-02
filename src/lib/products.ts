@@ -18,6 +18,12 @@ export const fmt = {
   oz: (v: number | null) => (v == null ? '—' : `${v} oz`),
   cal: (v: number | null) => (v == null ? '—' : `${v}`),
   usd: (v: number | null) => (v == null ? '—' : `$${v.toFixed(2)}`),
+  // "2026-08" -> "8/2026"
+  ym: (v: string | null | undefined) => {
+    if (!v) return '—';
+    const [y, m] = v.split('-');
+    return m ? `${Number(m)}/${y}` : v;
+  },
 };
 
 export const milkLabel: Record<P['milk'], string> = {
