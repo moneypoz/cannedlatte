@@ -183,7 +183,12 @@ const fullTitle = title === 'Canned Latte' ? 'Canned Latte: every canned latte, 
   td a{font-weight:600}
   ul{padding-left:20px}
   li{margin:0 0 6px}
-  img.hero{max-width:100%;border-radius:var(--radius);border:1px solid var(--border)}
+  img.hero{max-width:100%;border-radius:var(--radius)}
+
+  .product-top{display:grid;grid-template-columns:1fr 340px;gap:12px 32px;align-items:start;margin-bottom:8px}
+  .product-top .hero{width:100%;height:auto;border:0;border-radius:var(--radius);background:var(--muted)}
+  .product-top .stats{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
+  @media (max-width:760px){.product-top{grid-template-columns:1fr}.product-top .hero{max-width:380px;margin:0 auto}}
   @media (max-width:560px){
     header.site{flex-wrap:wrap}
     header.site nav{gap:4px 12px;font-size:14px}
