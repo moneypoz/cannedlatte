@@ -46,7 +46,7 @@ const jsonLd = {
   <div class="grid">
     {newest.map((p) => (
       <a class="card" href={`/latte/${p.id}`}>
-        <span class="tag">{p.data.launched}</span>
+        <span class="tag">{fmt.ym(p.data.launched)}</span>
         <h3 style="margin-top:8px">{fullName(p.data)}</h3>
         <p style="margin:0">{fmt.mg(p.data.caffeineMg)} · {fmt.g(p.data.sugarG)} sugar · {fmt.usd(p.data.pricePerCan)}/can</p>
       </a>
