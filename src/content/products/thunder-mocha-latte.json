@@ -19,6 +19,11 @@
       "label": "Thunder CoffeeMilk",
       "url": "https://shop.thundercoffeemilk.com/products/thunder-coffeemilk-mocha-latte-12-pack",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/46ci5T5",
+      "affiliate": true
     }
   ],
   "verified": false,
