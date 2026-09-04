@@ -12,6 +12,16 @@ export const lattesOnly = (items: Product[]) => items.filter((p) => p.data.type 
 
 export const fullName = (p: P) => `${p.brand} ${p.name}`;
 
+// Compact display name for tight UI (homepage tiles, cards). Drops corporate
+// suffixes and a trailing product-type word, but only while something
+// meaningful is left — the full name still belongs in titles and on /latte.
+export const shortName = (p: P) => {
+  const full = fullName(p);
+  const s = full.replace(/\s+Coffee\s+(Company|Co\.)/i, '');
+  const trimmed = s.replace(/\s+(Cold Brew Latte|Latte)$/i, '');
+  return trimmed.split(/\s+/).length >= 2 ? trimmed : s;
+};
+
 export const fmt = {
   mg: (v: number | null) => (v == null ? '—' : `${v} mg`),
   g: (v: number | null) => (v == null ? '—' : `${v} g`),
