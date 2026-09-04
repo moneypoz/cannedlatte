@@ -1,0 +1,36 @@
+{
+  "type": "latte",
+  "sizeOz": 12,
+  "caffeineMg": null,
+  "sugarG": 27,
+  "addedSugar": true,
+  "proteinG": 0,
+  "calories": 210,
+  "refrigerated": false,
+  "pricePerCan": 5,
+  "packPrice": 20,
+  "packSize": 4,
+  "retailers": [
+    "French Truck (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "French Truck Coffee",
+      "url": "https://www.frenchtruckcoffee.com/products/ready-to-drink-lattes",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-04",
+  "sources": [
+    "https://www.frenchtruckcoffee.com/products/ready-to-drink-lattes"
+  ],
+  "brand": "French Truck Coffee",
+  "brandSlug": "french-truck",
+  "name": "Mocha Latte",
+  "flavor": "Mocha",
+  "caffeineNote": "Not printed on the label; the brand describes a can as the energy of two cups of coffee",
+  "milk": "oat",
+  "dairyFree": true,
+  "summary": "Chocolate-syrup mocha on coffee, chicory and oat milk, the richest of the three at 27 g of sugar and 210 calories per 12 oz can. Vegan and shelf-stable."
+}

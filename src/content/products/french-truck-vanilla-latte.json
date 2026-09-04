@@ -1,0 +1,36 @@
+{
+  "type": "latte",
+  "sizeOz": 12,
+  "caffeineMg": null,
+  "sugarG": 20,
+  "addedSugar": true,
+  "proteinG": 0,
+  "calories": 190,
+  "refrigerated": false,
+  "pricePerCan": 5,
+  "packPrice": 20,
+  "packSize": 4,
+  "retailers": [
+    "French Truck (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "French Truck Coffee",
+      "url": "https://www.frenchtruckcoffee.com/products/ready-to-drink-lattes",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-04",
+  "sources": [
+    "https://www.frenchtruckcoffee.com/products/ready-to-drink-lattes"
+  ],
+  "brand": "French Truck Coffee",
+  "brandSlug": "french-truck",
+  "name": "Vanilla Latte",
+  "flavor": "Vanilla",
+  "caffeineNote": "Not printed on the label; the brand describes a can as the energy of two cups of coffee",
+  "milk": "oat",
+  "dairyFree": true,
+  "summary": "Vanilla coffee-and-chicory latte on oat milk: 20 g of sugar and 190 calories per 12 oz can. Vegan and shelf-stable."
+}
