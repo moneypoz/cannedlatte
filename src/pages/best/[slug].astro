@@ -28,7 +28,7 @@ if (content?.faqs.length) {
 ---
 <Base title={page.title} description={`${page.title}, from real label data. ${page.intro}`} jsonLd={jsonLd}>
   <div class="center">
-    <span class="status"><span class="dot"></span><b>{list.length} cans</b> · from the database · updated {updated}</span>
+    <span class="status"><span class="dot"></span><b>{list.length} cans</b> · from the database · updated {fmt.mdy(updated)}</span>
     <h1>{page.title}</h1>
     <p class="lede">{page.intro}</p>
   </div>

@@ -24,6 +24,12 @@ export const fmt = {
     const [y, m] = v.split('-');
     return m ? `${Number(m)}/${y}` : v;
   },
+  // "2026-09-04" -> "09-04-2026". Stored dates stay ISO so they still sort.
+  mdy: (v: string | null | undefined) => {
+    if (!v) return '—';
+    const [y, m, d] = v.split('-');
+    return m && d ? `${m}-${d}-${y}` : v;
+  },
 };
 
 export const milkLabel: Record<P['milk'], string> = {
