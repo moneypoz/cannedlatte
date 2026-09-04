@@ -11,13 +11,19 @@
   "packPrice": 53.04,
   "packSize": 12,
   "retailers": [
-    "illy (direct)"
+    "illy (direct)",
+    "Amazon"
   ],
   "buyLinks": [
     {
       "label": "illy",
       "url": "https://www.illy.com/en-us/coffee/ready-to-drink-coffee/cold-brew-latte-macchiato-illy-ready-to-drink-12-pack/US23751.html",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4xKp9Tc",
+      "affiliate": true
     }
   ],
   "verified": false,
