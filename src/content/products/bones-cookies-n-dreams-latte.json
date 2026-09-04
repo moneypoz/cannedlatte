@@ -12,13 +12,19 @@
   "packSize": 12,
   "retailers": [
     "Grocery",
-    "Bones (direct)"
+    "Bones (direct)",
+    "Amazon"
   ],
   "buyLinks": [
     {
       "label": "Bones Coffee",
       "url": "https://www.bonescoffee.com/products/cookies-n-dreams-latte",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4gQEtpZ",
+      "affiliate": true
     }
   ],
   "verified": false,
