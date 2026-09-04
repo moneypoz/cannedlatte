@@ -20,6 +20,11 @@
       "label": "RISE Brewing",
       "url": "https://risebrewingco.com/products/new-11oz-classic-oat",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4xAmyLh",
+      "affiliate": true
     }
   ],
   "verified": false,

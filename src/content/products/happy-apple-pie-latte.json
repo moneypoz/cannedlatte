@@ -1,0 +1,37 @@
+{
+  "type": "latte",
+  "sizeOz": 11,
+  "caffeineMg": 60,
+  "sugarG": null,
+  "addedSugar": true,
+  "proteinG": null,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": 3,
+  "packPrice": 11.99,
+  "packSize": 4,
+  "retailers": [
+    "Happy (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "Happy",
+      "url": "https://www.happyproducts.com/products/apple-pie-latte-4pk",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-04",
+  "sources": [
+    "https://www.happyproducts.com/collections/best-sellers",
+    "https://www.happyproducts.com/products/apple-pie-latte-4pk"
+  ],
+  "brand": "Happy",
+  "brandSlug": "happy",
+  "name": "Apple Pie Latte",
+  "flavor": "Apple Pie",
+  "caffeineNote": "Brand lists 55–65 mg per can",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Limited-edition latte with apple, cinnamon and buttery crust notes on Colombian arabica coffee and real milk, at 55–65 mg of caffeine per 11 oz can."
+}

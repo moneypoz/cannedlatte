@@ -19,6 +19,11 @@
       "label": "RISE Brewing",
       "url": "https://risebrewingco.com/products/new-11oz-salted-carmel",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4dft81x",
+      "affiliate": true
     }
   ],
   "verified": false,

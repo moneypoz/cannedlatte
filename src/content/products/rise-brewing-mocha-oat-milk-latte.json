@@ -19,6 +19,11 @@
       "label": "RISE Brewing",
       "url": "https://risebrewingco.com/products/new-11oz-mocha",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4ym1SXA",
+      "affiliate": true
     }
   ],
   "verified": false,
