@@ -22,9 +22,9 @@
       "affiliate": false
     },
     {
-      "label": "Amazon",
-      "url": "https://www.amazon.com/s?k=death+wish+cold+brew+latte",
-      "affiliate": false
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4xDrijb",
+      "affiliate": true
     }
   ],
   "verified": true,

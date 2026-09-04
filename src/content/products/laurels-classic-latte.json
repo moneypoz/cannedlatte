@@ -18,6 +18,11 @@
       "label": "Laurel's",
       "url": "https://drinklaurels.com/",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4qSC2Yq",
+      "affiliate": true
     }
   ],
   "verified": true,

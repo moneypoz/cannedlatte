@@ -20,6 +20,11 @@
       "label": "Pop & Bottle",
       "url": "https://www.popandbottle.com/",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (8-pack)",
+      "url": "https://amzn.to/4qXGCos",
+      "affiliate": true
     }
   ],
   "verified": false,

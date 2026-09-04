@@ -20,6 +20,11 @@
       "label": "Slate",
       "url": "https://slatemilk.com/",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4h7rMs9",
+      "affiliate": true
     }
   ],
   "verified": true,

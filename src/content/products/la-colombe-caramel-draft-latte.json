@@ -19,6 +19,11 @@
       "label": "La Colombe",
       "url": "https://www.lacolombe.com/collections/lattes",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4zWUcfY",
+      "affiliate": true
     }
   ],
   "verified": true,
