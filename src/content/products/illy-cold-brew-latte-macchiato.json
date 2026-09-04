@@ -1,0 +1,36 @@
+{
+  "type": "latte",
+  "sizeOz": 8.45,
+  "caffeineMg": null,
+  "sugarG": null,
+  "addedSugar": null,
+  "proteinG": null,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": 4.42,
+  "packPrice": 53.04,
+  "packSize": 12,
+  "retailers": [
+    "illy (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "illy",
+      "url": "https://www.illy.com/en-us/coffee/ready-to-drink-coffee/cold-brew-latte-macchiato-illy-ready-to-drink-12-pack/US23751.html",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-04",
+  "sources": [
+    "https://www.illy.com/en-us/coffee/ready-to-drink-coffee/cold-brew-latte-macchiato-illy-ready-to-drink-12-pack/US23751.html"
+  ],
+  "brand": "illy",
+  "brandSlug": "illy",
+  "name": "Cold Brew Latte Macchiato",
+  "flavor": "Latte Macchiato",
+  "caffeineNote": "Not printed on the can or the product page",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Italian cold brew latte macchiato on the 100% arabica illy blend, cold brewed for 12 hours: a small 8.45 oz can with notes of caramel. Nutrition figures are not published."
+}
