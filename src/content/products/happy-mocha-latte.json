@@ -11,13 +11,19 @@
   "packPrice": 11.99,
   "packSize": 4,
   "retailers": [
-    "Happy (direct)"
+    "Happy (direct)",
+    "Amazon"
   ],
   "buyLinks": [
     {
       "label": "Happy",
       "url": "https://www.happyproducts.com/products/mocha-latte-4pk",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4xbNi3R",
+      "affiliate": true
     }
   ],
   "verified": false,

@@ -11,13 +11,19 @@
   "packPrice": 11.99,
   "packSize": 4,
   "retailers": [
-    "Happy (direct)"
+    "Happy (direct)",
+    "Amazon"
   ],
   "buyLinks": [
     {
       "label": "Happy",
       "url": "https://www.happyproducts.com/products/chocolatey-chip-latte-4pk-11-oz",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4xEc1i7",
+      "affiliate": true
     }
   ],
   "verified": false,
