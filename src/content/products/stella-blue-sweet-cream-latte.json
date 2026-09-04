@@ -11,13 +11,19 @@
   "packPrice": 37.95,
   "packSize": 12,
   "retailers": [
-    "Stella Blue (direct)"
+    "Stella Blue (direct)",
+    "Amazon"
   ],
   "buyLinks": [
     {
       "label": "Stella Blue",
       "url": "https://stellabluecoffee.com/products/espresso-sweet-cream",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4qSEWwq",
+      "affiliate": true
     }
   ],
   "verified": false,
