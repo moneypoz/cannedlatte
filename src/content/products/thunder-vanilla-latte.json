@@ -1,0 +1,38 @@
+{
+  "type": "latte",
+  "sizeOz": 11,
+  "caffeineMg": 75,
+  "sugarG": 26,
+  "addedSugar": true,
+  "proteinG": 9,
+  "calories": 220,
+  "refrigerated": false,
+  "pricePerCan": 3.08,
+  "packPrice": 36.99,
+  "packSize": 12,
+  "retailers": [
+    "Thunder CoffeeMilk (direct)",
+    "Amazon"
+  ],
+  "buyLinks": [
+    {
+      "label": "Thunder CoffeeMilk",
+      "url": "https://shop.thundercoffeemilk.com/products/thunder-coffeemilk-vanilla-latte-12-pack",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-04",
+  "sources": [
+    "https://thundercoffeemilk.com/",
+    "https://shop.thundercoffeemilk.com/products/thunder-coffeemilk-vanilla-latte-12-pack"
+  ],
+  "brand": "Thunder CoffeeMilk",
+  "brandSlug": "thunder-coffeemilk",
+  "name": "Vanilla Latte",
+  "flavor": "Vanilla",
+  "caffeineNote": "Label: 75 mg per can",
+  "milk": "lactose-free dairy",
+  "dairyFree": false,
+  "summary": "The mildest-tasting can in the Thunder line, an Aussie-style coffee milk on lactose-free whole milk: 75 mg of caffeine and 9 g of protein per 11 oz can, at 220 calories and 26 g of sugar."
+}
