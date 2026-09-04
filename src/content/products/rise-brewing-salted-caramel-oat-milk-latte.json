@@ -11,14 +11,13 @@
   "packPrice": 29.99,
   "packSize": 12,
   "retailers": [
-    "Target",
     "Amazon",
     "RISE (direct)"
   ],
   "buyLinks": [
     {
       "label": "RISE Brewing",
-      "url": "https://risebrewingco.com/products/new-11oz-classic-oat",
+      "url": "https://risebrewingco.com/products/new-11oz-salted-carmel",
       "affiliate": false
     }
   ],
@@ -26,14 +25,14 @@
   "updated": "2026-09-04",
   "sources": [
     "https://risebrewingco.com/",
-    "https://risebrewingco.com/products/new-11oz-classic-oat"
+    "https://risebrewingco.com/products/new-11oz-salted-carmel"
   ],
   "brand": "RISE Brewing Co.",
   "brandSlug": "rise-brewing",
-  "name": "Classic Oatmilk Latte",
-  "flavor": "Classic",
+  "name": "Salted Caramel Oatmilk Latte",
+  "flavor": "Salted Caramel",
   "caffeineNote": "Label: 90 mg of natural caffeine per can",
   "milk": "oat",
   "dairyFree": true,
-  "summary": "Cold brew and oat milk, coffee-forward and lightly sweet: 90 mg of caffeine and 14 g of sugar per 11 oz can at 150 calories. Dairy-free."
+  "summary": "Caramel with a salty finish over cold brew and oat milk: 90 mg of caffeine and 14 g of sugar per 11 oz can at 150 calories. Dairy-free."
 }
