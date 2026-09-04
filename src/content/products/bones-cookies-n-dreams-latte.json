@@ -1,0 +1,38 @@
+{
+  "type": "latte",
+  "sizeOz": 11,
+  "caffeineMg": null,
+  "sugarG": 33,
+  "addedSugar": true,
+  "proteinG": 7,
+  "calories": 210,
+  "refrigerated": false,
+  "pricePerCan": 2.08,
+  "packPrice": 24.99,
+  "packSize": 12,
+  "retailers": [
+    "Grocery",
+    "Bones (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "Bones Coffee",
+      "url": "https://www.bonescoffee.com/products/cookies-n-dreams-latte",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-04",
+  "sources": [
+    "https://www.bonescoffee.com/",
+    "https://www.bonescoffee.com/products/cookies-n-dreams-latte"
+  ],
+  "brand": "Bones Coffee Company",
+  "brandSlug": "bones-coffee",
+  "name": "Cookies N' Dreams Latte",
+  "flavor": "Cookies N' Dreams",
+  "caffeineNote": "No mg on the label; the brand says about as much caffeine as 1.5 cups of coffee",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Cookies-and-cream latte on reduced-fat milk and the sweetest can in our database at 33 g of sugar, with 7 g of protein per 11 oz can at 210 calories."
+}
