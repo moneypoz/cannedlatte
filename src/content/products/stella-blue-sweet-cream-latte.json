@@ -1,0 +1,37 @@
+{
+  "type": "latte",
+  "sizeOz": 11,
+  "caffeineMg": 190,
+  "sugarG": 25,
+  "addedSugar": true,
+  "proteinG": 7,
+  "calories": 170,
+  "refrigerated": false,
+  "pricePerCan": 3.16,
+  "packPrice": 37.95,
+  "packSize": 12,
+  "retailers": [
+    "Stella Blue (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "Stella Blue",
+      "url": "https://stellabluecoffee.com/products/espresso-sweet-cream",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-04",
+  "sources": [
+    "https://stellabluecoffee.com/collections/canned-lattes",
+    "https://stellabluecoffee.com/products/espresso-sweet-cream"
+  ],
+  "brand": "Stella Blue Coffee",
+  "brandSlug": "stella-blue",
+  "name": "Sweet Cream Latte",
+  "flavor": "Sweet Cream",
+  "caffeineNote": "Label: 190 mg of natural caffeine per can",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Espresso and reduced-fat milk with a sweet cream finish on 100% Colombian coffee: 190 mg of caffeine and 7 g of protein per 11 oz can, at 170 calories and 25 g of sugar."
+}
