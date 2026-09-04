@@ -1,0 +1,37 @@
+{
+  "type": "latte",
+  "sizeOz": 11,
+  "caffeineMg": 150,
+  "sugarG": 22,
+  "addedSugar": true,
+  "proteinG": 10,
+  "calories": 140,
+  "refrigerated": false,
+  "pricePerCan": 3,
+  "packPrice": 35.99,
+  "packSize": 12,
+  "retailers": [
+    "Throne Sport Coffee (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "Throne Sport Coffee",
+      "url": "https://sportcoffee.com/products/coffee-latte",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-04",
+  "sources": [
+    "https://sportcoffee.com/",
+    "https://sportcoffee.com/products/coffee-latte"
+  ],
+  "brand": "Throne Sport Coffee",
+  "brandSlug": "throne",
+  "name": "Coffee Latte",
+  "flavor": "Coffee",
+  "caffeineNote": "Label: 150 mg per can",
+  "milk": "skim",
+  "dairyFree": false,
+  "summary": "The unflavored can in the Throne line: cold brew on ultra-filtered skim milk with 10 g of protein and 150 mg of caffeine per 11 oz can, at 140 calories and 22 g of sugar."
+}
