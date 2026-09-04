@@ -1,0 +1,37 @@
+{
+  "type": "latte",
+  "sizeOz": 8,
+  "caffeineMg": 50,
+  "sugarG": null,
+  "addedSugar": null,
+  "proteinG": null,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": 3.75,
+  "packPrice": 89.95,
+  "packSize": 24,
+  "retailers": [
+    "Colectivo (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "Colectivo",
+      "url": "https://colectivo.com/products/vanilla-latte-cans-4-pack",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-04",
+  "sources": [
+    "https://colectivo.com/collections/cold-brew",
+    "https://colectivo.com/products/vanilla-latte-cans-4-pack"
+  ],
+  "brand": "Colectivo Coffee",
+  "brandSlug": "colectivo",
+  "name": "Vanilla Latte",
+  "flavor": "Vanilla",
+  "caffeineNote": "Brand lists 50 mg per can",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Milwaukee cold brew and 2% milk with a hint of vanilla, one of the mildest cans we track at 50 mg of caffeine per 8 oz can. Marketed as low sugar."
+}
