@@ -19,7 +19,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   'most-caffeine': {
     paragraphs: [
       'Caffeine in canned lattes ranges from a gentle 34 mg to over 250 mg per can — the difference between a soda\'s worth and two strong cups of coffee. For reference, a 12 oz drip coffee is typically 140–200 mg and a single espresso shot is 65–75 mg, so the strongest cans on this list genuinely replace a large coffee-shop order.',
-      'Two things drive the number: the coffee format (cold brew concentrates and triple-shot builds carry more) and the can size. Bones Coffee\'s Holy Cannoli Cold Brew Latte tops our database at 250–260 mg per its label, with La Colombe\'s Triple Draft Latte at 230 mg, Projo\'s Power Coffee at 225 mg and NOBL\'s cold brew oat latte at 207 mg; most mainstream dairy lattes cluster around 100–140 mg.',
+      'Two things drive the number: the coffee format (cold brew concentrates and triple-shot builds carry more) and the can size. Bones Coffee\'s Holy Cannoli Cold Brew Latte tops our database at 250–260 mg per its label, with La Colombe\'s Triple Draft Latte at 230 mg, Projo\'s Power Coffee at 225 mg and NOBL\'s cold brew oat latte at 207 mg; most dairy lattes land somewhere between 75 and 190 mg.',
       'Brands aren\'t required to print caffeine on the label, and actual content varies batch to batch, so treat every figure as typical rather than exact. Where a brand publishes a range, we note it on the product page.',
     ],
     faqs: [
@@ -29,8 +29,8 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'oat-milk': {
     paragraphs: [
-      'Oat milk has become the default non-dairy base for canned lattes because it froths and carries coffee flavor more like dairy than almond or soy. Every can on this list is dairy-free, but they differ sharply in caffeine (80 mg to over 200 mg) and in how they\'re sweetened — some use dates or nothing at all, others add cane sugar. Whether you spell it oat milk or oatmilk, a canned oatmilk latte lives or dies on the same three numbers: caffeine, sugar, and price.',
-      'One practical note: oat versions usually cost more than the same brand\'s dairy can. La Colombe\'s oat milk Draft Lattes, for example, run about $0.33 more per can than their dairy equivalents. Refrigeration also varies — most are shelf-stable, but NOBL ships cold.',
+      'Oat milk has become the default non-dairy base for canned lattes because it froths and carries coffee flavor more like dairy than almond or soy. Every can on this list is dairy-free, but they differ sharply in caffeine (50 mg to over 200 mg) and in how they\'re sweetened — some use dates or nothing at all, others add cane sugar. Whether you spell it oat milk or oatmilk, a canned oatmilk latte lives or dies on the same three numbers: caffeine, sugar, and price.',
+      'One practical note: oat versions usually cost more than the same brand\'s dairy can. La Colombe\'s oat milk Draft Lattes, for example, run about $0.34 more per can than their dairy equivalents. Refrigeration also varies — most are shelf-stable, but NOBL ships cold.',
     ],
     faqs: [
       { q: 'Are oat milk canned lattes vegan?', a: 'The base is plant-only, and the cans we track are marketed as dairy-free. Check the product page and label for certifications if strict vegan status matters to you.' },
@@ -49,11 +49,11 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'cheapest-per-can': {
     paragraphs: [
-      'Price per can is the honest way to compare, because pack sizes vary from singles to 12-packs. The cans here run from under $3 to about $4 at the brand\'s own store or its most common retailer. Grocery and club prices swing with promotions, so treat this as a ranking rather than a quote — and note that DTC 12-packs (La Colombe at $34/12, NOBL at $38/12) usually beat single-can convenience-store prices by a dollar or more.',
+      'Price per can is the honest way to compare, because pack sizes vary from singles to 12-packs. The cans here run from about $2 to $5 at the brand\'s own store or its most common retailer. Grocery and club prices swing with promotions, so treat this as a ranking rather than a quote — and note that DTC 12-packs (La Colombe at $34/12, NOBL at $38/12) usually beat single-can convenience-store prices by a dollar or more.',
       'The cheapest per-can path for most people: buy the multipack of a shelf-stable can you already know you like. Refrigerated and single-serve options carry a premium.',
     ],
     faqs: [
-      { q: 'What is the cheapest canned latte?', a: 'Among cans we track with published prices, La Colombe\'s dairy Draft Lattes work out to about $2.83 per can in a 12-pack. Store-brand and promotional prices can go lower.' },
+      { q: 'What is the cheapest canned latte?', a: 'Among cans we track with published prices, Bones Coffee\'s cold brew lattes are the cheapest at about $2.08 per can in a 12-pack, ahead of RISE Brewing at $2.50 and La Colombe\'s dairy Draft Lattes at $2.83. Store-brand and promotional prices can go lower.' },
       { q: 'Is buying direct from the brand cheaper?', a: 'Usually per can, yes, via 12-packs and subscriptions — but shipping can erase the gap on small orders. Grocery multipacks are often the best real-world deal.' },
     ],
   },
@@ -69,7 +69,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'dairy-free': {
     paragraphs: [
-      'Every can here is made without dairy — oat milk dominates, with almond appearing occasionally. Beyond the milk itself, the differences that matter are caffeine (80 to 207 mg across this list), sweetener (dates, cane sugar, or none), and storage (most are shelf-stable; NOBL is refrigerated and ships cold).',
+      'Every can here is made without dairy — oat milk dominates, with almond appearing occasionally. Beyond the milk itself, the differences that matter are caffeine (50 to 207 mg across this list), sweetener (dates, cane sugar, or none), and storage (most are shelf-stable; NOBL is refrigerated and ships cold).',
       'Lactose-intolerant but not dairy-free? Note that La Colombe\'s reformulated Draft Lattes use lactose-free whole milk — real dairy, no lactose — which sits between this list and the standard dairy cans.',
     ],
     faqs: [

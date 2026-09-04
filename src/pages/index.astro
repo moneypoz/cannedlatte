@@ -2,9 +2,36 @@
 import Base from '../layouts/Base.astro';
 import ProductTable from '../components/ProductTable.astro';
 import Disclosure from '../components/Disclosure.astro';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import { allProducts, bestPages, fullName, fmt } from '../lib/products';
 
 const products = await allProducts();
+
+// Top picks. Restricted to cans we have both verified and photographed, so the row
+// never shows a placeholder or an unchecked number. Each pick must be distinct:
+// if a category's winner is already taken, fall through to the next-best.
+const pickImages = import.meta.glob<{ default: ImageMetadata }>('../assets/products/*.jpg', { eager: true });
+const pickImage = (image?: string) =>
+  image ? pickImages[`../assets/products/${image.split('/').pop()}`]?.default : undefined;
+
+const eligible = products.filter((p) => p.data.verified && p.data.image);
+const PICK_SPECS = [
+  { label: 'Strongest', key: 'caffeineMg', dir: -1, stat: (d: any) => fmt.mg(d.caffeineMg) },
+  { label: 'Least sugar', key: 'sugarG', dir: 1, stat: (d: any) => `${fmt.g(d.sugarG)} sugar` },
+  { label: 'Most protein', key: 'proteinG', dir: -1, stat: (d: any) => `${fmt.g(d.proteinG)} protein` },
+  { label: 'Best value', key: 'pricePerCan', dir: 1, stat: (d: any) => `${fmt.usd(d.pricePerCan)}/can` },
+] as const;
+
+const taken = new Set<string>();
+const picks = PICK_SPECS.map(({ label, key, dir, stat }) => {
+  const winner = eligible
+    .filter((p) => (p.data as any)[key] != null && !taken.has(p.id))
+    .sort((a, b) => dir * ((a.data as any)[key] - (b.data as any)[key]))[0];
+  if (!winner) return null;
+  taken.add(winner.id);
+  return { label, product: winner, stat: stat(winner.data) };
+}).filter(Boolean) as { label: string; product: (typeof products)[number]; stat: string }[];
 const brands = new Set(products.map((p) => p.data.brandSlug)).size;
 const updated = products.map((p) => p.data.updated).sort().at(-1);
 const newest = products.filter((p) => p.data.launched).sort((a, b) => b.data.launched!.localeCompare(a.data.launched!)).slice(0, 3);
@@ -16,12 +43,30 @@ const jsonLd = {
   description: 'Every latte in a can, compared by caffeine, sugar, protein, milk and price.',
 };
 ---
-<Base title="Canned Latte" description="Every canned latte compared: caffeine, sugar, protein, milk type and price per can. La Colombe, Death Wish, NOBL, Wandering Bear and more. Sort the table, pick your can." jsonLd={jsonLd}>
+<Base title="Canned Latte" description="Every canned latte compared: caffeine, sugar, protein, milk and price per can. La Colombe, Starbucks, illy, Slate, Death Wish and more. Sort the table, pick your can." jsonLd={jsonLd}>
   <div class="center">
     <span class="status"><span class="dot"></span><b>{products.length} cans</b> · {brands} brands · updated {updated} · <a href="/new" style="color:var(--primary);font-weight:600">new →</a></span>
     <h1>Every canned latte, <span class="hl">compared.</span></h1>
     <p class="lede">Real label numbers in one table. Click a column to sort, tap a filter to narrow it down, click a can for the full label and where to buy.</p>
   </div>
+
+  {picks.length > 0 && (
+    <section class="picks">
+      <h2 class="picks-h">Top picks from {products.length} cans</h2>
+      <div class="picks-grid">
+        {picks.map((pick) => (
+          <a class="pick" href={`/latte/${pick.product.id}`}>
+            <span class="pick-media">
+              <Image src={pickImage(pick.product.data.image)!} alt="" width={120} height={120} densities={[1, 2]} format="webp" loading="lazy" />
+            </span>
+            <span class="pick-label">{pick.label}</span>
+            <span class="pick-name">{fullName(pick.product.data)}</span>
+            <span class="pick-stat">{pick.stat}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
 
   <label class="search" for="q">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -91,3 +136,31 @@ const jsonLd = {
   q.addEventListener('input', apply);
   apply();
 </script>
+
+<style>
+  .picks { margin: 0 0 18px; }
+  .picks-h {
+    font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .02em;
+    color: var(--muted-foreground); text-transform: none; margin: 0 0 10px;
+  }
+  .picks-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .pick {
+    display: flex; flex-direction: column; gap: 4px;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--card); padding: 10px; text-decoration: none; color: inherit;
+  }
+  .pick:hover { border-color: var(--muted-foreground); }
+  .pick-media {
+    display: grid; place-items: center; height: 120px; margin-bottom: 4px;
+    background: var(--muted); border-radius: 8px; overflow: hidden;
+  }
+  .pick-media :global(img) { max-height: 112px; width: auto; object-fit: contain; display: block; }
+  .pick-label {
+    align-self: flex-start; font-size: 11px; font-weight: 700; letter-spacing: .02em;
+    background: var(--muted); color: var(--muted-foreground);
+    border-radius: 999px; padding: 3px 9px;
+  }
+  .pick-name { font-weight: 600; font-size: 14px; line-height: 1.25; }
+  .pick-stat { font-family: var(--mono); font-size: 13px; color: var(--primary); font-weight: 600; }
+  @media (max-width: 700px) { .picks-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>

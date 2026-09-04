@@ -1,8 +1,18 @@
 ---
 import type { Product } from '../lib/products';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import { fmt, milkLabel, typeLabel } from '../lib/products';
 interface Props { products: Product[]; sortable?: boolean; showType?: boolean; }
 const { products, sortable = true, showType = false } = Astro.props;
+
+// Same pattern as the product pages: originals live in public/, these copies are
+// what Astro processes into resized WebP thumbnails at build time.
+const productImages = import.meta.glob<{ default: ImageMetadata }>('../assets/products/*.jpg', { eager: true });
+const thumbFor = (image?: string) =>
+  image ? productImages[`../assets/products/${image.split('/').pop()}`]?.default : undefined;
+
+const anyUnverified = products.some((p) => !p.data.verified);
 ---
 <div class="tablewrap">
 <table id="products" data-sortable={sortable ? 'true' : undefined}>
@@ -21,7 +31,22 @@ const { products, sortable = true, showType = false } = Astro.props;
   <tbody>
     {products.map(({ id, data: p }) => (
       <tr data-type={p.type} data-milk={p.milk} data-dairyfree={p.dairyFree ? '1' : '0'} data-noadded={p.addedSugar === false ? '1' : '0'} data-hiprotein={(p.proteinG ?? 0) >= 10 ? '1' : '0'} data-name={`${p.brand} ${p.name}`.toLowerCase()}>
-        <td><a href={`/latte/${id}`}>{p.brand} {p.name}</a>{!p.verified && <> <span class="tag warn" title="Specs from brand site or press release, not yet checked against a label">unverified</span></>}</td>
+        <td>
+          <div class="prodcell">
+            <a class="prodlink" href={`/latte/${id}`}>
+              {thumbFor(p.image)
+                ? <Image class="thumb" src={thumbFor(p.image)!} alt="" width={44} height={44} densities={[1, 2]} format="webp" loading="lazy" />
+                : <span class="thumb thumb-ph" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="7" y="3" width="10" height="18" rx="2.5" />
+                      <path d="M7 7.5h10" />
+                    </svg>
+                  </span>}
+              <span class="pname">{p.brand} {p.name}</span>
+            </a>
+            {!p.verified && <sup class="unv" title="Specs not yet checked against a label">*</sup>}
+          </div>
+        </td>
         {showType && <td><span class="tag">{typeLabel[p.type]}</span></td>}
         <td class="num" data-v={p.sizeOz ?? ''}>{fmt.oz(p.sizeOz)}</td>
         <td class="num" data-v={p.caffeineMg ?? ''}>{fmt.mg(p.caffeineMg)}</td>
@@ -34,6 +59,28 @@ const { products, sortable = true, showType = false } = Astro.props;
   </tbody>
 </table>
 </div>
+{anyUnverified && <p class="tablenote">* specs from the brand's site, not yet checked against a label.</p>}
+
+<style>
+  /* Tighter vertical padding so a 44px thumbnail still leaves rows ~56px tall. */
+  td { padding-top: 6px; padding-bottom: 6px; vertical-align: middle; }
+  .prodcell { display: flex; align-items: center; gap: 6px; }
+  .prodlink { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; min-width: 0; }
+  .prodlink:hover .pname { text-decoration: underline; }
+  .pname { min-width: 0; }
+  .thumb {
+    flex: 0 0 auto; width: 44px; height: 44px; border-radius: 8px;
+    background: var(--muted); object-fit: contain; display: block;
+  }
+  /* Placeholder keeps the exact same box, so nothing shifts. */
+  .thumb-ph {
+    display: grid; place-items: center;
+    color: var(--muted-foreground); opacity: .55;
+  }
+  .unv { color: var(--muted-foreground); font-size: 11px; cursor: help; line-height: 1; }
+  .tablenote { margin: -8px 0 16px; font-size: 12.5px; color: var(--muted-foreground); }
+</style>
+
 <script>
   // Click-to-sort. Empty cells (unverified specs) always sink to the bottom.
   document.querySelectorAll<HTMLTableElement>('table[data-sortable]').forEach((table) => {
