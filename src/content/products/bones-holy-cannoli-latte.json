@@ -1,0 +1,38 @@
+{
+  "type": "latte",
+  "sizeOz": 11,
+  "caffeineMg": 255,
+  "sugarG": 28,
+  "addedSugar": true,
+  "proteinG": 8,
+  "calories": 210,
+  "refrigerated": false,
+  "pricePerCan": 2.08,
+  "packPrice": 24.99,
+  "packSize": 12,
+  "retailers": [
+    "Grocery",
+    "Bones (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "Bones Coffee",
+      "url": "https://www.bonescoffee.com/products/holy-cannoli-cold-brew-latte-12-pack",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-04",
+  "sources": [
+    "https://www.bonescoffee.com/",
+    "https://www.bonescoffee.com/products/holy-cannoli-cold-brew-latte-12-pack"
+  ],
+  "brand": "Bones Coffee Company",
+  "brandSlug": "bones-coffee",
+  "name": "Holy Cannoli Cold Brew Latte",
+  "flavor": "Holy Cannoli",
+  "caffeineNote": "Brand lists 250–260 mg per can",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Cannoli-flavored cold brew latte on reduced-fat milk and the strongest can in our database at 250–260 mg of caffeine, with 8 g of protein and 28 g of sugar per 11 oz can at 210 calories."
+}
