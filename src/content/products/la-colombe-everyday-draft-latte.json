@@ -21,11 +21,6 @@
       "label": "La Colombe",
       "url": "https://www.lacolombe.com/collections/lattes",
       "affiliate": false
-    },
-    {
-      "label": "Target",
-      "url": "https://www.target.com/s?searchTerm=la+colombe+draft+latte",
-      "affiliate": false
     }
   ],
   "verified": false,
@@ -38,7 +33,7 @@
   "brandSlug": "la-colombe",
   "name": "Everyday Draft Latte",
   "flavor": "Original",
-  "caffeineNote": "Brand lists 100\u2013150 mg; Kitchn measured 120 mg",
+  "caffeineNote": "Brand lists 100–150 mg; Kitchn measured 120 mg",
   "milk": "lactose-free dairy",
   "dairyFree": false,
   "summary": "The category benchmark. Nitrous-charged can pours with real foam; reformulated in 2026 around espresso and lactose-free whole milk with less added sugar."
