@@ -12,13 +12,19 @@
   "packSize": 12,
   "retailers": [
     "Grocery",
-    "Bones (direct)"
+    "Bones (direct)",
+    "Amazon"
   ],
   "buyLinks": [
     {
       "label": "Bones Coffee",
       "url": "https://www.bonescoffee.com/products/holy-cannoli-cold-brew-latte-12-pack",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/3TgHs38",
+      "affiliate": true
     }
   ],
   "verified": false,
