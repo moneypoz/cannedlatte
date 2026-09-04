@@ -11,13 +11,19 @@
   "packPrice": 35.99,
   "packSize": 12,
   "retailers": [
-    "Throne Sport Coffee (direct)"
+    "Throne Sport Coffee (direct)",
+    "Amazon"
   ],
   "buyLinks": [
     {
       "label": "Throne Sport Coffee",
       "url": "https://sportcoffee.com/products/coffee-latte",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4zXXXSi",
+      "affiliate": true
     }
   ],
   "verified": false,
