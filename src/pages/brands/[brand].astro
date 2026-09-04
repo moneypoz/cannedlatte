@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import ProductTable from '../../components/ProductTable.astro';
 import Disclosure from '../../components/Disclosure.astro';
-import { allProducts } from '../../lib/products';
+import { allProducts, fmt, milkLabel } from '../../lib/products';
 
 export async function getStaticPaths() {
   const products = await allProducts();
@@ -12,12 +12,92 @@ export async function getStaticPaths() {
 const { items } = Astro.props;
 const name = items[0].data.brand;
 const buy = items.flatMap((p) => p.data.buyLinks).find((l) => l.affiliate) ?? items[0].data.buyLinks[0];
+
+// Strongest first, and only cans whose caffeine we actually know.
+const withCaffeine = items
+  .filter((p) => p.data.caffeineMg != null)
+  .sort((a, b) => b.data.caffeineMg! - a.data.caffeineMg!);
+const mgs = withCaffeine.map((p) => p.data.caffeineMg!);
+const minMg = mgs.length ? Math.min(...mgs) : null;
+const maxMg = mgs.length ? Math.max(...mgs) : null;
+const strongest = withCaffeine[0];
+const oneCan = withCaffeine.length === 1;
+const flatMg = !oneCan && minMg === maxMg;
+
+// Spread of the rest of the lineup, for the second supporting paragraph.
+const milks = [...new Set(items.map((p) => milkLabel[p.data.milk]))].map((m) => m.toLowerCase());
+const sugars = items.map((p) => p.data.sugarG).filter((v): v is number => v != null);
+const prices = items.map((p) => p.data.pricePerCan).filter((v): v is number => v != null);
+const directLink = items.flatMap((p) => p.data.buyLinks)[0];
+// Drop the brand's own storefront so "also sold at" lists third parties only.
+const retailers = [...new Set(items.flatMap((p) => p.data.retailers))]
+  .filter((r) => r !== name && !/\(direct\)$/i.test(r) && r !== directLink?.label);
+
+const listSep = (i: number, len: number) => (i === 0 ? '' : i === len - 1 ? ' and ' : ', ');
+const prose = (arr: string[]) => (arr.length > 1 ? `${arr.slice(0, -1).join(', ')} and ${arr.at(-1)}` : arr[0] ?? '');
+const gRange = (a: number, b: number) => (a === b ? `${a} g` : `${a} to ${b} g`);
+
+// Plain-text mirrors of the on-page answers, for the FAQPage schema.
+const caffeineAnswer = !mgs.length
+  ? `${name} does not print a caffeine figure on the cans we have checked, so we list it as unknown rather than estimate it.`
+  : oneCan
+    ? `${strongest.data.name} is the only ${name} can we track with a published figure, at ${maxMg} mg of caffeine.`
+    : flatMg
+      ? `Every ${name} can we track carries about ${maxMg} mg of caffeine, ${strongest.data.name} included.`
+      : `${name} cans run from ${minMg} to ${maxMg} mg of caffeine. The strongest is ${strongest.data.name} at ${maxMg} mg.`;
+
+const buyAnswer = [
+  directLink ? `You can order ${name} direct from ${directLink.label}.` : null,
+  retailers.length ? `Their cans are also sold at ${prose(retailers)}.` : null,
+  'Prices move with promotions, so treat the per-can figures above as a ranking rather than a quote.',
+].filter(Boolean).join(' ');
+
+const faqs = [
+  { q: `How much caffeine is in ${name} canned coffee?`, a: caffeineAnswer },
+  { q: `Where can you buy ${name} canned lattes?`, a: buyAnswer },
+];
+
+const jsonLd: Record<string, unknown>[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Canned Latte', item: 'https://cannedlatte.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Brands', item: 'https://cannedlatte.com/brands' },
+      { '@type': 'ListItem', position: 3, name },
+    ],
+  },
+];
+
+const desc = `${name} canned lattes compared side by side: caffeine content, sugar, protein, milk and price for all ${items.length} cans we track.`;
 ---
-<Base title={`${name} canned lattes`} description={`Every ${name} latte in a can: ${items.map((p) => p.data.name).join(', ')}. Caffeine, sugar, milk and price compared.`}>
-  <p class="eyebrow">Brand · {items.length} products</p>
+<Base title={`${name} canned lattes`} description={desc} jsonLd={jsonLd}>
+  <p class="eyebrow"><a href="/">Canned Latte</a> · <a href="/brands">Brands</a> · {name}</p>
   <h1>{name} canned lattes</h1>
-  <p class="lede">Every {name} can we track, side by side. Click a column to sort.</p>
+  <p class="lede">Every {name} coffee in a can we track, side by side.</p>
   {buy && <p><a class="btn" href={buy.url} rel={buy.affiliate ? 'sponsored nofollow noopener' : 'noopener'} target="_blank">Shop {name}</a></p>}
   <ProductTable products={items} showType={true} />
   <Disclosure />
+
+  <div style="max-width:62ch">
+    {withCaffeine.length > 0 && (
+      <>
+        <h2>How much caffeine is in {name} canned coffee?</h2>
+        {oneCan ? (
+          <p>{name}'s one tracked can, <a href={`/caffeine/${strongest.id}`}>{strongest.data.name}</a>, carries {maxMg} mg of caffeine. To see where it sits against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
+        ) : (
+          <p>{flatMg ? `Every ${name} can we track lands at the same ${maxMg} mg of caffeine per can.` : `${name}'s cans range from ${minMg} to ${maxMg} mg of caffeine per can.`} Strongest first, that's {withCaffeine.map((p, i) => (<>{listSep(i, withCaffeine.length)}<a href={`/caffeine/${p.id}`}>{p.data.name}</a> at {p.data.caffeineMg} mg</>))}. To see where they sit against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
+        )}
+      </>
+    )}
+    <p>{milks.length === 1 ? `${items.length === 1 ? 'It is made' : 'They are all made'} with ${milks[0]} milk.` : `The lineup spans ${prose(milks)} milk.`}{sugars.length > 0 && ` Sugar runs ${gRange(Math.min(...sugars), Math.max(...sugars))} per can${prices.length > 0 ? ',' : '.'}`}{prices.length > 0 && `${sugars.length > 0 ? ' and a can costs' : ' A can costs'} ${fmt.usd(Math.min(...prices))}${Math.min(...prices) === Math.max(...prices) ? '' : ` to ${fmt.usd(Math.max(...prices))}`}.`} For the low-sugar end of the whole category, see the <a href="/best/least-sugar">canned lattes with the least sugar</a>.</p>
+
+    <h2>Questions</h2>
+    {faqs.map((f) => (<><h3>{f.q}</h3><p>{f.a}</p></>))}
+  </div>
 </Base>

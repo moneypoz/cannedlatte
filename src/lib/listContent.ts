@@ -29,7 +29,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'oat-milk': {
     paragraphs: [
-      'Oat milk has become the default non-dairy base for canned lattes because it froths and carries coffee flavor more like dairy than almond or soy. Every can on this list is dairy-free, but they differ sharply in caffeine (80 mg to over 200 mg) and in how they\'re sweetened — some use dates or nothing at all, others add cane sugar.',
+      'Oat milk has become the default non-dairy base for canned lattes because it froths and carries coffee flavor more like dairy than almond or soy. Every can on this list is dairy-free, but they differ sharply in caffeine (80 mg to over 200 mg) and in how they\'re sweetened — some use dates or nothing at all, others add cane sugar. Whether you spell it oat milk or oatmilk, a canned oatmilk latte lives or dies on the same three numbers: caffeine, sugar, and price.',
       'One practical note: oat versions usually cost more than the same brand\'s dairy can. La Colombe\'s oat milk Draft Lattes, for example, run about $0.33 more per can than their dairy equivalents. Refrigeration also varies — most are shelf-stable, but NOBL ships cold.',
     ],
     faqs: [
