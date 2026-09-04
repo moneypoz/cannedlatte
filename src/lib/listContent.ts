@@ -18,12 +18,12 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'most-caffeine': {
     paragraphs: [
-      'Caffeine in canned lattes ranges from a gentle 80 mg to over 200 mg per can — the difference between a soda\'s worth and two strong cups of coffee. For reference, a 12 oz drip coffee is typically 140–200 mg and a single espresso shot is 65–75 mg, so the strongest cans on this list genuinely replace a large coffee-shop order.',
-      'Two things drive the number: the coffee format (cold brew concentrates and triple-shot builds carry more) and the can size. La Colombe\'s Triple Draft Latte tops our database at 230 mg per its label, with Projo\'s Power Coffee close behind at 225 mg and NOBL\'s cold brew oat latte at 207 mg; most mainstream dairy lattes cluster around 100–140 mg.',
+      'Caffeine in canned lattes ranges from a gentle 34 mg to over 250 mg per can — the difference between a soda\'s worth and two strong cups of coffee. For reference, a 12 oz drip coffee is typically 140–200 mg and a single espresso shot is 65–75 mg, so the strongest cans on this list genuinely replace a large coffee-shop order.',
+      'Two things drive the number: the coffee format (cold brew concentrates and triple-shot builds carry more) and the can size. Bones Coffee\'s Holy Cannoli Cold Brew Latte tops our database at 250–260 mg per its label, with La Colombe\'s Triple Draft Latte at 230 mg, Projo\'s Power Coffee at 225 mg and NOBL\'s cold brew oat latte at 207 mg; most mainstream dairy lattes cluster around 100–140 mg.',
       'Brands aren\'t required to print caffeine on the label, and actual content varies batch to batch, so treat every figure as typical rather than exact. Where a brand publishes a range, we note it on the product page.',
     ],
     faqs: [
-      { q: 'What is the strongest canned latte?', a: 'La Colombe\'s Triple Draft Latte is the strongest we track at 230 mg of caffeine per its label, followed by Projo\'s Power Coffee Vanilla Latte at 225 mg and NOBL\'s Cold Brew Oat Milk Latte at about 207 mg.' },
+      { q: 'What is the strongest canned latte?', a: 'Bones Coffee\'s Holy Cannoli Cold Brew Latte is the strongest we track at 250–260 mg of caffeine per its label, followed by La Colombe\'s Triple Draft Latte at 230 mg and Projo\'s Power Coffee Vanilla Latte at 225 mg.' },
       { q: 'How much caffeine is safe per day?', a: 'The FDA cites up to 400 mg a day as generally safe for healthy adults — roughly two of the strongest cans on this list, or three to four typical ones.' },
     ],
   },
