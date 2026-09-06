@@ -7,9 +7,9 @@
   "proteinG": null,
   "calories": null,
   "refrigerated": false,
-  "pricePerCan": null,
-  "packPrice": null,
-  "packSize": null,
+  "pricePerCan": 3.33,
+  "packPrice": 39.99,
+  "packSize": 12,
   "retailers": [
     "Amazon",
     "Walmart",
@@ -30,7 +30,7 @@
     }
   ],
   "verified": false,
-  "updated": "2026-08-31",
+  "updated": "2026-09-06",
   "sources": [
     "https://www.bevnet.com/pr/2026/04/09/death-wish-coffee-co-expands-readytodrink-lineup-with-new-betterforyou-caramel-cold-brew-latte"
   ],

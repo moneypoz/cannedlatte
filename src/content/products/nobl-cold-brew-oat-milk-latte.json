@@ -2,7 +2,7 @@
   "type": "latte",
   "sizeOz": null,
   "caffeineMg": 207,
-  "sugarG": 0,
+  "sugarG": 5,
   "addedSugar": false,
   "proteinG": null,
   "calories": null,
@@ -21,9 +21,10 @@
     }
   ],
   "verified": false,
-  "updated": "2026-08-31",
+  "updated": "2026-09-06",
   "sources": [
-    "https://drink.noblbeverages.com/products/nobl-coffee-can"
+    "https://drink.noblbeverages.com/products/nobl-coffee-can",
+    "https://noblbeverages.com/products/cans/"
   ],
   "brand": "NOBL",
   "brandSlug": "nobl",
@@ -31,5 +32,5 @@
   "flavor": "Original",
   "milk": "oat",
   "dairyFree": true,
-  "summary": "Just cold brew and oat milk, nitro-charged, with no added sugar and 207 mg of caffeine per can. Refrigerated, ships direct from New Hampshire."
+  "summary": "Just cold brew and oat milk, nitro-charged, with no added sugar (the 5 g on the label comes from the oat milk) and 207 mg of caffeine per can. Refrigerated, ships direct from New Hampshire."
 }

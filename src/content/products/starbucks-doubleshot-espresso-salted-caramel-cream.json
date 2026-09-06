@@ -2,10 +2,10 @@
   "type": "latte",
   "sizeOz": 6.5,
   "caffeineMg": 120,
-  "sugarG": null,
-  "addedSugar": null,
-  "proteinG": null,
-  "calories": null,
+  "sugarG": 18,
+  "addedSugar": true,
+  "proteinG": 4,
+  "calories": 140,
   "refrigerated": false,
   "pricePerCan": null,
   "packPrice": null,
@@ -23,9 +23,10 @@
     }
   ],
   "verified": false,
-  "updated": "2026-08-31",
+  "updated": "2026-09-06",
   "sources": [
-    "https://www.tastingtable.com/1744356/caffeine-content-starbucks-bottled-beverages-ranked/"
+    "https://www.pepsicoproductfacts.com/Home/product?formula=STAR_DBST_C35b_CLT&form=RTD&size=6.5",
+    "https://www.kroger.com/p/starbucks-doubleshot-espresso-salted-caramel-cream-premium-espresso-beverage/0001200000729"
   ],
   "brand": "Starbucks",
   "brandSlug": "starbucks",

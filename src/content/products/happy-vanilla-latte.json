@@ -4,11 +4,11 @@
   "caffeineMg": 45,
   "sugarG": null,
   "addedSugar": true,
-  "proteinG": null,
+  "proteinG": 7,
   "calories": null,
   "refrigerated": false,
-  "pricePerCan": 3,
-  "packPrice": 11.99,
+  "pricePerCan": 3.5,
+  "packPrice": 13.99,
   "packSize": 4,
   "retailers": [
     "Happy (direct)",
@@ -27,7 +27,7 @@
     }
   ],
   "verified": false,
-  "updated": "2026-09-04",
+  "updated": "2026-09-06",
   "sources": [
     "https://www.happyproducts.com/collections/best-sellers",
     "https://www.happyproducts.com/products/vanilla-latte-4pk"
@@ -36,7 +36,7 @@
   "brandSlug": "happy",
   "name": "Vanilla Coffee Latte",
   "flavor": "Vanilla",
-  "caffeineNote": "Brand lists 40–50 mg per can",
+  "caffeineNote": "Brand states 40–50 mg",
   "milk": "dairy",
   "dairyFree": false,
   "summary": "Colombian arabica espresso with real milk and sugar, on the mild end for caffeine at 40–50 mg per 11 oz can."

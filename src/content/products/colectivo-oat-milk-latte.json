@@ -7,9 +7,9 @@
   "proteinG": null,
   "calories": null,
   "refrigerated": false,
-  "pricePerCan": 3.75,
-  "packPrice": 89.95,
-  "packSize": 24,
+  "pricePerCan": 3.99,
+  "packPrice": 15.95,
+  "packSize": 4,
   "retailers": [
     "Colectivo (direct)"
   ],
@@ -21,7 +21,7 @@
     }
   ],
   "verified": false,
-  "updated": "2026-09-04",
+  "updated": "2026-09-06",
   "sources": [
     "https://colectivo.com/collections/cold-brew",
     "https://colectivo.com/products/oat-milk-latte-cans-4-pack"

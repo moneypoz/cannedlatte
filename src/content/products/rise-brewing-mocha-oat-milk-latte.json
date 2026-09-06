@@ -1,15 +1,15 @@
 {
   "type": "latte",
   "sizeOz": 11,
-  "caffeineMg": 90,
-  "sugarG": 14,
+  "caffeineMg": null,
+  "sugarG": null,
   "addedSugar": true,
-  "proteinG": 2,
-  "calories": 160,
+  "proteinG": null,
+  "calories": null,
   "refrigerated": false,
-  "pricePerCan": 2.5,
-  "packPrice": 29.99,
-  "packSize": 12,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
   "retailers": [
     "Amazon",
     "RISE (direct)"
@@ -27,7 +27,7 @@
     }
   ],
   "verified": false,
-  "updated": "2026-09-04",
+  "updated": "2026-09-06",
   "sources": [
     "https://risebrewingco.com/",
     "https://risebrewingco.com/products/new-11oz-mocha"
@@ -36,8 +36,7 @@
   "brandSlug": "rise-brewing",
   "name": "Mocha Oatmilk Latte",
   "flavor": "Mocha",
-  "caffeineNote": "Label: 90 mg of natural caffeine per can",
   "milk": "oat",
   "dairyFree": true,
-  "summary": "Cocoa and cold brew on oat milk, the richest can in the RISE line at 160 calories, with 90 mg of caffeine and 14 g of sugar per 11 oz can. Dairy-free."
+  "summary": "Cocoa and cold brew on oat milk, in an 11 oz can. Dairy-free. RISE does not publish nutrition figures for these cans."
 }

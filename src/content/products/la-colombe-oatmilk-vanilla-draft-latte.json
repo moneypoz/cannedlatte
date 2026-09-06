@@ -1,10 +1,10 @@
 {
   "type": "latte",
-  "sizeOz": null,
+  "sizeOz": 9,
   "caffeineMg": 120,
-  "sugarG": null,
+  "sugarG": 7,
   "addedSugar": null,
-  "proteinG": null,
+  "proteinG": 2,
   "calories": null,
   "refrigerated": false,
   "pricePerCan": 3.17,
@@ -22,10 +22,11 @@
     }
   ],
   "verified": false,
-  "updated": "2026-08-31",
+  "updated": "2026-09-06",
   "sources": [
     "https://www.lacolombe.com/collections/lattes",
-    "https://www.fooddive.com/news/la-colombe-ready-to-drink-lattes-new-recipe/816692/"
+    "https://www.fooddive.com/news/la-colombe-ready-to-drink-lattes-new-recipe/816692/",
+    "https://www.lacolombe.com/products/oatmilk-draft-latte-vanilla"
   ],
   "brand": "La Colombe",
   "brandSlug": "la-colombe",

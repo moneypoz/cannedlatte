@@ -7,8 +7,8 @@
   "proteinG": 7,
   "calories": 230,
   "refrigerated": false,
-  "pricePerCan": 3,
-  "packPrice": 11.99,
+  "pricePerCan": 3.5,
+  "packPrice": 13.99,
   "packSize": 4,
   "retailers": [
     "Happy (direct)",
@@ -27,7 +27,7 @@
     }
   ],
   "verified": false,
-  "updated": "2026-09-04",
+  "updated": "2026-09-06",
   "sources": [
     "https://www.happyproducts.com/collections/best-sellers",
     "https://www.happyproducts.com/products/dubai-chocolatey-style-latte-4pk"
@@ -36,7 +36,7 @@
   "brandSlug": "happy",
   "name": "Dubai Chocolatey Style Latte",
   "flavor": "Dubai Chocolatey Style",
-  "caffeineNote": "Brand lists 70–80 mg per can",
+  "caffeineNote": "Brand states 70–80 mg",
   "milk": "dairy",
   "dairyFree": false,
   "summary": "Chocolate and pistachio flavors on Colombian arabica espresso: the richest can in the line at 230 calories and 30 g of sugar, with 7 g of protein and 70–80 mg of caffeine per 11 oz can."

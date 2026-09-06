@@ -49,10 +49,12 @@ const newest = products
 const listTiles = bestPages.map((b) => {
   const list = products.filter((p) => b.filter(p.data)).sort((x, y) => b.sort(x.data, y.data));
   const leader = list[0];
-  // A few lists show a category in their metric column (dairy-free shows milk type)
-  // while sorting by caffeine. "leads at Oat" reads as nonsense, so fall back to the
-  // caffeine figure whenever the metric isn't a measurement.
-  const raw = leader ? b.metric(leader.data) : null;
+  // Two lists rank by caffeine but display something else in their metric column:
+  // dairy-free shows milk type ("leads at Oat"), no-added-sugar shows total sugar
+  // (which reads as *added* sugar under that heading). Both should show caffeine,
+  // the figure that actually explains why the leader leads.
+  const RANKED_BY_CAFFEINE = new Set(['no-added-sugar', 'dairy-free']);
+  const raw = leader && !RANKED_BY_CAFFEINE.has(b.slug) ? b.metric(leader.data) : null;
   const metric = raw && /^[$0-9]/.test(raw) ? raw : leader ? fmt.mg(leader.data.caffeineMg) : null;
   return { href: `/best/${b.slug}`, short: b.short, count: list.length, leader, metric };
 });

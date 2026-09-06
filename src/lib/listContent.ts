@@ -6,24 +6,24 @@
 export const listContent: Record<string, { paragraphs: string[]; faqs: { q: string; a: string }[] }> = {
   'least-sugar': {
     paragraphs: [
-      'Sugar is where canned lattes differ most. A flavored dairy coffee from a gas-station cooler can carry 30 g or more, while the cans at the top of this list get to single digits, or to zero, by leaning on the milk itself or on whole-food sweeteners like dates instead of added sugar. La Colombe\'s 2026 reformulation is a sign of where the category is heading: its Vanilla Draft Latte dropped to 15 g, less than half of what typical flavored dairy coffees carry.',
+      'Sugar is where canned lattes differ most. A flavored dairy coffee from a gas-station cooler can carry 30 g or more, while the cans at the top of this list get down to a single gram by leaning on the milk itself or on whole-food sweeteners like dates instead of added sugar. La Colombe\'s 2026 reformulation is a sign of where the category is heading: its Vanilla Draft Latte dropped to 15 g, less than half of what typical flavored dairy coffees carry.',
       'When comparing, check two lines on the label: total sugars and added sugars. A latte with 8 g of sugar and 0 g added (like an oat milk latte sweetened with dates) is a different product from one with 8 g of added cane sugar, even though the totals match. We track both, and the "no added sugar" filter on the home page shows only the former.',
       'Watch can size too. A 6.5 oz can with 12 g of sugar is sweeter per sip than an 11 oz can with 16 g. Where brands publish it, the full label is on each product page.',
     ],
     faqs: [
-      { q: 'Which canned latte has the least sugar?', a: 'Among cans we track, NOBL\'s Cold Brew Oat Milk Latte leads with 0 g added sugar — just cold brew and oat milk. Slate is the lowest-sugar dairy option at 1 g per can with none added, ahead of Wandering Bear\'s 5–6 g per 8 oz can.' },
+      { q: 'Which canned latte has the least sugar?', a: 'Slate\'s lattes have the least total sugar of any can we track, at 1 g, and none of it added. NOBL\'s Cold Brew Oat Milk Latte is the leader on added sugar specifically — 0 g added, with the 5 g on its label coming from the oat milk itself.' },
       { q: 'Are low-sugar canned lattes unsweetened?', a: 'Not always. Some use the natural sweetness of oat milk or dates rather than added sugar, so they taste lightly sweet while showing 0 g added sugar on the label.' },
-      { q: 'How much sugar is in a typical canned latte?', a: 'Flavored dairy canned coffees commonly run 15–33 g per can. The low-sugar end of the category runs 0–8 g.' },
+      { q: 'How much sugar is in a typical canned latte?', a: 'Flavored dairy canned coffees commonly run 15–30 g per can. The low-sugar end of the category runs 1–8 g.' },
     ],
   },
   'most-caffeine': {
     paragraphs: [
       'Caffeine in canned lattes ranges from a gentle 34 mg to over 250 mg per can — the difference between a soda\'s worth and two strong cups of coffee. For reference, a 12 oz drip coffee is typically 140–200 mg and a single espresso shot is 65–75 mg, so the strongest cans on this list genuinely replace a large coffee-shop order.',
-      'Two things drive the number: the coffee format (cold brew concentrates and triple-shot builds carry more) and the can size. Bones Coffee\'s Holy Cannoli Cold Brew Latte tops our database at 250–260 mg per its label, with La Colombe\'s Triple Draft Latte at 230 mg, Projo\'s Power Coffee at 225 mg and NOBL\'s cold brew oat latte at 207 mg; most dairy lattes land somewhere between 75 and 190 mg.',
+      'Two things drive the number: the coffee format (cold brew concentrates and triple-shot builds carry more) and the can size. Bones Coffee\'s Holy Cannoli Cold Brew Latte tops our database at the 250–260 mg the brand publishes, with La Colombe\'s Triple Draft Latte at 230 mg, Projo\'s Power Coffee at 225 mg and NOBL\'s cold brew oat latte at 207 mg; most dairy lattes land somewhere between 75 and 190 mg.',
       'Brands aren\'t required to print caffeine on the label, and actual content varies batch to batch, so treat every figure as typical rather than exact. Where a brand publishes a range, we note it on the product page.',
     ],
     faqs: [
-      { q: 'What is the strongest canned latte?', a: 'Bones Coffee\'s Holy Cannoli Cold Brew Latte is the strongest we track at 250–260 mg of caffeine per its label, followed by La Colombe\'s Triple Draft Latte at 230 mg and Projo\'s Power Coffee Vanilla Latte at 225 mg.' },
+      { q: 'What is the strongest canned latte?', a: 'Bones Coffee\'s Holy Cannoli Cold Brew Latte is the strongest we track at the 250–260 mg of caffeine the brand publishes, followed by La Colombe\'s Triple Draft Latte at 230 mg and Projo\'s Power Coffee Vanilla Latte at 225 mg.' },
       { q: 'How much caffeine is safe per day?', a: 'The FDA cites up to 400 mg a day as generally safe for healthy adults — roughly two of the strongest cans on this list, or three to four typical ones.' },
     ],
   },
@@ -49,17 +49,17 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'cheapest-per-can': {
     paragraphs: [
-      'Price per can is the honest way to compare, because pack sizes vary from singles to 12-packs. The cans here run from about $2 to $5 at the brand\'s own store or its most common retailer. Grocery and club prices swing with promotions, so treat this as a ranking rather than a quote — and note that DTC 12-packs (La Colombe at $34/12, NOBL at $38/12) usually beat single-can convenience-store prices by a dollar or more.',
+      'Price per can is the honest way to compare, because pack sizes vary from singles to 12-packs. The cans here run from about $3 to $5 at the brand\'s own store or its most common retailer. Grocery and club prices swing with promotions, so treat this as a ranking rather than a quote — and note that DTC 12-packs (La Colombe at $34/12, NOBL at $38/12) usually beat single-can convenience-store prices by a dollar or more.',
       'The cheapest per-can path for most people: buy the multipack of a shelf-stable can you already know you like. Refrigerated and single-serve options carry a premium.',
     ],
     faqs: [
-      { q: 'What is the cheapest canned latte?', a: 'Among cans we track with published prices, Bones Coffee\'s cold brew lattes are the cheapest at about $2.08 per can in a 12-pack, ahead of RISE Brewing at $2.50 and La Colombe\'s dairy Draft Lattes at $2.83. Store-brand and promotional prices can go lower.' },
+      { q: 'What is the cheapest canned latte?', a: 'Among cans we track with published prices, La Colombe\'s dairy Draft Lattes are the cheapest at about $2.83 per can in a 12-pack, ahead of Bones Coffee at $3.08 and Death Wish at $3.33. Store-brand and promotional prices can go lower.' },
       { q: 'Is buying direct from the brand cheaper?', a: 'Usually per can, yes, via 12-packs and subscriptions — but shipping can erase the gap on small orders. Grocery multipacks are often the best real-world deal.' },
     ],
   },
   'no-added-sugar': {
     paragraphs: [
-      'These are the cans with a 0 in the added-sugars line: sweetness, where there is any, comes from the milk itself, from whole ingredients like dates, or from non-nutritive sweeteners that carry no sugar at all. Seven cans qualify, and they get there three different ways. NOBL keeps it to literally two ingredients (cold brew and oat milk) and shows 0 g of sugar of any kind. Slate\'s five lattes lean on stevia and monk fruit, which leaves 1 g of naturally occurring milk sugar next to 20 g of protein. Pop & Bottle sweetens with dates, so its label shows around 8 g of total sugar but none added.',
+      'These are the cans with a 0 in the added-sugars line: sweetness, where there is any, comes from the milk itself, from whole ingredients like dates, or from non-nutritive sweeteners that carry no sugar at all. Seven cans qualify, and they get there three different ways. NOBL keeps it to literally two ingredients (cold brew and oat milk), so the 5 g on its label is oat-milk sugar with nothing added. Slate\'s five lattes lean on stevia and monk fruit, which leaves 1 g of naturally occurring milk sugar next to 20 g of protein. Pop & Bottle sweetens with dates, so its label shows around 8 g of total sugar but none added.',
       'If a can you love isn\'t here, the least-sugar list is the neighboring compromise: several cans at 5–6 g of added sugar taste barely sweetened.',
     ],
     faqs: [

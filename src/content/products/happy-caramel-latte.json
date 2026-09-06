@@ -7,8 +7,8 @@
   "proteinG": 7,
   "calories": null,
   "refrigerated": false,
-  "pricePerCan": 3,
-  "packPrice": 11.99,
+  "pricePerCan": 3.5,
+  "packPrice": 13.99,
   "packSize": 4,
   "retailers": [
     "Happy (direct)",
@@ -27,7 +27,7 @@
     }
   ],
   "verified": false,
-  "updated": "2026-09-04",
+  "updated": "2026-09-06",
   "sources": [
     "https://www.happyproducts.com/collections/best-sellers",
     "https://www.happyproducts.com/products/caramel-latte-4pk"
@@ -36,7 +36,7 @@
   "brandSlug": "happy",
   "name": "Caramel Coffee Latte",
   "flavor": "Caramel",
-  "caffeineNote": "Brand lists 40–50 mg per can",
+  "caffeineNote": "Brand states 40–50 mg",
   "milk": "dairy",
   "dairyFree": false,
   "summary": "Caramel latte on Colombian arabica espresso and real milk, with 7 g of protein and 40–50 mg of caffeine per 11 oz can."
