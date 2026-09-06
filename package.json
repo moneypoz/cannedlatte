@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "prebuild": "npm run check:data",
+    "check:data": "node scripts/check-data.mjs",
     "preview": "astro preview",
     "check": "astro check"
   },
