@@ -82,7 +82,7 @@ jsonLd.push({
 
       <div class="stats">
         <div class="stat-card"><div class="n">{fmt.mg(p.caffeineMg)}</div><div class="l">caffeine</div></div>
-        <div class="stat-card"><div class="n">{fmt.g(p.sugarG)}</div><div class="l">sugar{p.addedSugar === false ? ' (none added)' : ''}</div></div>
+        <div class="stat-card"><div class="n">{fmt.g(p.sugarG)}</div><div class="l">sugar{p.addedSugarG != null && p.addedSugarG > 0 ? ` (${p.addedSugarG}g added)` : p.addedSugar === false ? " (none added)" : ""}</div></div>
         <div class="stat-card"><div class="n">{fmt.g(p.proteinG)}</div><div class="l">protein</div></div>
         <div class="stat-card"><div class="n">{fmt.oz(p.sizeOz)}</div><div class="l">can size</div></div>
         <div class="stat-card"><div class="n">{fmt.usd(p.pricePerCan)}</div><div class="l">per can{p.packPrice ? ` (${fmt.usd(p.packPrice)} / ${p.packSize})` : ''}</div></div>

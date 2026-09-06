@@ -4,6 +4,7 @@
   "caffeineMg": 150,
   "sugarG": 22,
   "addedSugar": true,
+  "addedSugarG": 21,
   "proteinG": 10,
   "calories": 140,
   "refrigerated": false,
@@ -27,7 +28,7 @@
     }
   ],
   "verified": false,
-  "updated": "2026-09-04",
+  "updated": "2026-09-06",
   "sources": [
     "https://sportcoffee.com/",
     "https://sportcoffee.com/products/mocha-java-latte"

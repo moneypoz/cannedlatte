@@ -4,6 +4,7 @@
   "caffeineMg": 140,
   "sugarG": 5,
   "addedSugar": true,
+  "addedSugarG": null,
   "proteinG": 11,
   "calories": 100,
   "refrigerated": false,
@@ -39,6 +40,5 @@
   "milk": "skim",
   "dairyFree": false,
   "launched": "2025-09",
-  "image": "/images/products/wandering-bear-double-latte.jpg",
   "summary": "High-protein cold brew latte on ultra-filtered skim milk: 11 g protein, 100 calories, 0 g saturated fat. Went nationwide at Target in 2026."
 }

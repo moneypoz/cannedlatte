@@ -4,6 +4,7 @@
   "caffeineMg": null,
   "sugarG": 15,
   "addedSugar": true,
+  "addedSugarG": null,
   "proteinG": 1,
   "calories": 170,
   "refrigerated": false,

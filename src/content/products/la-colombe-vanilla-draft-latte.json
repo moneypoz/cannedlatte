@@ -4,6 +4,7 @@
   "caffeineMg": 190,
   "sugarG": 15,
   "addedSugar": true,
+  "addedSugarG": null,
   "proteinG": 7,
   "calories": 160,
   "refrigerated": false,
@@ -40,6 +41,5 @@
   "caffeineNote": "Label: 190 mg per can",
   "milk": "lactose-free dairy",
   "dairyFree": false,
-  "image": "/images/products/la-colombe-vanilla-draft-latte.jpg",
   "summary": "Vanilla version of the Draft Latte. The 2026 reformulation cut sugar to 15 g, less than half of a typical flavored dairy coffee."
 }

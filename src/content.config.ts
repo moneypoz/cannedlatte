@@ -16,6 +16,7 @@ const products = defineCollection({
     caffeineNote: z.string().optional(),       // e.g. "brand lists 100–150 mg"
     sugarG: z.number().nullable(),
     addedSugar: z.boolean().nullable().default(null),
+    addedSugarG: z.number().nullable().default(null),   // brand-published "includes Xg added sugars", where stated
     proteinG: z.number().nullable(),
     calories: z.number().nullable(),
     milk: z.enum(['dairy', 'lactose-free dairy', 'skim', 'oat', 'almond', 'none']),

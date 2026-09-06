@@ -1,11 +1,12 @@
 {
   "type": "latte",
   "sizeOz": 11,
-  "caffeineMg": null,
-  "sugarG": null,
+  "caffeineMg": 90,
+  "sugarG": 14,
   "addedSugar": true,
-  "proteinG": null,
-  "calories": null,
+  "addedSugarG": 14,
+  "proteinG": 2,
+  "calories": 150,
   "refrigerated": false,
   "pricePerCan": null,
   "packPrice": null,
@@ -31,13 +32,15 @@
   "updated": "2026-09-06",
   "sources": [
     "https://risebrewingco.com/",
-    "https://risebrewingco.com/products/new-11oz-classic-oat"
+    "https://risebrewingco.com/products/new-11oz-classic-oat",
+    "https://cdn.shopify.com/s/files/1/3099/0402/files/RISE_Classic_Oat_Back_Single_Can_-_Amazon.png"
   ],
   "brand": "RISE Brewing Co.",
   "brandSlug": "rise-brewing",
   "name": "Classic Oatmilk Latte",
   "flavor": "Classic",
+  "caffeineNote": "From brand-published label image",
   "milk": "oat",
   "dairyFree": true,
-  "summary": "Cold brew and oat milk, coffee-forward and lightly sweet, in an 11 oz can. Dairy-free. RISE does not publish nutrition figures for these cans."
+  "summary": "Cold brew and oat milk, coffee-forward and lightly sweet: 90 mg of caffeine, 14 g of sugar and 2 g of protein per 11 oz can at 150 calories. Dairy-free. RISE does not publish a pack count, so we list no per-can price."
 }

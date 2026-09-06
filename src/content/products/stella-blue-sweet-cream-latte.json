@@ -4,6 +4,7 @@
   "caffeineMg": 190,
   "sugarG": 25,
   "addedSugar": true,
+  "addedSugarG": 14,
   "proteinG": 7,
   "calories": 170,
   "refrigerated": false,
@@ -27,7 +28,7 @@
     }
   ],
   "verified": false,
-  "updated": "2026-09-04",
+  "updated": "2026-09-06",
   "sources": [
     "https://stellabluecoffee.com/collections/canned-lattes",
     "https://stellabluecoffee.com/products/espresso-sweet-cream"

@@ -4,6 +4,7 @@
   "caffeineMg": 230,
   "sugarG": 15,
   "addedSugar": true,
+  "addedSugarG": null,
   "proteinG": 7,
   "calories": 160,
   "refrigerated": false,
@@ -40,6 +41,5 @@
   "caffeineNote": "Label: 230 mg per can",
   "milk": "dairy",
   "dairyFree": false,
-  "image": "/images/products/la-colombe-triple-draft-latte.jpg",
   "summary": "Three shots in the same frothy can. Sporked's top pick in its canned latte taste test."
 }

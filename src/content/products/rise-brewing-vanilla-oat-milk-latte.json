@@ -1,11 +1,12 @@
 {
   "type": "latte",
   "sizeOz": 11,
-  "caffeineMg": null,
-  "sugarG": null,
+  "caffeineMg": 90,
+  "sugarG": 14,
   "addedSugar": true,
-  "proteinG": null,
-  "calories": null,
+  "addedSugarG": 14,
+  "proteinG": 2,
+  "calories": 150,
   "refrigerated": false,
   "pricePerCan": null,
   "packPrice": null,
@@ -25,13 +26,15 @@
   "updated": "2026-09-06",
   "sources": [
     "https://risebrewingco.com/",
-    "https://risebrewingco.com/products/new-11oz-vanilla"
+    "https://risebrewingco.com/products/new-11oz-vanilla",
+    "https://cdn.shopify.com/s/files/1/3099/0402/files/RISEVanillaBackSingleCan-Amazon.png"
   ],
   "brand": "RISE Brewing Co.",
   "brandSlug": "rise-brewing",
   "name": "Vanilla Oatmilk Latte",
   "flavor": "Vanilla",
+  "caffeineNote": "From brand-published label image",
   "milk": "oat",
   "dairyFree": true,
-  "summary": "Cold brew oat milk latte with a clean vanilla finish, in an 11 oz can. Dairy-free. RISE does not publish nutrition figures for these cans."
+  "summary": "Cold brew oat milk latte with a clean vanilla finish: 90 mg of caffeine, 14 g of sugar and 2 g of protein per 11 oz can at 150 calories. Dairy-free. RISE does not publish a pack count, so we list no per-can price."
 }

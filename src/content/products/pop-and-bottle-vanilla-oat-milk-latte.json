@@ -4,6 +4,7 @@
   "caffeineMg": 80,
   "sugarG": 8,
   "addedSugar": false,
+  "addedSugarG": 0,
   "proteinG": null,
   "calories": null,
   "refrigerated": false,
@@ -28,7 +29,7 @@
     }
   ],
   "verified": false,
-  "updated": "2026-08-31",
+  "updated": "2026-09-06",
   "sources": [
     "https://www.popandbottle.com/pages/faq"
   ],

@@ -4,6 +4,7 @@
   "caffeineMg": 75,
   "sugarG": 26,
   "addedSugar": true,
+  "addedSugarG": 11,
   "proteinG": 9,
   "calories": 220,
   "refrigerated": false,
@@ -27,7 +28,7 @@
     }
   ],
   "verified": false,
-  "updated": "2026-09-04",
+  "updated": "2026-09-06",
   "sources": [
     "https://thundercoffeemilk.com/",
     "https://shop.thundercoffeemilk.com/products/thunder-coffeemilk-mocha-latte-12-pack"

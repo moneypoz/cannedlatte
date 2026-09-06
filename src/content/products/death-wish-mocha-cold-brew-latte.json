@@ -4,6 +4,7 @@
   "caffeineMg": 120,
   "sugarG": 16,
   "addedSugar": true,
+  "addedSugarG": null,
   "proteinG": 8,
   "calories": 140,
   "refrigerated": false,
@@ -36,9 +37,8 @@
   "brandSlug": "death-wish",
   "name": "Mocha Cold Brew Latte",
   "flavor": "Mocha",
+  "caffeineNote": "Label: up to 120 mg per can",
   "milk": "dairy",
   "dairyFree": false,
-  "image": "/images/products/death-wish-mocha-cold-brew-latte.jpg",
-  "summary": "Mocha flavor from Death Wish's original RTD latte lineup. Specs pending a label photo.",
-  "caffeineNote": "Label: up to 120 mg per can"
+  "summary": "Mocha flavor from Death Wish's original RTD latte lineup. Specs pending a label photo."
 }
