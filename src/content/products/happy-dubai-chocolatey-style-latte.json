@@ -2,9 +2,9 @@
   "type": "latte",
   "sizeOz": 11,
   "caffeineMg": 75,
-  "sugarG": 30,
+  "sugarG": 39,
   "addedSugar": true,
-  "addedSugarG": null,
+  "addedSugarG": 28,
   "proteinG": 7,
   "calories": 230,
   "refrigerated": false,
@@ -31,7 +31,8 @@
   "updated": "2026-09-06",
   "sources": [
     "https://www.happyproducts.com/collections/best-sellers",
-    "https://www.happyproducts.com/products/dubai-chocolatey-style-latte-4pk"
+    "https://www.happyproducts.com/products/dubai-chocolatey-style-latte-4pk",
+    "https://cdn.shopify.com/s/files/1/0810/9096/9878/files/DubaiRTD_NutritionFacts_021026.jpg"
   ],
   "brand": "Happy",
   "brandSlug": "happy",
@@ -40,5 +41,5 @@
   "caffeineNote": "Brand states 70–80 mg",
   "milk": "dairy",
   "dairyFree": false,
-  "summary": "Chocolate and pistachio flavors on Colombian arabica espresso: the richest can in the line at 230 calories and 30 g of sugar, with 7 g of protein and 70–80 mg of caffeine per 11 oz can."
+  "summary": "Chocolate and pistachio flavors on Colombian arabica espresso: 39 g of sugar and 7 g of protein per 11 oz can at 230 calories, with 70–80 mg of caffeine."
 }

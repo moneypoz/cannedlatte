@@ -2,11 +2,11 @@
   "type": "latte",
   "sizeOz": 11,
   "caffeineMg": 60,
-  "sugarG": null,
+  "sugarG": 38,
   "addedSugar": true,
-  "addedSugarG": null,
+  "addedSugarG": 28,
   "proteinG": 7,
-  "calories": null,
+  "calories": 230,
   "refrigerated": false,
   "pricePerCan": 3.5,
   "packPrice": 13.99,
@@ -31,7 +31,8 @@
   "updated": "2026-09-06",
   "sources": [
     "https://www.happyproducts.com/collections/best-sellers",
-    "https://www.happyproducts.com/products/apple-pie-latte-4pk"
+    "https://www.happyproducts.com/products/apple-pie-latte-4pk",
+    "https://cdn.shopify.com/s/files/1/0810/9096/9878/files/HappyProducts_Photography_PDP_ApplePie_13.jpg"
   ],
   "brand": "Happy",
   "brandSlug": "happy",

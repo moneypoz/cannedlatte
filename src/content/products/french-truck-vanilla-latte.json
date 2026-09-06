@@ -4,7 +4,7 @@
   "caffeineMg": null,
   "sugarG": 20,
   "addedSugar": true,
-  "addedSugarG": null,
+  "addedSugarG": 20,
   "proteinG": 0,
   "calories": 190,
   "refrigerated": false,
@@ -22,9 +22,10 @@
     }
   ],
   "verified": false,
-  "updated": "2026-09-04",
+  "updated": "2026-09-06",
   "sources": [
-    "https://www.frenchtruckcoffee.com/products/ready-to-drink-lattes"
+    "https://www.frenchtruckcoffee.com/products/ready-to-drink-lattes",
+    "https://cdn.shopify.com/s/files/1/0689/9531/7982/files/French_Truck_Ready-to-Drink_Latte_Nutritional_Labels-06.jpg"
   ],
   "brand": "French Truck Coffee",
   "brandSlug": "french-truck",

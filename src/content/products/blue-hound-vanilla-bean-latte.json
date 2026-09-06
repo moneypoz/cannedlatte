@@ -4,7 +4,7 @@
   "caffeineMg": 130,
   "sugarG": 19,
   "addedSugar": true,
-  "addedSugarG": null,
+  "addedSugarG": 13,
   "proteinG": 5,
   "calories": 130,
   "refrigerated": false,
@@ -22,16 +22,17 @@
     }
   ],
   "verified": false,
-  "updated": "2026-09-04",
+  "updated": "2026-09-06",
   "sources": [
     "https://bluehoundbrew.com/",
-    "https://bluehoundbrew.com/products/vanilla-bean-latte"
+    "https://bluehoundbrew.com/products/vanilla-bean-latte",
+    "https://cdn.shopify.com/s/files/1/0845/6372/2515/files/ShopifyProductPhotos_25.png"
   ],
   "brand": "Blue Hound Brew",
   "brandSlug": "blue-hound",
   "name": "Vanilla Bean Latte",
   "flavor": "Vanilla Bean",
-  "caffeineNote": "Label: 130 mg per can",
+  "caffeineNote": "From brand-published label image",
   "milk": "dairy",
   "dairyFree": false,
   "summary": "Nashville cold brew latte on organic pasture-raised whole milk, finished with vanilla bean and sweet cream: 130 mg of caffeine and 5 g of protein per 8 oz can at 130 calories."

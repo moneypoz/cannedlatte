@@ -4,7 +4,7 @@
   "caffeineMg": 60,
   "sugarG": 19,
   "addedSugar": true,
-  "addedSugarG": null,
+  "addedSugarG": 13,
   "proteinG": 4,
   "calories": 120,
   "refrigerated": false,
@@ -31,7 +31,8 @@
   "updated": "2026-09-06",
   "sources": [
     "https://www.happyproducts.com/collections/best-sellers",
-    "https://www.happyproducts.com/products/black-forest-latte-4pk"
+    "https://www.happyproducts.com/products/black-forest-latte-4pk",
+    "https://cdn.shopify.com/s/files/1/0810/9096/9878/files/BlackForestCake_RTD_NutritionFacts.jpg"
   ],
   "brand": "Happy",
   "brandSlug": "happy",

@@ -13,7 +13,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
     faqs: [
       { q: 'Which canned latte has the least sugar?', a: 'Slate\'s lattes have the least total sugar of any can we track, at 1 g, and none of it added. NOBL\'s Cold Brew Oat Milk Latte is the leader on added sugar specifically — 0 g added, with the 5 g on its label coming from the oat milk itself.' },
       { q: 'Are low-sugar canned lattes unsweetened?', a: 'Not always. Some use the natural sweetness of oat milk or dates rather than added sugar, so they taste lightly sweet while showing 0 g added sugar on the label.' },
-      { q: 'How much sugar is in a typical canned latte?', a: 'Flavored dairy canned coffees commonly run 15–30 g per can. The low-sugar end of the category runs 1–8 g.' },
+      { q: 'How much sugar is in a typical canned latte?', a: 'Flavored dairy canned coffees commonly run 15–39 g per can. The low-sugar end of the category runs 1–8 g.' },
     ],
   },
   'most-caffeine': {

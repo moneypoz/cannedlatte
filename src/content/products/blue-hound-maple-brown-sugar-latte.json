@@ -4,7 +4,7 @@
   "caffeineMg": 130,
   "sugarG": 19,
   "addedSugar": true,
-  "addedSugarG": null,
+  "addedSugarG": 13,
   "proteinG": 5,
   "calories": 130,
   "refrigerated": false,
@@ -22,16 +22,17 @@
     }
   ],
   "verified": false,
-  "updated": "2026-09-04",
+  "updated": "2026-09-06",
   "sources": [
     "https://bluehoundbrew.com/",
-    "https://bluehoundbrew.com/products/maple-brown-sugar-latte"
+    "https://bluehoundbrew.com/products/maple-brown-sugar-latte",
+    "https://cdn.shopify.com/s/files/1/0845/6372/2515/files/Shopify_Product_Photos_26.png"
   ],
   "brand": "Blue Hound Brew",
   "brandSlug": "blue-hound",
   "name": "Maple Brown Sugar Latte",
   "flavor": "Maple Brown Sugar",
-  "caffeineNote": "Label: 130 mg per can",
+  "caffeineNote": "From brand-published label image",
   "milk": "dairy",
   "dairyFree": false,
   "summary": "Maple and brown sugar over cold brew and organic pasture-raised whole milk: 130 mg of caffeine and 5 g of protein per 8 oz can at 130 calories."
