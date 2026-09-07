@@ -16,7 +16,17 @@ const products = await allProducts();
 const productImages = import.meta.glob<{ default: ImageMetadata }>('../assets/products/*.jpg', { eager: true });
 const productImage = (image?: string) =>
   image ? productImages[`../assets/products/${image.split('/').pop()}`]?.default : undefined;
-const pickImage = productImage;
+
+// Transparent front-can cutouts, used at card/thumbnail size. The full composite
+// (front + label) stays on the product page and in the schema image URL.
+const cardImages = import.meta.glob<{ default: ImageMetadata }>('../assets/products/cards/*.png', { eager: true });
+const cardImage = (image?: string) => {
+  if (!image) return undefined;
+  const slug = image.split('/').pop()!.replace(/\.jpe?g$/i, '');
+  return cardImages[`../assets/products/cards/${slug}-card.png`]?.default;
+};
+// Prefer the cutout at card size; fall back to the composite if no crop exists.
+const pickImage = (image?: string) => cardImage(image) ?? productImage(image);
 
 const eligible = products.filter((p) => p.data.verified && p.data.image);
 const PICK_SPECS = [
@@ -80,7 +90,7 @@ const jsonLd = {
         {picks.map((pick) => (
           <a class="pick" href={`/latte/${pick.product.id}`}>
             <span class="pick-media">
-              <Image src={pickImage(pick.product.data.image)!} alt="" width={120} height={120} densities={[1, 2]} format="webp" loading="lazy" />
+              <Image src={pickImage(pick.product.data.image)!} alt="" height={120} densities={[1, 2]} format="webp" loading="lazy" />
             </span>
             <span class="pick-label">{pick.label}</span>
             <span class="pick-name">{fullName(pick.product.data)}</span>
@@ -187,7 +197,11 @@ const jsonLd = {
     display: grid; place-items: center; height: 120px; margin-bottom: 4px;
     background: var(--muted); border-radius: 8px; overflow: hidden;
   }
-  .pick-media :global(img) { max-height: 112px; width: auto; object-fit: contain; display: block; }
+  /* Cutouts are transparent, so a soft shadow keeps them from looking pasted on. */
+  .pick-media :global(img) {
+    max-height: 112px; width: auto; object-fit: contain; display: block;
+    filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.12));
+  }
   .pick-label {
     align-self: flex-start; font-size: 11px; font-weight: 700; letter-spacing: .02em;
     background: var(--muted); color: var(--muted-foreground);

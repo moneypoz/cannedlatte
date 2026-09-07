@@ -44,6 +44,16 @@ for (const [dir, files] of [[PUBLIC_IMG, publicFiles], [ASSET_IMG, assetFiles]])
   }
 }
 
+// (b2) card cutouts are optional, but one that matches no photographed product is
+// dead weight and usually means a slug was renamed.
+const CARD_IMG = 'src/assets/products/cards';
+for (const f of jpgs(CARD_IMG)) {
+  const base = f.replace(/-card\.(png|jpe?g|webp)$/i, '');
+  if (![...referenced.keys()].some((r) => r.replace(/\.[a-z]+$/i, '') === base)) {
+    failures.push(`orphaned card crop: ${CARD_IMG}/${f} — no photographed product named ${base}`);
+  }
+}
+
 // (c) a verified product must cite where the figures came from
 for (const { id, data } of products) {
   if (data.verified && !(data.sources?.length > 0)) {
