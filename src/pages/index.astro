@@ -26,7 +26,7 @@ const cardImage = (image?: string) => {
   return cardImages[`../assets/products/cards/${slug}-card.png`]?.default;
 };
 // Prefer the cutout at card size; fall back to the composite if no crop exists.
-const pickImage = (image?: string) => cardImage(image) ?? productImage(image);
+const displayImage = (image?: string) => cardImage(image) ?? productImage(image);
 
 const eligible = products.filter((p) => p.data.verified && p.data.image);
 const PICK_SPECS = [
@@ -90,7 +90,7 @@ const jsonLd = {
         {picks.map((pick) => (
           <a class="pick" href={`/latte/${pick.product.id}`}>
             <span class="pick-media">
-              <Image src={pickImage(pick.product.data.image)!} alt="" height={120} densities={[1, 2]} format="webp" loading="lazy" />
+              <Image src={displayImage(pick.product.data.image)!} alt="" height={120} densities={[1, 2]} format="webp" loading="lazy" />
             </span>
             <span class="pick-label">{pick.label}</span>
             <span class="pick-name">{fullName(pick.product.data)}</span>
@@ -124,6 +124,11 @@ const jsonLd = {
   <div class="grid">
     {newest.map((p) => (
       <a class="card" href={`/latte/${p.id}`}>
+        {displayImage(p.data.image) && (
+          <span class="ncard-media">
+            <Image src={displayImage(p.data.image)!} alt="" height={90} densities={[1, 2]} format="webp" loading="lazy" />
+          </span>
+        )}
         <span class="tag">{fmt.ym(p.data.launched)}</span>
         <h3 style="margin-top:8px" title={fullName(p.data)}>{shortName(p.data)}</h3>
         <p style="margin:0">{fmt.mg(p.data.caffeineMg)} · {fmt.g(p.data.sugarG)} sugar · {fmt.usd(p.data.pricePerCan)}/can</p>
@@ -135,13 +140,20 @@ const jsonLd = {
   <div class="tiles">
     {listTiles.map((t) => (
       <a class="tile" href={t.href}>
-        <span class="tile-title">{t.short}</span>
-        {t.leader && (
-          <>
-            <span class="tile-metric">{t.metric}</span>
-            <span class="tile-leader" title={fullName(t.leader.data)}>{shortName(t.leader.data)}</span>
-          </>
+        {t.leader && displayImage(t.leader.data.image) && (
+          <span class="tile-media">
+            <Image src={displayImage(t.leader.data.image)!} alt="" height={40} densities={[1, 2]} format="webp" loading="lazy" />
+          </span>
         )}
+        <span class="tile-body">
+          <span class="tile-title">{t.short}</span>
+          {t.leader && (
+            <>
+              <span class="tile-metric">{t.metric}</span>
+              <span class="tile-leader" title={fullName(t.leader.data)}>{shortName(t.leader.data)}</span>
+            </>
+          )}
+        </span>
       </a>
     ))}
     <a class="tile" href="/table">
@@ -213,9 +225,27 @@ const jsonLd = {
   /* Find your can: typographic mini-scoreboard tiles, 4x2 on desktop. */
   .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
   .tile {
-    display: flex; flex-direction: column; gap: 2px; min-width: 0;
+    display: flex; align-items: center; gap: 10px; min-width: 0;
     border: 1px solid var(--border); border-radius: var(--radius);
     background: var(--card); padding: 10px 12px; text-decoration: none; color: inherit;
+  }
+  .tile-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  /* Cutout sits on a soft tile; the shadow is on the image so it follows the can. */
+  .tile-media {
+    flex: 0 0 auto; width: 40px; height: 40px; border-radius: 8px;
+    background: var(--muted); display: grid; place-items: center; overflow: hidden;
+  }
+  .tile-media :global(img) {
+    max-height: 36px; width: auto; object-fit: contain; display: block;
+    filter: drop-shadow(0 2px 5px rgb(0 0 0 / 0.12));
+  }
+  .ncard-media {
+    display: grid; place-items: center; height: 90px; margin-bottom: 8px;
+    background: var(--muted); border-radius: 8px; overflow: hidden;
+  }
+  .ncard-media :global(img) {
+    max-height: 82px; width: auto; object-fit: contain; display: block;
+    filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.12));
   }
   .tile:hover { border-color: var(--primary); }
   .tile-title { font-size: 12.5px; color: var(--muted-foreground); }
