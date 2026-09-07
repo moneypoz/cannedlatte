@@ -55,9 +55,6 @@ const fullTitle = title === 'Canned Latte' ? 'Canned Latte: every canned latte, 
       <a href="/brands">Brands</a>
       <a href="/new">New</a>
       <a href="/about">About</a>
-      <a class="icon" href="/table" aria-label="Full table" title="Full sortable table">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-      </a>
     </nav>
   </header>
   <main id="main"><slot /></main>
@@ -93,10 +90,8 @@ const fullTitle = title === 'Canned Latte' ? 'Canned Latte: every canned latte, 
   .brand{display:flex;align-items:center;gap:8px;font-size:22px;font-weight:500;letter-spacing:-.01em}
   .brand b{font-weight:800;color:var(--primary)}
   header.site nav{display:flex;align-items:center;gap:4px 16px;font-weight:500;font-size:15px}
-  header.site nav a:not(.icon){color:var(--foreground)}
-  header.site nav a:not(.icon):hover{color:var(--primary)}
-  .icon{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:999px;border:0;background:transparent;color:var(--foreground);cursor:pointer}
-  .icon:hover{background:var(--muted)}
+  header.site nav a{color:var(--foreground)}
+  header.site nav a:hover{color:var(--primary)}
 
   main{max-width:960px;margin:0 auto;padding:12px 20px 64px}
   footer.site{max-width:960px;margin:0 auto;padding:24px 20px 48px;border-top:1px solid var(--border);font-size:13.5px;color:var(--muted-foreground)}
@@ -189,9 +184,16 @@ const fullTitle = title === 'Canned Latte' ? 'Canned Latte: every canned latte, 
   .product-top .hero{width:100%;height:auto;border:0;border-radius:var(--radius);background:var(--muted)}
   .product-top .stats{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
   @media (max-width:760px){.product-top{grid-template-columns:1fr}.product-top .hero{max-width:380px;margin:0 auto}}
-  @media (max-width:560px){
+  @media (max-width:480px){
+    header.site{gap:12px;padding:14px 16px}
+    .brand{font-size:20px}
+    header.site nav{gap:14px;font-size:15px}
+  }
+  /* Below ~400px the four links cannot sit beside the logo, so let the nav wrap
+     to a second line, right-aligned. No drawer, no icon. */
+  @media (max-width:400px){
     header.site{flex-wrap:wrap}
-    header.site nav{gap:4px 12px;font-size:14px}
+    header.site nav{width:100%;justify-content:flex-end}
   }
 
 </style>
