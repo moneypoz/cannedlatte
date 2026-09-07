@@ -56,6 +56,7 @@ export const typeLabel: Record<P['type'], string> = {
   black: 'Black cold brew',
   nitro: 'Nitro',
   energy: 'Coffee energy drink',
+  'milk-coffee': 'Milk coffee',
 };
 
 /** "Best for" pages. Each one sorts/filters the database; adding a product updates all of them. */

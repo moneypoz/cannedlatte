@@ -9,7 +9,7 @@ const products = defineCollection({
     brand: z.string(),
     brandSlug: z.string(),
     name: z.string(),
-    type: z.enum(['latte', 'black', 'nitro', 'energy']).default('latte'),
+    type: z.enum(['latte', 'black', 'nitro', 'energy', 'milk-coffee']).default('latte'),
     flavor: z.string().optional(),
     sizeOz: z.number().nullable(),
     caffeineMg: z.number().nullable(),
