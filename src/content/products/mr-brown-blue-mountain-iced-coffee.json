@@ -1,0 +1,36 @@
+{
+  "type": "latte",
+  "sizeOz": 8.12,
+  "caffeineMg": null,
+  "sugarG": 18,
+  "addedSugar": true,
+  "addedSugarG": 14,
+  "proteinG": 2,
+  "calories": 100,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [],
+  "buyLinks": [
+    {
+      "label": "Mr. Brown",
+      "url": "https://www.mrbrowncoffee.com/",
+      "affiliate": false
+    }
+  ],
+  "verified": true,
+  "updated": "2026-09-07",
+  "sources": [
+    "https://www.mrbrowncoffee.com/"
+  ],
+  "brand": "Mr. Brown",
+  "brandSlug": "mr-brown",
+  "name": "Blue Mountain Blend Iced Coffee",
+  "flavor": "Blue Mountain Blend",
+  "image": "/images/products/mr-brown-blue-mountain-iced-coffee.jpg",
+  "caffeineNote": "Not stated on the label",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "The classic Taiwanese canned coffee in its Blue Mountain blend — a small, gently sweet milk coffee that's been in cooler cases worldwide for decades."
+}
