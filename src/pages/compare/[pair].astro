@@ -7,11 +7,19 @@ import { allProducts, comparePairs, fullName, fmt, milkLabel } from '../../lib/p
 export async function getStaticPaths() {
   const products = await allProducts();
   const byId = new Map(products.map((p) => [p.id, p]));
+  // How much each metric varies across the whole database. Used to judge which gap
+  // is genuinely the widest for a pair: sugar has the largest raw range, so scoring
+  // against the pair alone would make sugar lead almost every page.
+  const range = (k: "caffeineMg" | "sugarG" | "proteinG" | "pricePerCan") => {
+    const v = products.map((p) => p.data[k]).filter((x): x is number => x != null);
+    return Math.max(...v) - Math.min(...v) || 1;
+  };
+  const spread = { caffeineMg: range("caffeineMg"), sugarG: range("sugarG"), proteinG: range("proteinG"), pricePerCan: range("pricePerCan") };
   return comparePairs
     .filter(([a, b]) => byId.has(a) && byId.has(b))
-    .map(([a, b]) => ({ params: { pair: `${a}-vs-${b}` }, props: { a: byId.get(a)!, b: byId.get(b)! } }));
+    .map(([a, b]) => ({ params: { pair: `${a}-vs-${b}` }, props: { a: byId.get(a)!, b: byId.get(b)!, spread, total: products.length } }));
 }
-const { a, b } = Astro.props;
+const { a, b, spread, total } = Astro.props;
 const A = a.data, B = b.data;
 const na = fullName(A), nb = fullName(B);
 
@@ -43,12 +51,28 @@ const cmp = (key: 'caffeineMg' | 'sugarG' | 'proteinG' | 'pricePerCan', lowerWin
 };
 const caff = cmp('caffeineMg'), sug = cmp('sugarG', true), pro = cmp('proteinG'), price = cmp('pricePerCan', true);
 
-const verdict: string[] = [];
-if (caff) verdict.push(`${caff.winner} carries ${caff.delta} mg more caffeine`);
-if (sug) verdict.push(`${sug.winner} has ${sug.delta} g less sugar`);
-if (pro) verdict.push(`${pro.winner} has ${pro.delta} g more protein`);
-if (price) verdict.push(`${price.winner} costs ${fmt.usd(price.delta)} less per can`);
-const noNumbers = verdict.length === 0;
+// Rank the differences by how big they are *relative* to the figures involved, so the
+// opener leads with whatever actually separates this pair. Since the leading metric
+// changes from pair to pair, the openers diverge instead of reading from one mould.
+type Diff = { rel: number; aWins: boolean; lead: string; frag: string };
+const diffs: Diff[] = [];
+if (caff) diffs.push({ rel: caff.delta / spread.caffeineMg, aWins: caff.aWins,
+  lead: `Caffeine is the widest gap here: ${caff.winner} carries ${caff.delta} mg more.`,
+  frag: `carries ${caff.delta} mg more caffeine` });
+if (sug) diffs.push({ rel: sug.delta / spread.sugarG, aWins: sug.aWins,
+  lead: `Sugar is where these two part company: ${sug.winner} has ${sug.delta} g less.`,
+  frag: `has ${sug.delta} g less sugar` });
+if (pro) diffs.push({ rel: pro.delta / spread.proteinG, aWins: pro.aWins,
+  lead: `Protein separates these two most: ${pro.winner} has ${pro.delta} g more.`,
+  frag: `has ${pro.delta} g more protein` });
+if (price) diffs.push({ rel: price.delta / spread.pricePerCan, aWins: price.aWins,
+  lead: `Price is the biggest difference: ${price.winner} costs ${fmt.usd(price.delta)} less per can.`,
+  frag: `costs ${fmt.usd(price.delta)} less per can` });
+diffs.sort((x, y) => y.rel - x.rel);
+const headline = diffs[0]?.lead ?? null;
+const restA = diffs.slice(1).filter((d) => d.aWins).map((d) => d.frag);
+const restB = diffs.slice(1).filter((d) => !d.aWins).map((d) => d.frag);
+const noNumbers = diffs.length === 0;
 const unpublished = [A, B].filter((p) => p.caffeineMg == null && p.sugarG == null).map((p) => fullName(p));
 
 /** Reasons to pick one side, drawn only from fields where it actually wins. */
@@ -65,6 +89,16 @@ const reasonsFor = (isA: boolean) => {
 };
 const forA = reasonsFor(true), forB = reasonsFor(false);
 const list = (r: string[]) => (r.length > 1 ? `${r.slice(0, -1).join(', ')} and ${r.at(-1)}` : r[0]);
+
+/** Join diff fragments without stuttering the shared verb ("has X and has Y"). */
+const joinFrags = (arr: string[]) => {
+  const out = arr.map((frag, i) => {
+    if (i === 0) return frag;
+    const verb = frag.split(" ")[0];
+    return arr[i - 1].split(" ")[0] === verb ? frag.slice(verb.length + 1) : frag;
+  });
+  return out.length > 1 ? `${out.slice(0, -1).join(", ")} and ${out.at(-1)}` : out[0];
+};
 
 const faqs: { q: string; a: string }[] = [];
 if (caff) faqs.push({ q: `Which has more caffeine, ${na} or ${nb}?`, a: `${caff.winner}, by ${caff.delta} mg per can.${sizesDiffer && aOz != null && bOz != null ? ` The cans are different sizes, so per ounce it is ${aOz} mg against ${bOz} mg.` : ''}` });
@@ -98,7 +132,14 @@ const desc = `${na} vs ${nb}: caffeine, sugar, protein, milk and price side by s
 <Base title={`${na} vs ${nb}`} description={desc} jsonLd={jsonLd}>
   <p class="eyebrow"><a href="/">Canned Latte</a> · <a href="/compare">Compare</a></p>
   <h1>{na} vs {nb}</h1>
-  {!noNumbers && <p class="lede">{verdict.join('. ')}.</p>}
+  {!noNumbers && (
+    <p class="lede">
+      {headline}
+      {restA.length > 0 && restB.length > 0 && ` ${na} also ${joinFrags(restA)}, while ${nb} ${joinFrags(restB)}.`}
+      {restA.length > 0 && restB.length === 0 && ` ${na} also ${joinFrags(restA)}.`}
+      {restB.length > 0 && restA.length === 0 && ` ${nb} also ${joinFrags(restB)}.`}
+    </p>
+  )}
   {noNumbers && (
     <p class="lede">
       These two can't be separated on the numbers yet: {unpublished.length ? `${unpublished.join(' and ')} ${unpublished.length > 1 ? 'publish' : 'publishes'} no nutrition figures` : 'the published figures match'}. The specs below are everything we have from the label.
@@ -117,15 +158,25 @@ const desc = `${na} vs ${nb}: caffeine, sugar, protein, milk and price side by s
   )}
 
   <h2>Which should you buy?</h2>
-  {forA.length > 0 && <p>Pick <a href={`/latte/${a.id}`}>{na}</a> for {list(forA)}.</p>}
-  {forB.length > 0 && <p>Pick <a href={`/latte/${b.id}`}>{nb}</a> for {list(forB)}.</p>}
   {forA.length === 0 && forB.length === 0 && (
-    <p>On the figures we have, there's little to separate these two. Choose on flavour, or on whichever you can actually find — see each product page for where it's sold.</p>
+    <p>On the figures we have, there's little to separate these two. Choose on flavour, or on whichever you can actually find.</p>
   )}
 
+  {/* Recommendation and buy buttons in the same card: this is the highest-intent
+      moment on the page, so the door should be right where the advice is. */}
   <div class="grid">
-    <div class="card"><h3>{na}</h3><p style="font-size:15px">{A.summary}</p><BuyLinks product={A} /></div>
-    <div class="card"><h3>{nb}</h3><p style="font-size:15px">{B.summary}</p><BuyLinks product={B} /></div>
+    <div class="card">
+      <h3><a href={`/latte/${a.id}`}>{na}</a></h3>
+      {forA.length > 0 && <p class="pickline">Pick it for {list(forA)}.</p>}
+      <p style="font-size:15px">{A.summary}</p>
+      <BuyLinks product={A} />
+    </div>
+    <div class="card">
+      <h3><a href={`/latte/${b.id}`}>{nb}</a></h3>
+      {forB.length > 0 && <p class="pickline">Pick it for {list(forB)}.</p>}
+      <p style="font-size:15px">{B.summary}</p>
+      <BuyLinks product={B} />
+    </div>
   </div>
   <Disclosure />
 
@@ -136,5 +187,9 @@ const desc = `${na} vs ${nb}: caffeine, sugar, protein, milk and price side by s
     </div>
   )}
 
-  <p class="meta"><a href="/compare">All comparisons →</a> · <a href="/table">Full table of {(await allProducts()).length} cans →</a></p>
+  <p class="meta"><a href="/compare">All comparisons →</a> · <a href="/table">Full table of {total} cans →</a></p>
 </Base>
+
+<style>
+  .pickline { font-weight: 600; color: var(--primary); margin: 0 0 8px; font-size: 15px; }
+</style>
