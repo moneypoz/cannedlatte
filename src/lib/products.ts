@@ -1,5 +1,8 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 
+// Re-exported so pages keep importing every helper from one place.
+export { fullName, shortName, dedupeWords } from './names';
+
 export type Product = CollectionEntry<'products'>;
 export type P = Product['data'];
 
@@ -9,21 +12,6 @@ export async function allProducts(): Promise<Product[]> {
 }
 
 export const lattesOnly = (items: Product[]) => items.filter((p) => p.data.type === 'latte');
-
-export const fullName = (p: P) => `${p.brand} ${p.name}`;
-
-// Compact display name for tight UI (homepage tiles, cards). Drops corporate
-// suffixes and a trailing product-type word, but only while something
-// meaningful is left — the full name still belongs in titles and on /latte.
-export const shortName = (p: P) => {
-  const full = fullName(p);
-  const s = full.replace(/\s+Coffee\s+(Company|Co\.)/i, '');
-  const trimmed = s.replace(/\s+(Cold Brew Latte|Latte)$/i, '');
-  // Brand and product name can repeat a word once the suffix is gone — "Throne
-  // Sport Coffee" + "Coffee Latte" became "Throne Sport Coffee Coffee".
-  const deduped = trimmed.replace(/\b(\w+)(\s+\1\b)+/gi, '$1');
-  return deduped.split(/\s+/).length >= 2 ? deduped : s;
-};
 
 export const fmt = {
   mg: (v: number | null) => (v == null ? '—' : `${v} mg`),

@@ -25,6 +25,10 @@ const initials = (p: P) => {
   return (words.length > 1 ? words.slice(0, 2).map((w) => w[0]!).join('') : words[0]!.slice(0, 2)).toUpperCase();
 };
 
+// Metric labels are lowercase where they're defined; the card leads with them.
+// The line ends on "gap" so there is never a trailing word to orphan on a wrap.
+const cap = (s: string) => s[0]!.toUpperCase() + s.slice(1);
+
 const pairs = comparePairs
   .filter(([a, b]) => byId.has(a) && byId.has(b))
   .map(([a, b]) => {
@@ -63,7 +67,7 @@ const jsonLd = {
           <span class="vs-pill">VS</span>
           {[a, b].map((p, i) => <span class="name" style={i === 1 ? 'grid-column:3' : undefined}>{shortName(p.data)}</span>)}
         </div>
-        <p class="meta gap">{top ? `Biggest gap: ${top.label} — ${top.display} apart` : 'Awaiting label data'}</p>
+        <p class="meta gap">{top ? `${cap(top.label)}: ${top.display} gap` : 'Awaiting label data'}</p>
       </a>
     ))}
   </div>

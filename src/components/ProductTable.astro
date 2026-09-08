@@ -2,7 +2,7 @@
 import type { Product } from '../lib/products';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { fmt, milkLabel, typeLabel } from '../lib/products';
+import { fmt, fullName, milkLabel, typeLabel } from '../lib/products';
 interface Props { products: Product[]; sortable?: boolean; showType?: boolean; }
 const { products, sortable = true, showType = false } = Astro.props;
 
@@ -30,7 +30,7 @@ const anyUnverified = products.some((p) => !p.data.verified);
   </thead>
   <tbody>
     {products.map(({ id, data: p }) => (
-      <tr data-type={p.type} data-milk={p.milk} data-dairyfree={p.dairyFree ? '1' : '0'} data-noadded={p.addedSugar === false ? '1' : '0'} data-hiprotein={(p.proteinG ?? 0) >= 10 ? '1' : '0'} data-name={`${p.brand} ${p.name}`.toLowerCase()}>
+      <tr data-type={p.type} data-milk={p.milk} data-dairyfree={p.dairyFree ? '1' : '0'} data-noadded={p.addedSugar === false ? '1' : '0'} data-hiprotein={(p.proteinG ?? 0) >= 10 ? '1' : '0'} data-name={fullName(p).toLowerCase()}>
         <td>
           <div class="prodcell">
             <a class="prodlink" href={`/latte/${id}`}>
@@ -42,7 +42,7 @@ const anyUnverified = products.some((p) => !p.data.verified);
                       <path d="M7 7.5h10" />
                     </svg>
                   </span>}
-              <span class="pname">{p.brand} {p.name}</span>
+              <span class="pname">{fullName(p)}</span>
             </a>
             {!p.verified && <sup class="unv" title="Specs not yet checked against a label">*</sup>}
           </div>
