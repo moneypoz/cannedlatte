@@ -118,7 +118,12 @@ if (faqs.length) {
   });
 }
 
-const desc = `${na} vs ${nb}: caffeine, sugar, protein, milk and price side by side${caff ? `. ${caff.winner} is the stronger can` : ''}.`;
+// The two names alone can run past 100 characters, so the description states the
+// metrics first and appends the widest gap only when the whole thing stays under
+// 155 — the old tail repeated a winner's full name and pushed pages to 209.
+const descBase = `${na} vs ${nb}: caffeine, sugar, protein and price compared.`;
+const descGap = diffs[0] ? ` ${diffs[0].display} ${diffs[0].label} gap.` : '';
+const desc = descBase.length + descGap.length <= 155 ? descBase + descGap : descBase;
 ---
 <Base title={`${na} vs ${nb}`} description={desc} jsonLd={jsonLd}>
   <p class="eyebrow"><a href="/">Canned Latte</a> · <a href="/compare">Compare</a></p>

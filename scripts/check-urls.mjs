@@ -12,6 +12,13 @@ const SITE = 'https://cannedlatte.com';
 const NOT_IN_SITEMAP = new Set([`${SITE}/404`]);
 
 const failures = [];
+const warnings = [];
+// Google truncates around 155-160 characters. Over-length is a quality problem, not
+// a correctness one, so it warns rather than failing a deploy.
+const DESC_WARN_AT = 160;
+const decode = (s) =>
+  s.replace(/&#(\d+);/g, (_, d) => String.fromCharCode(d))
+   .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
 
 const walk = (dir, acc = []) => {
   for (const e of readdirSync(dir, { withFileTypes: true })) {
@@ -31,6 +38,7 @@ const publicUrl = (file) => {
 const pages = existsSync('dist') ? walk('dist') : [];
 const canonicals = new Set();
 let checked = 0;
+let described = 0;
 
 for (const file of pages) {
   const html = readFileSync(file, 'utf8');
@@ -57,6 +65,13 @@ for (const file of pages) {
 
   if (og && og !== canonical) {
     failures.push(`${file}: og:url (${og}) disagrees with canonical (${canonical})`);
+  }
+
+  const desc = (html.match(/<meta name="description" content="([^"]*)"/) || [])[1];
+  if (desc) {
+    described++;
+    const n = decode(desc).length;
+    if (n > DESC_WARN_AT) warnings.push(`${want} — meta description is ${n} chars`);
   }
 }
 
@@ -97,7 +112,17 @@ if (failures.length) {
   process.exit(1);
 }
 
+if (warnings.length) {
+  console.warn(`
+  ${warnings.length} of ${described} meta descriptions exceed ${DESC_WARN_AT} characters (warning only):
+`);
+  for (const w of warnings.slice(0, 15)) console.warn('   ! ' + w);
+  if (warnings.length > 15) console.warn(`   … and ${warnings.length - 15} more`);
+  console.warn('');
+}
+
 console.log(
   `  URLs OK — ${checked} canonicals are extensionless, self-referencing and match og:url; ` +
-  `${locs.length} sitemap URLs agree with them.`
+  `${locs.length} sitemap URLs agree with them.` +
+  (warnings.length ? ` ${warnings.length} long meta description(s) — see above.` : ` All ${described} meta descriptions within ${DESC_WARN_AT} chars.`)
 );

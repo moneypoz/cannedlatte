@@ -28,13 +28,17 @@ const similar = all
   .filter((x) => x.id !== product.id && x.data.type === p.type && x.data.milk === p.milk)
   .slice(0, 4);
 
-const desc = [
+const descCore = [
   `${name}: ${p.caffeineMg != null ? `${p.caffeineMg} mg caffeine` : 'caffeine TBD'}`,
   p.sugarG != null ? `${p.sugarG} g sugar` : null,
   p.proteinG != null ? `${p.proteinG} g protein` : null,
   `${milkLabel[p.milk].toLowerCase()} milk`,
   p.pricePerCan != null ? `about ${fmt.usd(p.pricePerCan)} per can` : null,
-].filter(Boolean).join(', ') + '. Full specs and where to buy.';
+].filter(Boolean).join(', ') + '.';
+// Specs first, invitation second: the tail is dropped rather than letting the
+// description run past 155 and get truncated mid-phrase in the results page.
+const descTail = ' Full specs and where to buy.';
+const desc = descCore.length + descTail.length <= 155 ? descCore + descTail : descCore;
 
 const faqs = [
   p.caffeineMg != null && { q: `How much caffeine is in ${name}?`, a: `${name} has about ${p.caffeineMg} mg of caffeine per ${p.sizeOz ? `${p.sizeOz} oz ` : ''}can${p.caffeineNote ? ` (${p.caffeineNote.toLowerCase()})` : ''}. A 12 oz drip coffee is typically 140–200 mg.` },

@@ -25,8 +25,17 @@ if (content?.faqs.length) {
     mainEntity: content.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
   });
 }
+// Keyword-bearing opener first, then as much of the intro as fits under 155 — added
+// a sentence at a time, so a longer intro can never push the description into being
+// truncated mid-phrase on a results page.
+let description = `${page.title}, from real label data.`;
+for (const sentence of page.intro.match(/[^.]+\./g) ?? []) {
+  const next = `${description} ${sentence.trim()}`;
+  if (next.length > 155) break;
+  description = next;
+}
 ---
-<Base title={page.title} description={`${page.title}, from real label data. ${page.intro}`} jsonLd={jsonLd}>
+<Base title={page.title} description={description} jsonLd={jsonLd}>
   <div class="center">
     <span class="status"><span class="dot"></span><b>{list.length} cans</b> · from the database · updated {fmt.mdy(updated)}</span>
     <h1>{page.title}</h1>
