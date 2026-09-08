@@ -1,8 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { allProducts, fullName, fmt } from '../../lib/products';
+import { allProducts, fullName, shortName, fmt } from '../../lib/products';
 
-// One-question pages: "how much caffeine in X". Only built for products with a known figure.
+// One-question pages: "how much caffeine in X". Only built for products with a known
+// figure. Everything below the direct answer is computed from the database, so all
+// ~47 pages differ on their numbers rather than on hand-written prose.
 export async function getStaticPaths() {
   const products = await allProducts();
   const known = products.filter((p) => p.data.caffeineMg != null);
@@ -10,24 +12,132 @@ export async function getStaticPaths() {
 }
 const { product, all } = Astro.props;
 const p = product.data;
+const mg = p.caffeineMg!;
 const name = fullName(p);
-const perOz = p.sizeOz ? (p.caffeineMg! / p.sizeOz).toFixed(1) : null;
-const rank = [...all].sort((x, y) => y.data.caffeineMg! - x.data.caffeineMg!).findIndex((x) => x.id === product.id) + 1;
+const short = shortName(p);
+// "an 8 oz can", "an 11 oz can", but "a 12 oz can".
+const sizeArticle = /^(8|11|18)/.test(String(p.sizeOz)) ? "an" : "a";
+
+const ozOf = (x: (typeof all)[number]) => (x.data.sizeOz ? +(x.data.caffeineMg! / x.data.sizeOz).toFixed(1) : null);
+const perOz = ozOf(product);
+
+// --- category position ---
+const ranked = [...all].sort((x, y) => y.data.caffeineMg! - x.data.caffeineMg!);
+const rank = ranked.findIndex((x) => x.id === product.id) + 1;
+const weaker = all.filter((x) => x.data.caffeineMg! < mg).length;
+const strongerThan = Math.round((weaker / (all.length - 1)) * 100);
+const standing =
+  rank === 1 ? "the strongest can in the database"
+  : rank === all.length ? "the mildest can in the database"
+  : `stronger than ${strongerThan}% of them`;
+const catMin = Math.min(...all.map((x) => x.data.caffeineMg!));
+const catMax = Math.max(...all.map((x) => x.data.caffeineMg!));
+
+// --- everyday equivalents (midpoints of the usual published ranges) ---
+const round1 = (n: number) => Math.round(n * 10) / 10;
+const shots = round1(mg / 70);
+const dripPct = Math.round(mg / 170 * 20) * 5; // nearest 5%
+const cokes = round1(mg / 34);
+const dailyPct = Math.round((mg / 400) * 100);
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+
+// --- same brand ---
+const siblings = ranked.filter((x) => x.data.brandSlug === p.brandSlug && x.id !== product.id);
+
+// --- closest strength from other brands ---
+const nearest = all
+  .filter((x) => x.data.brandSlug !== p.brandSlug)
+  .sort((x, y) => Math.abs(x.data.caffeineMg! - mg) - Math.abs(y.data.caffeineMg! - mg))
+  .slice(0, 2);
+
+// --- per-ounce callout only at the extremes, never as mid-pack boilerplate ---
+const ozValues = all.map(ozOf).filter((v): v is number => v != null).sort((x, y) => x - y);
+const q = (frac: number) => ozValues[Math.floor((ozValues.length - 1) * frac)];
+const q1 = q(0.25), q3 = q(0.75);
+const ozBand = perOz == null ? null : perOz >= q3 ? 'high' : perOz <= q1 ? 'low' : null;
+
+// --- FAQ 2, phrased the way people actually ask it ---
+const lotAnswer =
+  strongerThan >= 75
+    ? `Yes. At ${mg} mg it is stronger than ${strongerThan}% of the canned lattes we track, and above a 12 oz drip coffee at the low end of its usual 140–200 mg range.`
+    : strongerThan <= 25
+      ? `Not especially. At ${mg} mg it is milder than ${100 - strongerThan}% of the canned lattes we track — closer to a single espresso shot than to a mug of drip coffee.`
+      : `It is middle of the road. At ${mg} mg it sits stronger than ${strongerThan}% of the canned lattes we track, roughly ${dripPct}% of a 12 oz drip coffee.`;
+
+const faqs = [
+  { q: `How much caffeine is in ${name}?`, a: `${name} has about ${mg} mg of caffeine per can${p.sizeOz ? `, ${sizeArticle} ${p.sizeOz} oz can` : ''}${perOz ? `, which works out to ${perOz} mg per ounce` : ''}.` },
+  { q: `Does ${short} have a lot of caffeine?`, a: lotAnswer },
+];
 const jsonLd = {
-  '@context': 'https://schema.org', '@type': 'FAQPage',
-  mainEntity: [{ '@type': 'Question', name: `How much caffeine is in ${name}?`, acceptedAnswer: { '@type': 'Answer', text: `${name} contains about ${p.caffeineMg} mg of caffeine per can.` } }],
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
 };
 ---
-<Base title={`How much caffeine is in ${name}?`} description={`${name} has about ${p.caffeineMg} mg of caffeine per can${perOz ? ` (${perOz} mg per oz)` : ''}. How it compares to drip coffee and other canned lattes.`} jsonLd={jsonLd}>
-  <p class="eyebrow">Caffeine</p>
+<Base
+  title={`How much caffeine is in ${name}?`}
+  description={`${name} has about ${mg} mg of caffeine per can${perOz ? ` (${perOz} mg per oz)` : ''} — #${rank} of ${all.length} canned lattes we track. How it compares to espresso, drip coffee and other cans.`}
+  jsonLd={jsonLd}>
+  <p class="eyebrow"><a href="/">Canned Latte</a> · Caffeine</p>
   <h1>How much caffeine is in {name}?</h1>
-  <p class="lede"><strong>{p.caffeineMg} mg per can.</strong>{perOz && ` That's ${perOz} mg per ounce.`}{p.caffeineNote && ` ${p.caffeineNote}.`}</p>
+
+  <p class="lede"><strong>{name} has about {mg} mg of caffeine per can.</strong>{p.caffeineNote && ` ${p.caffeineNote}.`}</p>
+
   <div class="stats">
-    <div class="stat-card"><div class="n">{p.caffeineMg} mg</div><div class="l">per can</div></div>
-    {perOz && <div class="stat-card"><div class="n">{perOz}</div><div class="l">mg per oz</div></div>}
-    <div class="stat-card"><div class="n">#{rank}</div><div class="l">of {all.length} tracked, most caffeine first</div></div>
+    <div class="stat-card"><div class="n">{mg} mg</div><div class="l">per can</div></div>
+    {perOz && <div class="stat-card"><div class="n">{perOz}</div><div class="l">mg per ounce</div></div>}
+    <div class="stat-card"><div class="n">#{rank}</div><div class="l">of {all.length} cans by caffeine</div></div>
+    <div class="stat-card"><div class="n">{dailyPct}%</div><div class="l">of the FDA's 400 mg daily guideline</div></div>
   </div>
-  <h2>For comparison</h2>
-  <p>A 12 oz drip coffee is typically 140–200 mg. A single espresso shot is around 65–75 mg. The FDA's guideline for healthy adults is up to 400 mg a day, so {name} is roughly {Math.round((p.caffeineMg! / 400) * 100)}% of that in one can.</p>
+
+  <h2>What {mg} mg actually means</h2>
+  <p>That's about {plural(shots, 'espresso shot', 'espresso shots')} (65–75 mg each), roughly {dripPct}% of a 12 oz drip coffee (140–200 mg), or {plural(cokes, 'can', 'cans')} of Coke (34 mg).</p>
+
+  {ozBand && (
+    <p>
+      {ozBand === 'high'
+        ? `Per ounce it is one of the more concentrated cans we track, at ${perOz} mg/oz against a ${q1}–${q3} mg/oz middle for the category. A small can that drinks strong.`
+        : `Per ounce it is one of the gentler cans we track, at ${perOz} mg/oz against a ${q1}–${q3} mg/oz middle for the category. The caffeine is spread across a larger serving.`}
+    </p>
+  )}
+
+  <h2>Where it sits</h2>
+  <p>Among the {all.length} cans we track with a published caffeine figure, {name} ranks <strong>#{rank}</strong> — {standing}. The category runs {catMin}–{catMax} mg per can.</p>
+
+  {siblings.length > 0 && (
+    <>
+      <h2>Compared with the rest of {p.brand}</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Can</th><th>Caffeine</th><th>Per oz</th></tr></thead>
+          <tbody>
+            <tr><th>{p.name}</th><td class="num">{mg} mg</td><td class="num">{perOz ?? '—'}</td></tr>
+            {siblings.map((s) => (
+              <tr>
+                <th><a href={`/caffeine/${s.id}`}>{s.data.name}</a></th>
+                <td class="num">{s.data.caffeineMg} mg</td>
+                <td class="num">{ozOf(s) ?? '—'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  )}
+
+  {nearest.length > 0 && (
+    <>
+      <h2>Same strength, different can</h2>
+      <p>
+        Closest on caffeine from other brands: {nearest.map((n, i) => (
+          <>{i > 0 && ', '}<a href={`/caffeine/${n.id}`}>{fullName(n.data)}</a> at {n.data.caffeineMg} mg</>
+        ))}.
+      </p>
+    </>
+  )}
+
+  <h2>Questions</h2>
+  {faqs.map((f) => (<><h3>{f.q}</h3><p>{f.a}</p></>))}
+
   <p><a class="btn" href={`/latte/${product.id}`}>Full specs and where to buy</a> <a class="btn secondary" href="/best/most-caffeine">All lattes by caffeine</a></p>
 </Base>

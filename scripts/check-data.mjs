@@ -66,6 +66,18 @@ if (publicFiles.length !== assetFiles.length) {
   failures.push(`image count drift: ${PUBLIC_IMG} has ${publicFiles.length}, ${ASSET_IMG} has ${assetFiles.length}`);
 }
 
+// A checker that inspected nothing must never report success. Without this, an
+// empty glob or a renamed directory reads as "no problems found".
+const coverage = [
+  ['products parsed', products.length],
+  ['photos referenced by a product', referenced.size],
+  ['images on disk in public/', publicFiles.length],
+  ['images on disk in src/assets/', assetFiles.length],
+];
+for (const [what, n] of coverage) {
+  if (n === 0) failures.push(`checked nothing: 0 ${what} — the check itself is broken, not the data`);
+}
+
 if (failures.length) {
   console.error(`\n  Data integrity check FAILED — ${failures.length} problem(s):\n`);
   for (const f of failures) console.error('   • ' + f);
