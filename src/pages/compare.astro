@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+import { allProducts, comparePairs, fullName, fmt } from '../lib/products';
+
+const products = await allProducts();
+const byId = new Map(products.map((p) => [p.id, p]));
+const pairs = comparePairs
+  .filter(([a, b]) => byId.has(a) && byId.has(b))
+  .map(([a, b]) => ({ slug: `${a}-vs-${b}`, a: byId.get(a)!, b: byId.get(b)! }));
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Canned Latte', item: 'https://cannedlatte.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Compare' },
+  ],
+};
+---
+<Base title="Compare canned lattes" description={`Head-to-head canned latte comparisons: caffeine, sugar, protein, milk and price side by side across ${pairs.length} matchups.`} jsonLd={jsonLd}>
+  <p class="eyebrow"><a href="/">Canned Latte</a> · Compare</p>
+  <h1>Head to head</h1>
+  <p class="lede">Two cans, the same spec sheet, side by side. Useful when you've narrowed it to a shortlist and want the numbers next to each other rather than a page apart.</p>
+
+  <div class="grid">
+    {pairs.map(({ slug, a, b }) => (
+      <a class="card" href={`/compare/${slug}`}>
+        <h3>{fullName(a.data)} <span class="vs">vs</span> {fullName(b.data)}</h3>
+        <p class="meta" style="margin:0">
+          {fmt.mg(a.data.caffeineMg)} vs {fmt.mg(b.data.caffeineMg)} caffeine ·
+          {' '}{fmt.g(a.data.sugarG)} vs {fmt.g(b.data.sugarG)} sugar
+        </p>
+      </a>
+    ))}
+  </div>
+
+  <h2>Want a matchup that isn't here?</h2>
+  <p>Every can has its own page with the full label, and the <a href="/table">full table</a> sorts on any column. If there's a pairing you'd like written up, <a href="/contact">tell us</a>.</p>
+</Base>
+
+<style>
+  .vs { color: var(--muted-foreground); font-weight: 500; }
+</style>

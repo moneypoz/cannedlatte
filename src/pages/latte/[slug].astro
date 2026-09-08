@@ -4,7 +4,7 @@ import BuyLinks from '../../components/BuyLinks.astro';
 import Disclosure from '../../components/Disclosure.astro';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { allProducts, fmt, milkLabel, typeLabel, fullName } from '../../lib/products';
+import { allProducts, comparisonsFor, fmt, milkLabel, typeLabel, fullName } from '../../lib/products';
 
 // Originals stay in public/ (used for the absolute JSON-LD URL); these copies under
 // src/assets/ are what Astro processes into resized WebP at build time.
@@ -20,6 +20,9 @@ const heroImage = p.image
   ? productImages[`../../assets/products/${p.image.split('/').pop()}`]?.default
   : undefined;
 const name = fullName(p);
+const comparisons = comparisonsFor(product.id)
+  .map((c) => ({ ...c, other: all.find((x) => x.id === c.otherId) }))
+  .filter((c) => c.other);
 const siblings = all.filter((x) => x.data.brandSlug === p.brandSlug && x.id !== product.id);
 const similar = all
   .filter((x) => x.id !== product.id && x.data.type === p.type && x.data.milk === p.milk)
@@ -115,6 +118,16 @@ jsonLd.push({
     <>
       <h2>Questions</h2>
       {faqs.map((f) => (<><h3>{f.q}</h3><p>{f.a}</p></>))}
+    </>
+  )}
+
+  {comparisons.length > 0 && (
+    <>
+      <h2>Head to head</h2>
+      <ul>{comparisons.map((c) => (
+        <li><a href={`/compare/${c.slug}`}>{name} vs {fullName(c.other!.data)}</a></li>
+      ))}</ul>
+      <p class="meta"><a href="/compare">All comparisons →</a></p>
     </>
   )}
 

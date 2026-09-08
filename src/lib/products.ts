@@ -133,6 +133,12 @@ export const bestPages = [
   },
 ];
 
+/** Every comparison featuring a given product, with the id of the other can. */
+export const comparisonsFor = (id: string) =>
+  comparePairs
+    .filter(([a, b]) => a === id || b === id)
+    .map(([a, b]) => ({ slug: `${a}-vs-${b}`, otherId: a === id ? b : a }));
+
 /** Head-to-head pages. Add pairs here; each becomes /compare/a-vs-b. */
 export const comparePairs: [string, string][] = [
   ['la-colombe-everyday-draft-latte', 'death-wish-caramel-cold-brew-latte'],
