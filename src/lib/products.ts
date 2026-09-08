@@ -148,4 +148,17 @@ export const comparePairs: [string, string][] = [
   ['wandering-bear-double-latte', 'nobl-cold-brew-oat-milk-latte'],
   ['la-colombe-everyday-draft-latte', 'starbucks-doubleshot-espresso-salted-caramel-cream'],
   ['death-wish-caramel-cold-brew-latte', 'wandering-bear-vanilla-latte'],
+  // Category leaders, where the ranking pages send people looking for a decision.
+  ['bones-holy-cannoli-latte', 'la-colombe-triple-draft-latte'],
+  ['projo-power-coffee-vanilla-latte', 'slate-caramel-latte'],
+  ['slate-caramel-latte', 'wandering-bear-double-latte'],
+  // Same shelf, different answer.
+  ['projo-power-coffee-vanilla-latte', 'throne-coffee-latte'],
+  ['rise-brewing-oat-milk-latte', 'nobl-cold-brew-oat-milk-latte'],
+  ['rise-brewing-oat-milk-latte', 'la-colombe-oatmilk-vanilla-draft-latte'],
+  ['la-colombe-vanilla-draft-latte', 'rise-brewing-vanilla-oat-milk-latte'],
+  // Brand-name searches, and the widest sugar gap in the database.
+  ['starbucks-doubleshot-espresso-salted-caramel-cream', 'illy-cold-brew-latte-macchiato'],
+  ['death-wish-original-latte', 'bones-holy-cannoli-latte'],
+  ['slate-vanilla-latte', 'happy-vanilla-latte'],
 ];
