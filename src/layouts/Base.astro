@@ -6,7 +6,14 @@ interface Props {
   noindex?: boolean;
 }
 const { title, description, jsonLd, noindex = false } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site);
+// build.format:'file' writes /advertise.html, and Astro.url.pathname carries that
+// suffix at build time — but the host 308-redirects /advertise.html to /advertise.
+// A canonical pointing at a redirect rather than a 200 makes the page non-indexable,
+// so normalise to the clean URL the server actually serves. trailingSlash is 'never',
+// so only the root keeps its slash. og:url reuses this for the same reason.
+const cleanPath =
+  Astro.url.pathname.replace(/\/?index\.html$/, '/').replace(/\.html$/, '').replace(/(.)\/$/, '$1') || '/';
+const canonical = new URL(cleanPath, Astro.site);
 const ga = import.meta.env.PUBLIC_GA4_ID;
 const fullTitle = title === 'Canned Latte' ? 'Canned Latte: every canned latte, compared' : `${title} · Canned Latte`;
 ---
