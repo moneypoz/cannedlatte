@@ -7,11 +7,12 @@
     "dev": "astro dev",
     "build": "astro build",
     "prebuild": "npm run check:data",
-    "postbuild": "npm run check:claims",
+    "postbuild": "npm run check:claims && npm run check:urls",
     "check:data": "node scripts/check-data.mjs",
     "check:claims": "node scripts/check-claims.mjs",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "check:urls": "node scripts/check-urls.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.4.0",
