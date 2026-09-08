@@ -8,7 +8,7 @@
   "proteinG": 2,
   "calories": 100,
   "refrigerated": false,
-  "pricePerCan": null,
+  "pricePerCan": 1.99,
   "packPrice": null,
   "packSize": null,
   "retailers": [],
@@ -17,10 +17,15 @@
       "label": "Mr. Brown",
       "url": "https://www.mrbrowncoffee.com/",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (24-pack)",
+      "url": "https://amzn.to/4A0O5Hv",
+      "affiliate": true
     }
   ],
   "verified": true,
-  "updated": "2026-09-07",
+  "updated": "2026-09-08",
   "sources": [
     "https://www.mrbrowncoffee.com/"
   ],

@@ -4,7 +4,7 @@ import ProductTable from '../components/ProductTable.astro';
 import Disclosure from '../components/Disclosure.astro';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { allProducts, bestPages, comparePairs, fullName, shortName, fmt } from '../lib/products';
+import { allProducts, bestPages, comparePairs, fullName, lattesOnly, shortName, fmt } from '../lib/products';
 
 const products = await allProducts();
 
@@ -28,7 +28,11 @@ const cardImage = (image?: string) => {
 // Prefer the cutout at card size; fall back to the composite if no crop exists.
 const displayImage = (image?: string) => cardImage(image) ?? productImage(image);
 
-const eligible = products.filter((p) => p.data.verified && p.data.image);
+// Lattes only, matching every /best list and the tiles below. Without this the
+// cheapest *can* (a milk coffee at $1.99) and the cheapest *latte* ($2.83) show up
+// as two different answers in adjacent modules on the same page.
+const lattes = lattesOnly(products);
+const eligible = lattes.filter((p) => p.data.verified && p.data.image);
 const PICK_SPECS = [
   { label: 'Strongest', key: 'caffeineMg', dir: -1, stat: (d: any) => fmt.mg(d.caffeineMg) },
   { label: 'Least sugar', key: 'sugarG', dir: 1, stat: (d: any) => `${fmt.g(d.sugarG)} sugar` },
@@ -85,7 +89,7 @@ const jsonLd = {
 
   {picks.length > 0 && (
     <section class="picks">
-      <h2 class="picks-h">Top picks from {products.length} cans</h2>
+      <h2 class="picks-h">Top picks from {lattes.length} lattes</h2>
       <div class="picks-grid">
         {picks.map((pick) => (
           <a class="pick" href={`/latte/${pick.product.id}`}>
