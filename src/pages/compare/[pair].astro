@@ -2,19 +2,12 @@
 import Base from '../../layouts/Base.astro';
 import Disclosure from '../../components/Disclosure.astro';
 import BuyLinks from '../../components/BuyLinks.astro';
-import { allProducts, comparePairs, fullName, fmt, milkLabel } from '../../lib/products';
+import { allProducts, comparePairs, fullName, fmt, milkLabel, metricSpread, rankedDiffs } from '../../lib/products';
 
 export async function getStaticPaths() {
   const products = await allProducts();
   const byId = new Map(products.map((p) => [p.id, p]));
-  // How much each metric varies across the whole database. Used to judge which gap
-  // is genuinely the widest for a pair: sugar has the largest raw range, so scoring
-  // against the pair alone would make sugar lead almost every page.
-  const range = (k: "caffeineMg" | "sugarG" | "proteinG" | "pricePerCan") => {
-    const v = products.map((p) => p.data[k]).filter((x): x is number => x != null);
-    return Math.max(...v) - Math.min(...v) || 1;
-  };
-  const spread = { caffeineMg: range("caffeineMg"), sugarG: range("sugarG"), proteinG: range("proteinG"), pricePerCan: range("pricePerCan") };
+  const spread = metricSpread(products);
   return comparePairs
     .filter(([a, b]) => byId.has(a) && byId.has(b))
     .map(([a, b]) => ({ params: { pair: `${a}-vs-${b}` }, props: { a: byId.get(a)!, b: byId.get(b)!, spread, total: products.length } }));
@@ -51,24 +44,22 @@ const cmp = (key: 'caffeineMg' | 'sugarG' | 'proteinG' | 'pricePerCan', lowerWin
 };
 const caff = cmp('caffeineMg'), sug = cmp('sugarG', true), pro = cmp('proteinG'), price = cmp('pricePerCan', true);
 
-// Rank the differences by how big they are *relative* to the figures involved, so the
-// opener leads with whatever actually separates this pair. Since the leading metric
-// changes from pair to pair, the openers diverge instead of reading from one mould.
-type Diff = { rel: number; aWins: boolean; lead: string; frag: string };
-const diffs: Diff[] = [];
-if (caff) diffs.push({ rel: caff.delta / spread.caffeineMg, aWins: caff.aWins,
-  lead: `Caffeine is the widest gap here: ${caff.winner} carries ${caff.delta} mg more.`,
-  frag: `carries ${caff.delta} mg more caffeine` });
-if (sug) diffs.push({ rel: sug.delta / spread.sugarG, aWins: sug.aWins,
-  lead: `Sugar is where these two part company: ${sug.winner} has ${sug.delta} g less.`,
-  frag: `has ${sug.delta} g less sugar` });
-if (pro) diffs.push({ rel: pro.delta / spread.proteinG, aWins: pro.aWins,
-  lead: `Protein separates these two most: ${pro.winner} has ${pro.delta} g more.`,
-  frag: `has ${pro.delta} g more protein` });
-if (price) diffs.push({ rel: price.delta / spread.pricePerCan, aWins: price.aWins,
-  lead: `Price is the biggest difference: ${price.winner} costs ${fmt.usd(price.delta)} less per can.`,
-  frag: `costs ${fmt.usd(price.delta)} less per can` });
-diffs.sort((x, y) => y.rel - x.rel);
+// Rank the differences by how big they are *relative* to the whole database's range
+// for each metric, so the opener leads with whatever actually separates this pair.
+// Since the leading metric changes from pair to pair, the openers diverge instead of
+// reading from one mould. rankedDiffs is shared with the /compare index, so a card
+// and the page it links to always name the same gap.
+const PHRASING: Record<string, { lead: (w: string, d: string) => string; frag: (d: string) => string }> = {
+  caffeineMg: { lead: (w, d) => `Caffeine is the widest gap here: ${w} carries ${d} more.`, frag: (d) => `carries ${d} more caffeine` },
+  sugarG: { lead: (w, d) => `Sugar is where these two part company: ${w} has ${d} less.`, frag: (d) => `has ${d} less sugar` },
+  proteinG: { lead: (w, d) => `Protein separates these two most: ${w} has ${d} more.`, frag: (d) => `has ${d} more protein` },
+  pricePerCan: { lead: (w, d) => `Price is the biggest difference: ${w} costs ${d} less per can.`, frag: (d) => `costs ${d} less per can` },
+};
+const diffs = rankedDiffs(A, B, spread).map((d) => ({
+  ...d,
+  lead: PHRASING[d.key].lead(d.aWins ? na : nb, d.display),
+  frag: PHRASING[d.key].frag(d.display),
+}));
 const headline = diffs[0]?.lead ?? null;
 const restA = diffs.slice(1).filter((d) => d.aWins).map((d) => d.frag);
 const restB = diffs.slice(1).filter((d) => !d.aWins).map((d) => d.frag);

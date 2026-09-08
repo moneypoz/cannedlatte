@@ -19,7 +19,10 @@ export const shortName = (p: P) => {
   const full = fullName(p);
   const s = full.replace(/\s+Coffee\s+(Company|Co\.)/i, '');
   const trimmed = s.replace(/\s+(Cold Brew Latte|Latte)$/i, '');
-  return trimmed.split(/\s+/).length >= 2 ? trimmed : s;
+  // Brand and product name can repeat a word once the suffix is gone — "Throne
+  // Sport Coffee" + "Coffee Latte" became "Throne Sport Coffee Coffee".
+  const deduped = trimmed.replace(/\b(\w+)(\s+\1\b)+/gi, '$1');
+  return deduped.split(/\s+/).length >= 2 ? deduped : s;
 };
 
 export const fmt = {
@@ -162,3 +165,44 @@ export const comparePairs: [string, string][] = [
   ['death-wish-original-latte', 'bones-holy-cannoli-latte'],
   ['slate-vanilla-latte', 'happy-vanilla-latte'],
 ];
+
+/* ---- head-to-head differences -------------------------------------------
+ * Shared by /compare (the matchup cards' "biggest gap" line) and
+ * /compare/[pair] (the opener). Both must name the same winning metric for a
+ * pair, so the ranking lives here rather than in either page.
+ */
+export type Metric = 'caffeineMg' | 'sugarG' | 'proteinG' | 'pricePerCan';
+
+export const METRICS = [
+  { key: 'caffeineMg', label: 'caffeine', lowerWins: false, delta: (v: number) => `${v} mg` },
+  { key: 'sugarG', label: 'sugar', lowerWins: true, delta: (v: number) => `${v} g` },
+  { key: 'proteinG', label: 'protein', lowerWins: false, delta: (v: number) => `${v} g` },
+  { key: 'pricePerCan', label: 'price', lowerWins: true, delta: (v: number) => fmt.usd(v) },
+] as const satisfies readonly { key: Metric; label: string; lowerWins: boolean; delta: (v: number) => string }[];
+
+export type Spread = Record<Metric, number>;
+
+/** How much each metric varies across the whole database. Scoring a pair's gaps
+ *  against the pair alone would make sugar lead almost every page, since sugar
+ *  has by far the largest raw range. */
+export const metricSpread = (items: Product[]): Spread =>
+  Object.fromEntries(
+    METRICS.map(({ key }) => {
+      const v = items.map((p) => p.data[key]).filter((x): x is number => x != null);
+      return [key, (v.length ? Math.max(...v) - Math.min(...v) : 0) || 1];
+    }),
+  ) as Spread;
+
+export type Diff = { key: Metric; label: string; delta: number; display: string; aWins: boolean; rel: number };
+
+/** Every metric where both cans publish a figure and the figures differ, widest
+ *  gap first. Metrics either side leaves null are absent, not ranked last — so
+ *  the first entry is always safe to print, and an empty array means the pair
+ *  has no comparable numbers at all. */
+export const rankedDiffs = (A: P, B: P, spread: Spread): Diff[] =>
+  METRICS.flatMap(({ key, label, lowerWins, delta: show }) => {
+    const x = A[key], y = B[key];
+    if (x == null || y == null || x === y) return [];
+    const delta = Math.abs(x - y);
+    return [{ key, label, delta, display: show(delta), aWins: lowerWins ? x < y : x > y, rel: delta / spread[key] }];
+  }).sort((m, n) => n.rel - m.rel);
