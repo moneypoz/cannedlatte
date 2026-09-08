@@ -14,34 +14,127 @@ export async function getStaticPaths() {
 const { a, b } = Astro.props;
 const A = a.data, B = b.data;
 const na = fullName(A), nb = fullName(B);
+
+// Caffeine per ounce is the fair comparison when the cans are different sizes.
+const perOz = (p: typeof A) => (p.caffeineMg != null && p.sizeOz ? +(p.caffeineMg / p.sizeOz).toFixed(1) : null);
+const aOz = perOz(A), bOz = perOz(B);
+const sizesDiffer = A.sizeOz != null && B.sizeOz != null && A.sizeOz !== B.sizeOz;
+
 const rows: [string, string, string][] = [
   ['Caffeine', fmt.mg(A.caffeineMg), fmt.mg(B.caffeineMg)],
+  ['Caffeine per oz', aOz != null ? `${aOz} mg` : '—', bOz != null ? `${bOz} mg` : '—'],
   ['Sugar', fmt.g(A.sugarG), fmt.g(B.sugarG)],
+  ['Added sugar', A.addedSugarG != null ? `${A.addedSugarG} g` : '—', B.addedSugarG != null ? `${B.addedSugarG} g` : '—'],
   ['Protein', fmt.g(A.proteinG), fmt.g(B.proteinG)],
+  ['Calories', fmt.cal(A.calories), fmt.cal(B.calories)],
   ['Can size', fmt.oz(A.sizeOz), fmt.oz(B.sizeOz)],
   ['Milk', milkLabel[A.milk], milkLabel[B.milk]],
   ['Dairy-free', A.dairyFree ? 'Yes' : 'No', B.dairyFree ? 'Yes' : 'No'],
   ['Storage', A.refrigerated ? 'Refrigerated' : 'Shelf-stable', B.refrigerated ? 'Refrigerated' : 'Shelf-stable'],
   ['Price per can', fmt.usd(A.pricePerCan), fmt.usd(B.pricePerCan)],
 ];
-const verdictBits: string[] = [];
-if (A.caffeineMg != null && B.caffeineMg != null && A.caffeineMg !== B.caffeineMg) verdictBits.push(`${A.caffeineMg > B.caffeineMg ? na : nb} has more caffeine (${Math.abs(A.caffeineMg - B.caffeineMg)} mg more)`);
-if (A.sugarG != null && B.sugarG != null && A.sugarG !== B.sugarG) verdictBits.push(`${A.sugarG < B.sugarG ? na : nb} has less sugar (${Math.abs(A.sugarG - B.sugarG)} g less)`);
-if (A.pricePerCan != null && B.pricePerCan != null && A.pricePerCan !== B.pricePerCan) verdictBits.push(`${A.pricePerCan < B.pricePerCan ? na : nb} is cheaper per can`);
+
+/** Compare one field. Returns null when either side is unpublished or they tie. */
+const cmp = (key: 'caffeineMg' | 'sugarG' | 'proteinG' | 'pricePerCan', lowerWins = false) => {
+  const x = A[key], y = B[key];
+  if (x == null || y == null || x === y) return null;
+  const aWins = lowerWins ? x < y : x > y;
+  return { winner: aWins ? na : nb, aWins, delta: Math.abs(x - y) };
+};
+const caff = cmp('caffeineMg'), sug = cmp('sugarG', true), pro = cmp('proteinG'), price = cmp('pricePerCan', true);
+
+const verdict: string[] = [];
+if (caff) verdict.push(`${caff.winner} carries ${caff.delta} mg more caffeine`);
+if (sug) verdict.push(`${sug.winner} has ${sug.delta} g less sugar`);
+if (pro) verdict.push(`${pro.winner} has ${pro.delta} g more protein`);
+if (price) verdict.push(`${price.winner} costs ${fmt.usd(price.delta)} less per can`);
+const noNumbers = verdict.length === 0;
+const unpublished = [A, B].filter((p) => p.caffeineMg == null && p.sugarG == null).map((p) => fullName(p));
+
+/** Reasons to pick one side, drawn only from fields where it actually wins. */
+const reasonsFor = (isA: boolean) => {
+  const r: string[] = [];
+  const me = isA ? A : B, other = isA ? B : A;
+  if (caff && caff.aWins === isA) r.push('the bigger caffeine hit');
+  if (sug && sug.aWins === isA) r.push('less sugar');
+  if (pro && pro.aWins === isA) r.push('more protein');
+  if (price && price.aWins === isA) r.push('a lower price per can');
+  if (me.dairyFree && !other.dairyFree) r.push('a dairy-free can');
+  if (!me.refrigerated && other.refrigerated) r.push('something that keeps in a cupboard');
+  return r;
+};
+const forA = reasonsFor(true), forB = reasonsFor(false);
+const list = (r: string[]) => (r.length > 1 ? `${r.slice(0, -1).join(', ')} and ${r.at(-1)}` : r[0]);
+
+const faqs: { q: string; a: string }[] = [];
+if (caff) faqs.push({ q: `Which has more caffeine, ${na} or ${nb}?`, a: `${caff.winner}, by ${caff.delta} mg per can.${sizesDiffer && aOz != null && bOz != null ? ` The cans are different sizes, so per ounce it is ${aOz} mg against ${bOz} mg.` : ''}` });
+if (sug) faqs.push({ q: `Which has less sugar?`, a: `${sug.winner}, with ${sug.delta} g less per can.` });
+if (pro) faqs.push({ q: `Which has more protein?`, a: `${pro.winner}, by ${pro.delta} g per can.` });
+if (A.dairyFree !== B.dairyFree) {
+  const df = A.dairyFree ? A : B, no = A.dairyFree ? B : A;
+  faqs.push({ q: `Is either one dairy-free?`, a: `${fullName(df)} is, on ${milkLabel[df.milk].toLowerCase()} milk. ${fullName(no)} is not — it uses ${milkLabel[no.milk].toLowerCase()} milk.` });
+}
+if (price) faqs.push({ q: `Which is cheaper?`, a: `${price.winner}, by about ${fmt.usd(price.delta)} per can at the brand's own price.` });
+
+const jsonLd: Record<string, unknown>[] = [{
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Canned Latte', item: 'https://cannedlatte.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Compare', item: 'https://cannedlatte.com/compare' },
+    { '@type': 'ListItem', position: 3, name: `${na} vs ${nb}` },
+  ],
+}];
+if (faqs.length) {
+  jsonLd.push({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  });
+}
+
+const desc = `${na} vs ${nb}: caffeine, sugar, protein, milk and price side by side${caff ? `. ${caff.winner} is the stronger can` : ''}.`;
 ---
-<Base title={`${na} vs ${nb}`} description={`${na} vs ${nb}: caffeine, sugar, protein, milk and price side by side.`}>
-  <p class="eyebrow">Head to head</p>
+<Base title={`${na} vs ${nb}`} description={desc} jsonLd={jsonLd}>
+  <p class="eyebrow"><a href="/">Canned Latte</a> · <a href="/compare">Compare</a></p>
   <h1>{na} vs {nb}</h1>
-  {verdictBits.length > 0 && <p class="lede">{verdictBits.join('. ')}.</p>}
+  {!noNumbers && <p class="lede">{verdict.join('. ')}.</p>}
+  {noNumbers && (
+    <p class="lede">
+      These two can't be separated on the numbers yet: {unpublished.length ? `${unpublished.join(' and ')} ${unpublished.length > 1 ? 'publish' : 'publishes'} no nutrition figures` : 'the published figures match'}. The specs below are everything we have from the label.
+    </p>
+  )}
+
   <div class="tablewrap">
     <table>
       <thead><tr><th></th><th><a href={`/latte/${a.id}`}>{na}</a></th><th><a href={`/latte/${b.id}`}>{nb}</a></th></tr></thead>
       <tbody>{rows.map(([k, va, vb]) => <tr><th>{k}</th><td class="num">{va}</td><td class="num">{vb}</td></tr>)}</tbody>
     </table>
   </div>
+
+  {sizesDiffer && aOz != null && bOz != null && (
+    <p>These aren't the same size can — {fmt.oz(A.sizeOz)} against {fmt.oz(B.sizeOz)} — so the caffeine totals aren't quite like for like. Per ounce it's {aOz} mg versus {bOz} mg, which is the number to use if you're comparing strength rather than how long the can lasts.</p>
+  )}
+
+  <h2>Which should you buy?</h2>
+  {forA.length > 0 && <p>Pick <a href={`/latte/${a.id}`}>{na}</a> for {list(forA)}.</p>}
+  {forB.length > 0 && <p>Pick <a href={`/latte/${b.id}`}>{nb}</a> for {list(forB)}.</p>}
+  {forA.length === 0 && forB.length === 0 && (
+    <p>On the figures we have, there's little to separate these two. Choose on flavour, or on whichever you can actually find — see each product page for where it's sold.</p>
+  )}
+
   <div class="grid">
     <div class="card"><h3>{na}</h3><p style="font-size:15px">{A.summary}</p><BuyLinks product={A} /></div>
     <div class="card"><h3>{nb}</h3><p style="font-size:15px">{B.summary}</p><BuyLinks product={B} /></div>
   </div>
   <Disclosure />
+
+  {faqs.length > 0 && (
+    <div style="max-width:62ch">
+      <h2>Questions</h2>
+      {faqs.map((f) => (<><h3>{f.q}</h3><p>{f.a}</p></>))}
+    </div>
+  )}
+
+  <p class="meta"><a href="/compare">All comparisons →</a> · <a href="/table">Full table of {(await allProducts()).length} cans →</a></p>
 </Base>
