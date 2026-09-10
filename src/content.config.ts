@@ -22,7 +22,9 @@ const products = defineCollection({
     // 'plant' is the milk column's version of null: the can is demonstrably
     // plant-based but the brand does not say which plant. Guessing 'oat' here
     // would put a possible tree-nut drink under the oat filter, which is the one
-    // direction this field must never be wrong in.
+    // direction this field must never be wrong in. Currently unused — the one can
+    // that needed it turned out to be almond, printed on a label image the brand
+    // publishes but does not put in text. Kept because the situation will recur.
     milk: z.enum(['dairy', 'lactose-free dairy', 'skim', 'oat', 'almond', 'coconut', 'plant', 'none']),
     dairyFree: z.boolean(),
     refrigerated: z.boolean().default(false),

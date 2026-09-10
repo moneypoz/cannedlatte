@@ -2,10 +2,10 @@
   "type": "latte",
   "sizeOz": 8,
   "caffeineMg": 79,
-  "sugarG": null,
-  "addedSugar": null,
-  "addedSugarG": null,
-  "proteinG": null,
+  "sugarG": 5,
+  "addedSugar": false,
+  "addedSugarG": 0,
+  "proteinG": 0,
   "calories": 100,
   "refrigerated": false,
   "pricePerCan": 4.5,
@@ -38,5 +38,5 @@
   "caffeineNote": "Brand states 75–83 mg per 8 oz can",
   "milk": "coconut",
   "dairyFree": true,
-  "summary": "USDA Organic cold brew on coconut cream from the Los Angeles roaster — the only coconut-milk can we track — at 100 calories per 8 oz can and a brand-stated 75–83 mg of caffeine. Groundwork publishes no sugar or protein figure, so those columns stay blank until we check a can."
+  "summary": "USDA Organic cold brew on coconut cream from the Los Angeles roaster — the only coconut-milk can we track — sweetened with date paste rather than sugar: 5 g of total sugar with 0 g added, under 1 g of protein and 100 calories per 8 oz can, at a brand-stated 75–83 mg of caffeine."
 }

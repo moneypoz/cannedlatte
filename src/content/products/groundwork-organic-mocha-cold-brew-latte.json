@@ -2,11 +2,11 @@
   "type": "latte",
   "sizeOz": 8,
   "caffeineMg": 96,
-  "sugarG": null,
-  "addedSugar": null,
-  "addedSugarG": null,
-  "proteinG": null,
-  "calories": null,
+  "sugarG": 10,
+  "addedSugar": true,
+  "addedSugarG": 7,
+  "proteinG": 3,
+  "calories": 140,
   "refrigerated": false,
   "pricePerCan": 4.5,
   "packPrice": 54.0,
@@ -37,7 +37,7 @@
   "name": "Organic Mocha Cold Brew Latte",
   "flavor": "Mocha",
   "caffeineNote": "Brand states 91–101 mg per 8 oz can, the strongest of the four Groundwork variants",
-  "milk": "plant",
+  "milk": "almond",
   "dairyFree": true,
-  "summary": "Cocoa stirred into Groundwork's Certified Organic cold brew, and the strongest can in their line at a brand-stated 91–101 mg per 8 oz. It is labelled vegan and dairy-free, but unlike the oat, almond and coconut cans beside it the brand never says which plant milk it uses, so we record the base as unstated rather than assume. No calorie, sugar or protein figure is published either."
+  "summary": "Cocoa stirred into Groundwork's Certified Organic cold brew and built on almond butter, the strongest can in their line at a brand-stated 91–101 mg per 8 oz. It is also the only one of the four that adds sugar — 7 g of date sugar inside 10 g total — alongside monk fruit, at 140 calories and 3 g of protein."
 }

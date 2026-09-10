@@ -37,7 +37,7 @@ export type NewsItem = {
 export const news: NewsItem[] = [
   {
     date: '2026-09-10',
-    text: 'King Coffee is bringing its Vietnamese ready-to-drink lattes to the US, though all four cans still read sold out on its own store.',
+    text: 'King Coffee’s Vietnamese ready-to-drink lattes are on sale in the US, $19.99 for six 8 oz cans direct from the brand.',
     link: { href: '/latte/king-coffee-vanilla-latte', label: 'King Coffee Vanilla Latte' },
   },
   {
