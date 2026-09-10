@@ -24,6 +24,14 @@ export type NewsItem = {
   text: string;
   /** Optional pointer to the page that carries the evidence. */
   link?: { href: string; label: string };
+  /**
+   * Optional thumbnail: a transparent cutout filename in
+   * src/assets/products/cards/. Named rather than imported so this module stays
+   * free of astro:assets and can be read by plain node. Anything referenced here
+   * that is not also some product's photo must be listed in EDITION_IMAGES in
+   * scripts/check-data.mjs, or the orphan check will (correctly) reject it.
+   */
+  image?: string;
 };
 
 export const news: NewsItem[] = [
@@ -31,6 +39,7 @@ export const news: NewsItem[] = [
     date: '2026-09-10',
     text: 'Happy’s Tate’s Bake Shop collab can, announced May 2025 and sold only at Walmart, is still on shelves next to the standard Chocolatey Chip Latte.',
     link: { href: '/latte/happy-chocolatey-chip-latte', label: 'Happy Chocolatey Chip Latte' },
+    image: 'happy-chocolatey-chip-tates-edition-card.png',
   },
   {
     date: '2026-09-10',

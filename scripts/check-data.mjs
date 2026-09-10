@@ -13,6 +13,27 @@ const ASSET_IMG = 'src/assets/products';
 const jpgs = (dir) => (existsSync(dir) ? readdirSync(dir).filter((f) => /\.(jpe?g|png|webp)$/i.test(f)) : []);
 const failures = [];
 
+// Images that are on disk on purpose without being any product's `image`:
+// alternate-edition artwork and pictures used by editorial entries on /new.
+// The orphan rule below exists to catch a renamed slug leaving a dead file
+// behind, and it must keep doing that — so this is a named allowlist with a
+// reason per file, never a pattern. Adding a file here is a deliberate act.
+//
+// These filenames are also referenced from src/lib/editions.ts and
+// src/lib/news.ts, which this script cannot import (it is plain node, they are
+// TypeScript). The reason strings below say which page renders each file, so a
+// file that stops being used is findable by reading them.
+const EDITION_IMAGES = new Map([
+  [
+    'happy-chocolatey-chip-tates-edition.jpg',
+    "Tate's Bake Shop limited-edition artwork of happy-chocolatey-chip-latte — same SKU, same UPC, identical panel. Rendered on that product page as a secondary image.",
+  ],
+  [
+    'happy-chocolatey-chip-tates-edition-card.png',
+    "Cutout of the same can, used as the thumbnail on the Category news entry on /new.",
+  ],
+]);
+
 const products = readdirSync(PRODUCTS)
   .filter((f) => f.endsWith('.json'))
   .map((f) => ({ id: f.replace(/\.json$/, ''), data: JSON.parse(readFileSync(`${PRODUCTS}/${f}`, 'utf8')) }));
@@ -40,7 +61,9 @@ for (const [base, ids] of referenced) {
 // (b) no photo may sit on disk unreferenced — this is the orphan check
 for (const [dir, files] of [[PUBLIC_IMG, publicFiles], [ASSET_IMG, assetFiles]]) {
   for (const f of files) {
-    if (!referenced.has(f)) failures.push(`orphaned image: ${dir}/${f} — referenced by no product`);
+    if (!referenced.has(f) && !EDITION_IMAGES.has(f)) {
+      failures.push(`orphaned image: ${dir}/${f} — referenced by no product, and not in EDITION_IMAGES`);
+    }
   }
 }
 
@@ -49,9 +72,18 @@ for (const [dir, files] of [[PUBLIC_IMG, publicFiles], [ASSET_IMG, assetFiles]])
 const CARD_IMG = 'src/assets/products/cards';
 for (const f of jpgs(CARD_IMG)) {
   const base = f.replace(/-card\.(png|jpe?g|webp)$/i, '');
+  if (EDITION_IMAGES.has(f)) continue;
   if (![...referenced.keys()].some((r) => r.replace(/\.[a-z]+$/i, '') === base)) {
-    failures.push(`orphaned card crop: ${CARD_IMG}/${f} — no photographed product named ${base}`);
+    failures.push(`orphaned card crop: ${CARD_IMG}/${f} — no photographed product named ${base}, and not in EDITION_IMAGES`);
   }
+}
+
+// (b3) the allowlist itself must not rot. An entry naming a file that no longer
+// exists means the exception outlived the image, and the next person to add an
+// orphan would find a list they cannot trust.
+const onDisk = new Set([...publicFiles, ...assetFiles, ...jpgs(CARD_IMG)]);
+for (const [f, why] of EDITION_IMAGES) {
+  if (!onDisk.has(f)) failures.push(`stale EDITION_IMAGES entry: ${f} is on no disk path — ${why}`);
 }
 
 // (c) a verified product must cite where the figures came from
@@ -87,5 +119,6 @@ if (failures.length) {
 
 console.log(
   `  Data integrity OK — ${products.length} products, ${referenced.size} photos referenced, ` +
-  `${publicFiles.length} on disk in each location.`
+  `${publicFiles.length} on disk in each location, ` +
+  `${EDITION_IMAGES.size} allowed edition/news image(s).`
 );

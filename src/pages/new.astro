@@ -1,7 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import { allProducts, fullName, fmt } from '../lib/products';
 import { newsByDate } from '../lib/news';
+
+// News thumbnails are the same transparent cutouts the homepage uses at card size.
+const cardImages = import.meta.glob<{ default: ImageMetadata }>('../assets/products/cards/*.png', { eager: true });
+const newsImage = (file?: string) => (file ? cardImages[`../assets/products/cards/${file}`]?.default : undefined);
 const products = (await allProducts()).filter((p) => p.data.launched).sort((a, b) => b.data.launched!.localeCompare(a.data.launched!));
 const news = newsByDate();
 ---
@@ -26,6 +32,11 @@ const news = newsByDate();
           <li>
             <time class="news-date num" datetime={n.date}>{fmt.mdy(n.date)}</time>
             <span class="news-body">{n.text}{n.link && <> <a href={n.link.href}>{n.link.label} →</a></>}</span>
+            {newsImage(n.image) && (
+              <span class="news-media">
+                <Image src={newsImage(n.image)!} alt="" height={72} densities={[1, 2]} format="webp" loading="lazy" />
+              </span>
+            )}
           </li>
         ))}
       </ul>
@@ -55,8 +66,19 @@ const news = newsByDate();
   .news li:last-child { border-bottom: 1px solid var(--border); }
   .news-date { flex: 0 0 auto; width: 88px; font-size: 12.5px; color: var(--muted-foreground); }
   .news-body { flex: 1 1 auto; min-width: 0; }
+  /* Same treatment the cutouts get everywhere else: soft ground, drop shadow so
+     the transparent can doesn't look pasted onto the page. */
+  .news-media {
+    flex: 0 0 auto; align-self: center; display: grid; place-items: center;
+    width: 56px; height: 72px; border-radius: 8px; background: var(--muted); overflow: hidden;
+  }
+  .news-media :global(img) {
+    max-height: 66px; width: auto; object-fit: contain; display: block;
+    filter: drop-shadow(0 2px 6px rgb(0 0 0 / 0.12));
+  }
   @media (max-width: 520px) {
     .news li { flex-direction: column; gap: 4px; }
     .news-date { width: auto; }
+    .news-media { align-self: flex-start; }
   }
 </style>

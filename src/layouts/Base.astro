@@ -192,6 +192,12 @@ const fullTitle = title === 'Canned Latte' ? 'Canned Latte: every canned latte, 
   .product-top .hero{width:100%;height:auto;border:0;border-radius:var(--radius);background:var(--muted)}
   .product-top .stats{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
   @media (max-width:760px){.product-top{grid-template-columns:1fr}.product-top .hero{max-width:380px;margin:0 auto}}
+  /* Alternate artwork for the same can. Deliberately smaller than the hero and
+     captioned, so it reads as "also sold as this" rather than a second product. */
+  figure.edition{margin:0 0 18px;display:flex;gap:12px;align-items:center;max-width:62ch}
+  figure.edition img{width:200px;height:auto;flex:0 0 auto;border-radius:var(--radius);background:var(--muted)}
+  figure.edition figcaption{font-size:13px;color:var(--muted-foreground);line-height:1.45}
+  @media (max-width:520px){figure.edition{flex-direction:column;align-items:flex-start}figure.edition img{width:100%;max-width:280px}}
   @media (max-width:480px){
     header.site{gap:12px;padding:14px 16px}
     .brand{font-size:20px}
