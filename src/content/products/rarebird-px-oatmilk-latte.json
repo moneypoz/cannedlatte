@@ -8,8 +8,8 @@
   "proteinG": null,
   "calories": null,
   "refrigerated": false,
-  "pricePerCan": null,
-  "packPrice": null,
+  "pricePerCan": 5.0,
+  "packPrice": 60.0,
   "packSize": 12,
   "retailers": [
     "Amazon",

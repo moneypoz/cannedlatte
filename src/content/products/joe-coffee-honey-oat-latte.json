@@ -1,6 +1,6 @@
 {
   "type": "latte",
-  "sizeOz": null,
+  "sizeOz": 7.5,
   "caffeineMg": null,
   "sugarG": null,
   "addedSugar": true,
@@ -40,5 +40,5 @@
   "caffeineNote": "Not published by the brand or its retail listings",
   "milk": "oat",
   "dairyFree": true,
-  "summary": "Single-origin cold brew with oatmilk and honey from GloryBee, from the New York roaster, at $40 for twelve direct. Only the second honey-sweetened line we track after Bee Keeper. Joe publishes no nutrition panel and does not state the can size anywhere we could find, so those columns stay blank until we check a can."
+  "summary": "Single-origin cold brew with oatmilk and coffee-blossom honey from GloryBee, a B-Corp producer in the Pacific Northwest. The coffee is a natural-process Red Catuaí grown by the Veloso family at 1066 m in Cerrado, Minas Gerais. At 7.5 oz it is the smallest can we track, $40 for twelve direct. Joe publishes no nutrition panel."
 }

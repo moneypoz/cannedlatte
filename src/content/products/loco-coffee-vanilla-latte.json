@@ -1,12 +1,12 @@
 {
   "type": "latte",
-  "sizeOz": null,
-  "caffeineMg": null,
-  "sugarG": null,
-  "addedSugar": null,
-  "addedSugarG": null,
+  "sizeOz": 11,
+  "caffeineMg": 200,
+  "sugarG": 0,
+  "addedSugar": false,
+  "addedSugarG": 0,
   "proteinG": null,
-  "calories": null,
+  "calories": 80,
   "refrigerated": false,
   "pricePerCan": 3.17,
   "packPrice": 37.99,
@@ -36,8 +36,8 @@
   "brandSlug": "loco-coffee",
   "name": "Vanilla Latte",
   "flavor": "Vanilla",
-  "caffeineNote": "Not published by the brand",
+  "caffeineNote": "Printed on the can as 200 mg; the brand publishes no nutrition panel in text",
   "milk": "oat",
   "dairyFree": true,
-  "summary": "Zero-sugar vanilla cold brew on oat milk from the Holliston, Massachusetts brand, sold direct as a 12-pack for $37.99. Loco publishes no caffeine figure, no can size and no nutrition panel on its own site — the 200 mg and “zero sugar” claims come from its Amazon listing alone, so neither is recorded here."
+  "summary": "Zero-sugar vanilla cold brew on oat milk from the Holliston, Massachusetts brand. The can reads 200 mg of caffeine, 0 g of sugar and 80 calories in 11 fl oz, sweetened with sucralose instead. Loco publishes no nutrition panel in text — those figures are printed on the can in their own product photography."
 }

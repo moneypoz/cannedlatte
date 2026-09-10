@@ -1,12 +1,12 @@
 {
   "type": "latte",
-  "sizeOz": null,
-  "caffeineMg": null,
-  "sugarG": null,
-  "addedSugar": null,
-  "addedSugarG": null,
+  "sizeOz": 11,
+  "caffeineMg": 200,
+  "sugarG": 0,
+  "addedSugar": false,
+  "addedSugarG": 0,
   "proteinG": null,
-  "calories": null,
+  "calories": 90,
   "refrigerated": false,
   "pricePerCan": 3.17,
   "packPrice": 37.99,
@@ -36,8 +36,8 @@
   "brandSlug": "loco-coffee",
   "name": "Mocha Latte",
   "flavor": "Mocha",
-  "caffeineNote": "Not published by the brand",
+  "caffeineNote": "Printed on the can as 200 mg; the brand publishes no nutrition panel in text",
   "milk": "oat",
   "dairyFree": true,
-  "summary": "Zero-sugar mocha cold brew on oat milk, sibling to Loco's vanilla can and sold direct on the same 12-pack for $37.99. As with that one, the brand's own site publishes no caffeine figure, can size or nutrition panel, so the only numbers here are the ones Loco states itself."
+  "summary": "Zero-sugar mocha cold brew on oat milk, sold as Mocha Libre. Same build as Loco's vanilla can — 200 mg of caffeine, 0 g of sugar, sucralose in place of sugar — at 90 calories rather than 80, per the figures printed on the can in Loco's own product photography."
 }
