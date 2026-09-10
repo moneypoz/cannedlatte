@@ -40,6 +40,7 @@ export const milkLabel: Record<P['milk'], string> = {
   oat: 'Oat',
   almond: 'Almond',
   coconut: 'Coconut',
+  plant: 'Plant-based (base not stated)',
   none: 'None',
 };
 

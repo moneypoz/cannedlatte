@@ -19,7 +19,11 @@ const products = defineCollection({
     addedSugarG: z.number().nullable().default(null),   // brand-published "includes Xg added sugars", where stated
     proteinG: z.number().nullable(),
     calories: z.number().nullable(),
-    milk: z.enum(['dairy', 'lactose-free dairy', 'skim', 'oat', 'almond', 'coconut', 'none']),
+    // 'plant' is the milk column's version of null: the can is demonstrably
+    // plant-based but the brand does not say which plant. Guessing 'oat' here
+    // would put a possible tree-nut drink under the oat filter, which is the one
+    // direction this field must never be wrong in.
+    milk: z.enum(['dairy', 'lactose-free dairy', 'skim', 'oat', 'almond', 'coconut', 'plant', 'none']),
     dairyFree: z.boolean(),
     refrigerated: z.boolean().default(false),
     pricePerCan: z.number().nullable(),
