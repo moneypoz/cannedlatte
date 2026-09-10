@@ -1,0 +1,43 @@
+{
+  "type": "latte",
+  "sizeOz": 12,
+  "caffeineMg": null,
+  "sugarG": null,
+  "addedSugar": null,
+  "addedSugarG": null,
+  "proteinG": null,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": 12,
+  "retailers": [
+    "Amazon",
+    "Rarebird (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "Rarebird",
+      "url": "https://rarebird.coffee/",
+      "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4xndYyL",
+      "affiliate": true
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-10",
+  "sources": [
+    "https://www.amazon.com/Rarebird-Oatmilk-Lightly-Sweetened-Balanced/dp/B0GF45HY58",
+    "https://rarebird.coffee/products/px-cold-brew-12-pack"
+  ],
+  "brand": "Rarebird",
+  "brandSlug": "rarebird",
+  "name": "Px Oatmilk Latte",
+  "caffeineNote": "Decaffeinated base; the 60 mg the brand prints is paraxanthine (Px), not caffeine, and no caffeine figure is published",
+  "milk": "oat",
+  "dairyFree": true,
+  "summary": "Cold brew oatmilk latte built on decaffeinated coffee with 60 mg of paraxanthine added per 12 oz can — a caffeine metabolite the brand sells as steadier energy, not caffeine itself. Its caffeine column is blank for that reason rather than because we have not looked: the base is decaf and Rarebird publishes no residual figure, nor a nutrition panel."
+}
