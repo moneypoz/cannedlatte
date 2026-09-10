@@ -13,13 +13,19 @@
   "packSize": 12,
   "retailers": [
     "Target",
-    "Bee Keeper (direct)"
+    "Bee Keeper (direct)",
+    "Amazon"
   ],
   "buyLinks": [
     {
       "label": "Bee Keeper Coffee",
       "url": "https://beekeepercoffee.com/",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/3T301Yq",
+      "affiliate": true
     }
   ],
   "verified": true,
