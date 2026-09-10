@@ -14,13 +14,19 @@
   "retailers": [
     "Target",
     "Whole Foods",
-    "Thrive Market"
+    "Thrive Market",
+    "Amazon"
   ],
   "buyLinks": [
     {
       "label": "Pop & Bottle",
       "url": "https://www.popandbottle.com/",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4xpcEvb",
+      "affiliate": true
     }
   ],
   "verified": true,
