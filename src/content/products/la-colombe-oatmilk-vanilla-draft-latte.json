@@ -1,12 +1,12 @@
 {
   "type": "latte",
-  "sizeOz": 9,
-  "caffeineMg": 120,
-  "sugarG": 7,
-  "addedSugar": null,
-  "addedSugarG": 6,
-  "proteinG": 2,
-  "calories": null,
+  "sizeOz": 11,
+  "caffeineMg": 140,
+  "sugarG": 9,
+  "addedSugar": true,
+  "addedSugarG": 8,
+  "proteinG": 3,
+  "calories": 170,
   "refrigerated": false,
   "pricePerCan": 3.17,
   "packPrice": 38,
@@ -22,8 +22,8 @@
       "affiliate": false
     }
   ],
-  "verified": false,
-  "updated": "2026-09-06",
+  "verified": true,
+  "updated": "2026-09-10",
   "sources": [
     "https://www.lacolombe.com/collections/lattes",
     "https://www.fooddive.com/news/la-colombe-ready-to-drink-lattes-new-recipe/816692/",
@@ -33,8 +33,9 @@
   "brandSlug": "la-colombe",
   "name": "Oatmilk Vanilla Draft Latte",
   "flavor": "Vanilla",
-  "caffeineNote": "Brand lists 100–150 mg",
+  "caffeineNote": "Printed on the can: 140 mg; the brand site still lists 100–150 mg",
   "milk": "oat",
   "dairyFree": true,
-  "summary": "Dairy-free Draft Latte on oat milk. Costs about $0.33 more per can than the dairy version."
+  "summary": "Dairy-free Draft Latte on oat milk, and the can supersedes the brand site: 140 mg of caffeine printed on the neck band, 9 g of sugar (8 g of it added) and 3 g of protein per 11 oz can at 170 calories. Costs about $0.34 more per can than the dairy version.",
+  "image": "/images/products/la-colombe-oatmilk-vanilla-draft-latte.jpg"
 }

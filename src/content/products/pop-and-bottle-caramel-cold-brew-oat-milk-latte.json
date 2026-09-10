@@ -1,0 +1,41 @@
+{
+  "type": "latte",
+  "sizeOz": 8,
+  "caffeineMg": 80,
+  "sugarG": 10,
+  "addedSugar": false,
+  "addedSugarG": 0,
+  "proteinG": 2,
+  "calories": 120,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Target",
+    "Whole Foods",
+    "Thrive Market"
+  ],
+  "buyLinks": [
+    {
+      "label": "Pop & Bottle",
+      "url": "https://www.popandbottle.com/",
+      "affiliate": false
+    }
+  ],
+  "verified": true,
+  "updated": "2026-09-10",
+  "sources": [
+    "https://www.popandbottle.com/",
+    "https://www.popandbottle.com/pages/faq"
+  ],
+  "brand": "Pop & Bottle",
+  "brandSlug": "pop-and-bottle",
+  "name": "Caramel Cold Brew Oat Milk Latte",
+  "flavor": "Caramel Cold Brew",
+  "caffeineNote": "Label says single-shot coffee with no mg; the brand FAQ states 80 mg per 8 oz oat milk latte",
+  "milk": "oat",
+  "dairyFree": true,
+  "image": "/images/products/pop-and-bottle-caramel-cold-brew-oat-milk-latte.jpg",
+  "summary": "Single-shot cold brew on organic oat milk sweetened with dates, boosted with lion’s mane and reishi mushrooms. All 10 g of its sugar is naturally occurring, 0 g added — the honest version of the “no refined sugar” badge that Pop & Bottle’s matcha can wears over 12 g of added sugar. 2 g of protein per 8 oz can at 120 calories."
+}

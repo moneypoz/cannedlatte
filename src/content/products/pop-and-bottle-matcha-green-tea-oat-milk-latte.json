@@ -1,0 +1,40 @@
+{
+  "type": "latte",
+  "sizeOz": 8,
+  "caffeineMg": null,
+  "sugarG": 12,
+  "addedSugar": true,
+  "addedSugarG": 12,
+  "proteinG": 3,
+  "calories": 150,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Target",
+    "Whole Foods",
+    "Thrive Market"
+  ],
+  "buyLinks": [
+    {
+      "label": "Pop & Bottle",
+      "url": "https://www.popandbottle.com/",
+      "affiliate": false
+    }
+  ],
+  "verified": true,
+  "updated": "2026-09-10",
+  "sources": [
+    "https://www.popandbottle.com/"
+  ],
+  "brand": "Pop & Bottle",
+  "brandSlug": "pop-and-bottle",
+  "name": "Matcha Green Tea Oat Milk Latte",
+  "flavor": "Matcha Green Tea",
+  "caffeineNote": "Ceremonial matcha; caffeine not stated on the label",
+  "milk": "oat",
+  "dairyFree": true,
+  "image": "/images/products/pop-and-bottle-matcha-green-tea-oat-milk-latte.jpg",
+  "summary": "Ceremonial matcha whisked into organic oat milk, with no coffee in the can at all. The front reads “no refined sugar”, which is true as far as it goes — but the panel lists 12 g of added sugar from coconut nectar, so every gram of sugar in this can is added. Refined and added are different claims. 3 g of protein per 8 oz can at 150 calories."
+}
