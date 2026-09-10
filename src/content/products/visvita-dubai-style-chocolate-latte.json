@@ -1,0 +1,38 @@
+{
+  "type": "latte",
+  "sizeOz": 8,
+  "caffeineMg": null,
+  "sugarG": null,
+  "addedSugar": true,
+  "addedSugarG": null,
+  "proteinG": null,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": 12,
+  "retailers": [
+    "Amazon"
+  ],
+  "buyLinks": [
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4gL4iJl",
+      "affiliate": true
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-10",
+  "sources": [
+    "https://www.amazon.com/VISVITA-Dubai-Style-Chocolate-Latte/dp/B0H24VNDSR",
+    "https://www.drinkvisvita.com/"
+  ],
+  "brand": "VISVITA",
+  "brandSlug": "visvita",
+  "name": "Dubai Style Chocolate Latte",
+  "flavor": "Dubai Style Chocolate",
+  "caffeineNote": "No figure published; the ingredient list carries both instant coffee and matcha green tea powder",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Dubai-chocolate-style latte built on instant coffee and matcha powder rather than brewed coffee, with whole milk powder, non-dairy creamer, cocoa and pistachios, and colored with FD&C Yellow No. 5 and Blue No. 1. VISVITA publishes no nutrition panel for it, so every figure here stays blank until we check a can."
+}

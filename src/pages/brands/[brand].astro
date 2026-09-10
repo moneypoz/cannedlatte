@@ -45,8 +45,15 @@ const prose = (arr: string[]) => (arr.length > 1 ? `${arr.slice(0, -1).join(', '
 const gRange = (a: number, b: number) => (a === b ? `${a} g` : `${a} to ${b} g`);
 
 // Plain-text mirrors of the on-page answers, for the FAQPage schema.
+// "on the cans we have checked" is a claim about our own work, so it may only be
+// made where we have actually checked one. For a brand whose whole lineup is
+// still brand-sourced, the honest version says the figure is unpublished AND
+// unchecked. illy, French Truck and VISVITA are all in that state.
+const anyVerified = items.some((p) => p.data.verified);
 const caffeineAnswer = !mgs.length
-  ? `${name} does not print a caffeine figure on the cans we have checked, so we list it as unknown rather than estimate it.`
+  ? anyVerified
+    ? `${name} does not print a caffeine figure on the cans we have checked, so we list it as unknown rather than estimate it.`
+    : `No caffeine figure is published for ${name}'s cans and we have not checked one against a label yet, so we list it as unknown rather than estimate it.`
   : oneCan
     ? `${strongest.data.name} is the only ${name} can we track with a published figure, at ${maxMg} mg of caffeine.`
     : flatMg
