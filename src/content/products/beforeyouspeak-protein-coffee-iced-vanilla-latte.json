@@ -1,0 +1,38 @@
+{
+  "type": "latte",
+  "sizeOz": null,
+  "caffeineMg": null,
+  "sugarG": null,
+  "addedSugar": true,
+  "addedSugarG": null,
+  "proteinG": 15,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": 12,
+  "retailers": [
+    "Amazon"
+  ],
+  "buyLinks": [
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4duAxds",
+      "affiliate": true
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-10",
+  "sources": [
+    "https://www.amazon.com/Beforeyouspeak-Vanilla-Coffee-Beverage-Protein/dp/B0G1SDN63C",
+    "https://beforeyouspeakcoffee.com/blogs/health-hub/iced-latte-cans-coffee-protein-ice-cold"
+  ],
+  "brand": "Beforeyouspeak",
+  "brandSlug": "beforeyouspeak",
+  "name": "Protein Coffee Iced Vanilla Latte",
+  "flavor": "Iced Vanilla Latte",
+  "caffeineNote": "No per-flavour figure published; the brand cites 160–240 mg across the iced latte line",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Australian protein coffee in a can: real brewed coffee on whole and skim milk powders, at 15 g of protein — third-highest we track, behind Projo and Slate. The protein comes from the milk itself rather than added isolate. Beforeyouspeak publishes no per-flavour caffeine figure, no nutrition panel and no can size for the US pack, so those columns stay blank until we check a can."
+}
