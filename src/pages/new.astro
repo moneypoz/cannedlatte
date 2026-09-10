@@ -1,7 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
 import { allProducts, fullName, fmt } from '../lib/products';
+import { newsByDate } from '../lib/news';
 const products = (await allProducts()).filter((p) => p.data.launched).sort((a, b) => b.data.launched!.localeCompare(a.data.launched!));
+const news = newsByDate();
 ---
 <Base title="New canned lattes" description="Every new latte in a can, newest first, with specs the day it hits shelves. Death Wish, Wandering Bear, La Colombe and more.">
   <p class="eyebrow">Launch tracker</p>
@@ -15,6 +17,21 @@ const products = (await allProducts()).filter((p) => p.data.launched).sort((a, b
       ))}</tbody>
     </table>
   </div>
+  {news.length > 0 && (
+    <>
+      <h2>Category news</h2>
+      <p class="meta" style="margin:-6px 0 14px">Reformulations, limited editions and cans that left the shelf. Each date is the day we checked it ourselves.</p>
+      <ul class="news">
+        {news.map((n) => (
+          <li>
+            <time class="news-date num" datetime={n.date}>{fmt.mdy(n.date)}</time>
+            <span class="news-body">{n.text}{n.link && <> <a href={n.link.href}>{n.link.label} →</a></>}</span>
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
+
   <h2>Monthly roundup</h2>
   <p>One email a month: new cans, reformulations, price changes. No filler.</p>
   <!-- Replace with your newsletter provider's embed (Buttondown, Beehiiv, Kit). Keep it a plain form so it doesn't slow the page. -->
@@ -26,3 +43,20 @@ const products = (await allProducts()).filter((p) => p.data.launched).sort((a, b
     <p class="meta" style="margin:10px 0 0">Newsletter signup goes live once the provider is connected.</p>
   </form>
 </Base>
+
+<style>
+  /* Date rail on the left, one sentence on the right. The rail collapses above
+     the text on narrow screens rather than squeezing the sentence to a column. */
+  .news { list-style: none; margin: 0 0 28px; padding: 0; max-width: 68ch; }
+  .news li {
+    display: flex; gap: 14px; align-items: baseline;
+    padding: 10px 0; border-top: 1px solid var(--border);
+  }
+  .news li:last-child { border-bottom: 1px solid var(--border); }
+  .news-date { flex: 0 0 auto; width: 88px; font-size: 12.5px; color: var(--muted-foreground); }
+  .news-body { flex: 1 1 auto; min-width: 0; }
+  @media (max-width: 520px) {
+    .news li { flex-direction: column; gap: 4px; }
+    .news-date { width: auto; }
+  }
+</style>
