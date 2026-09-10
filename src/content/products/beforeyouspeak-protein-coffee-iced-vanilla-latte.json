@@ -1,20 +1,26 @@
 {
   "type": "latte",
   "sizeOz": null,
-  "caffeineMg": null,
-  "sugarG": null,
+  "caffeineMg": 160,
+  "sugarG": 12.8,
   "addedSugar": true,
   "addedSugarG": null,
-  "proteinG": 15,
-  "calories": null,
+  "proteinG": 15.2,
+  "calories": 166,
   "refrigerated": false,
   "pricePerCan": null,
   "packPrice": null,
   "packSize": 12,
   "retailers": [
-    "Amazon"
+    "Amazon",
+    "Beforeyouspeak (direct)"
   ],
   "buyLinks": [
+    {
+      "label": "Beforeyouspeak",
+      "url": "https://beforeyouspeakcoffee.com/products/protein-latte-cans",
+      "affiliate": false
+    },
     {
       "label": "Amazon (12-pack)",
       "url": "https://amzn.to/4duAxds",
@@ -24,15 +30,14 @@
   "verified": false,
   "updated": "2026-09-10",
   "sources": [
-    "https://www.amazon.com/Beforeyouspeak-Vanilla-Coffee-Beverage-Protein/dp/B0G1SDN63C",
-    "https://beforeyouspeakcoffee.com/blogs/health-hub/iced-latte-cans-coffee-protein-ice-cold"
+    "https://beforeyouspeakcoffee.com/products/protein-latte-cans"
   ],
   "brand": "Beforeyouspeak",
   "brandSlug": "beforeyouspeak",
   "name": "Protein Coffee Iced Vanilla Latte",
   "flavor": "Iced Vanilla Latte",
-  "caffeineNote": "No per-flavour figure published; the brand cites 160–240 mg across the iced latte line",
+  "caffeineNote": "Brand panel states 160 mg; the Double Espresso in the same line is 240 mg",
   "milk": "dairy",
   "dairyFree": false,
-  "summary": "Australian protein coffee in a can: real brewed coffee on whole and skim milk powders, at 15 g of protein — third-highest we track, behind Projo and Slate. The protein comes from the milk itself rather than added isolate. Beforeyouspeak publishes no per-flavour caffeine figure, no nutrition panel and no can size for the US pack, so those columns stay blank until we check a can."
+  "summary": "Australian protein coffee in a can: brewed coffee over whole and ultra-filtered skim milk powders, so the 15.2 g of protein comes from the milk rather than an added isolate. The brand's panel gives 160 mg of caffeine, 166 calories and 12.8 g of sugar; it states no can size, and no added-sugars line, since Australian panels do not carry one."
 }

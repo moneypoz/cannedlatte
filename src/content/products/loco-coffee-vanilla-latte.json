@@ -1,20 +1,26 @@
 {
   "type": "latte",
-  "sizeOz": 11,
-  "caffeineMg": 200,
+  "sizeOz": null,
+  "caffeineMg": null,
   "sugarG": null,
   "addedSugar": null,
   "addedSugarG": null,
   "proteinG": null,
   "calories": null,
   "refrigerated": false,
-  "pricePerCan": null,
-  "packPrice": null,
+  "pricePerCan": 3.17,
+  "packPrice": 37.99,
   "packSize": 12,
   "retailers": [
-    "Amazon"
+    "Amazon",
+    "Loco Coffee (direct)"
   ],
   "buyLinks": [
+    {
+      "label": "Loco Coffee",
+      "url": "https://drinklococoffee.com/collections/coffee/products/vanilla",
+      "affiliate": false
+    },
     {
       "label": "Amazon (12-pack)",
       "url": "https://amzn.to/4r7gA23",
@@ -24,14 +30,14 @@
   "verified": false,
   "updated": "2026-09-10",
   "sources": [
-    "https://www.amazon.com/Loco-Coffee-Vanilla-Caffeine-Calorie/dp/B0F9HTVPMX"
+    "https://drinklococoffee.com/collections/coffee/products/vanilla"
   ],
   "brand": "Loco Coffee",
   "brandSlug": "loco-coffee",
   "name": "Vanilla Latte",
   "flavor": "Vanilla",
-  "caffeineNote": "Brand states 200 mg on its listing; not yet checked against a label",
+  "caffeineNote": "Not published by the brand",
   "milk": "oat",
   "dairyFree": true,
-  "summary": "Zero-sugar vanilla cold brew latte on oat milk, sweetened with sucralose, which Loco lists at 200 mg of caffeine per 11 oz can. We have not read its panel, and the brand's zero-sugar claim would make this the least-sugar can in the database, so the sugar column stays blank until a label confirms it."
+  "summary": "Zero-sugar vanilla cold brew on oat milk from the Holliston, Massachusetts brand, sold direct as a 12-pack for $37.99. Loco publishes no caffeine figure, no can size and no nutrition panel on its own site — the 200 mg and “zero sugar” claims come from its Amazon listing alone, so neither is recorded here."
 }

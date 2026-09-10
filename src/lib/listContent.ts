@@ -39,11 +39,11 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'high-protein': {
     paragraphs: [
-      'A newer corner of the category treats the canned latte as a protein snack with caffeine. Projo leads it at 25 g of protein in an 11 oz can, from milk protein isolate and collagen. Slate follows at 20 g alongside 1 g of sugar and 100 calories, then Beforeyouspeak at 15 g drawn from milk powders rather than an added isolate, then Wandering Bear at 11 g in an 8 oz can, which is why these brands pitch their cans as a morning or post-workout drink rather than a dessert. Standard dairy lattes land around 5–8 g from regular milk, with the smaller 8 oz cans at the low end of that; oat milk lattes carry much less, usually 1–3 g.',
-      'If protein is the goal, check the sugar column at the same time — some "protein coffee" products elsewhere in the market get their palatability from sweetness. The cans at the top of this list keep sugar in single digits — the exception being Beforeyouspeak, which publishes no sugar figure at all.',
+      'A newer corner of the category treats the canned latte as a protein snack with caffeine. Projo leads it at 25 g of protein in an 11 oz can, from milk protein isolate and collagen. Slate follows at 20 g alongside 1 g of sugar and 100 calories, then Beforeyouspeak at 15.2 g drawn from milk powders rather than an added isolate, then Wandering Bear at 11 g in an 8 oz can, which is why these brands pitch their cans as a morning or post-workout drink rather than a dessert. Standard dairy lattes land around 5–8 g from regular milk, with the smaller 8 oz cans at the low end of that; oat milk lattes carry much less, usually 1–3 g.',
+      'If protein is the goal, check the sugar column at the same time — some "protein coffee" products elsewhere in the market get their palatability from sweetness. The cans at the top of this list keep sugar in single digits — the exception being Beforeyouspeak, whose 12.8 g is more than the six cans ranked above it carry between them.',
     ],
     faqs: [
-      { q: 'Which canned latte has the most protein?', a: 'Projo\'s Power Coffee Vanilla Latte leads our database at 25 g of protein per 11 oz can, ahead of Slate\'s lattes at 20 g, Beforeyouspeak\'s protein coffee at 15 g and Wandering Bear\'s cold brew lattes at 11 g.' },
+      { q: 'Which canned latte has the most protein?', a: 'Projo\'s Power Coffee Vanilla Latte leads our database at 25 g of protein per 11 oz can, ahead of Slate\'s lattes at 20 g, Beforeyouspeak\'s protein coffee at 15.2 g and Wandering Bear\'s cold brew lattes at 11 g.' },
       { q: 'Do oat milk lattes have protein?', a: 'Very little — oat milk typically carries 1–3 g per serving, versus 6–25 g for dairy-based cans.' },
     ],
   },

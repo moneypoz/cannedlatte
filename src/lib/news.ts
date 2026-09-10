@@ -37,6 +37,11 @@ export type NewsItem = {
 export const news: NewsItem[] = [
   {
     date: '2026-09-10',
+    text: 'King Coffee is bringing its Vietnamese ready-to-drink lattes to the US, though all four cans still read sold out on its own store.',
+    link: { href: '/latte/king-coffee-vanilla-latte', label: 'King Coffee Vanilla Latte' },
+  },
+  {
+    date: '2026-09-10',
     text: 'Happy’s Tate’s Bake Shop collab can, announced May 2025 and sold only at Walmart, is still on shelves next to the standard Chocolatey Chip Latte.',
     link: { href: '/latte/happy-chocolatey-chip-latte', label: 'Happy Chocolatey Chip Latte' },
     image: 'happy-chocolatey-chip-tates-edition-card.png',
