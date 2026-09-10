@@ -29,7 +29,7 @@ export type NewsItem = {
 export const news: NewsItem[] = [
   {
     date: '2026-09-10',
-    text: 'Happy is selling its Chocolatey Chip Latte in a Tate’s Bake Shop limited-edition can alongside the standard one.',
+    text: 'Happy’s Tate’s Bake Shop collab can, announced May 2025 and sold only at Walmart, is still on shelves next to the standard Chocolatey Chip Latte.',
     link: { href: '/latte/happy-chocolatey-chip-latte', label: 'Happy Chocolatey Chip Latte' },
   },
   {
