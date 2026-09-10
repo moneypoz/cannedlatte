@@ -27,8 +27,8 @@
       "affiliate": true
     }
   ],
-  "verified": false,
-  "updated": "2026-09-06",
+  "verified": true,
+  "updated": "2026-09-10",
   "sources": [
     "https://www.happyproducts.com/collections/best-sellers",
     "https://www.happyproducts.com/products/dubai-chocolatey-style-latte-4pk",
@@ -41,5 +41,6 @@
   "caffeineNote": "Brand states 70–80 mg",
   "milk": "dairy",
   "dairyFree": false,
-  "summary": "Chocolate and pistachio flavors on Colombian arabica espresso: 39 g of sugar and 7 g of protein per 11 oz can at 230 calories, with 70–80 mg of caffeine."
+  "summary": "Chocolate and pistachio flavors on Colombian arabica espresso: 39 g of sugar and 7 g of protein per 11 oz can at 230 calories, with 70–80 mg of caffeine.",
+  "image": "/images/products/happy-dubai-chocolatey-style-latte.jpg"
 }

@@ -27,8 +27,8 @@
       "affiliate": true
     }
   ],
-  "verified": false,
-  "updated": "2026-09-06",
+  "verified": true,
+  "updated": "2026-09-10",
   "sources": [
     "https://www.happyproducts.com/collections/best-sellers",
     "https://www.happyproducts.com/products/chocolatey-chip-latte-4pk-11-oz",
@@ -41,5 +41,6 @@
   "caffeineNote": "Brand states 70–80 mg",
   "milk": "dairy",
   "dairyFree": false,
-  "summary": "Chocolate-chip-cookie-inspired latte on Colombian arabica coffee and real milk, one of the stronger cans in the line at 70–80 mg of caffeine per 11 oz can."
+  "summary": "Chocolate-chip-cookie-inspired latte on Colombian arabica coffee and real milk, one of the stronger cans in the line at 70–80 mg of caffeine per 11 oz can. It is currently sold in a Tate's Bake Shop limited-edition can alongside the standard one.",
+  "image": "/images/products/happy-chocolatey-chip-latte.jpg"
 }

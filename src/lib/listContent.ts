@@ -6,7 +6,7 @@
 export const listContent: Record<string, { paragraphs: string[]; faqs: { q: string; a: string }[] }> = {
   'least-sugar': {
     paragraphs: [
-      'Sugar is where canned lattes differ most. A flavored dairy coffee from a gas-station cooler can carry 30 g or more, while the cans at the top of this list get down to a single gram by leaning on the milk itself or on whole-food sweeteners like dates instead of added sugar. La Colombe\'s 2026 reformulation is a sign of where the category is heading: its Vanilla Draft Latte dropped to 15 g, less than half of what typical flavored dairy coffees carry.',
+      'Sugar is where canned lattes differ most. The sweetest flavored dairy cans we have checked against a label carry 38 to 39 g in an 11 oz can, nearly three quarters of it added, while the cans at the top of this list get down to a single gram by leaning on the milk itself or on whole-food sweeteners like dates instead of added sugar. La Colombe\'s 2026 reformulation is a sign of where the category is heading: its Vanilla Draft Latte dropped to 15 g, less than half of what the sweetest dairy cans carry.',
       'When comparing, check two lines on the label: total sugars and added sugars. A latte with 8 g of sugar and 0 g added (like an oat milk latte sweetened with dates) is a different product from one with 8 g of added cane sugar, even though the totals match. We track both, and the "no added sugar" filter on the home page shows only the former.',
       'Watch can size too. A 6.5 oz can with 12 g of sugar is sweeter per sip than an 11 oz can with 16 g. Where brands publish it, the full label is on each product page.',
     ],
@@ -60,7 +60,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   'no-added-sugar': {
     paragraphs: [
       'These are the cans with a 0 in the added-sugars line: sweetness, where there is any, comes from the milk itself, from whole ingredients like dates, or from non-nutritive sweeteners that carry no sugar at all. Seven cans qualify, and they get there three different ways. NOBL keeps it to literally two ingredients (cold brew and oat milk), so the 5 g on its label is oat-milk sugar with nothing added. Slate\'s five lattes lean on stevia and monk fruit, which leaves 1 g of naturally occurring milk sugar next to 20 g of protein. Pop & Bottle sweetens with dates, so its label shows around 8 g of total sugar but none added.',
-      'If a can you love isn\'t here, the least-sugar list is the neighboring compromise: several cans at 5–6 g of added sugar taste barely sweetened.',
+      'If a can you love isn\'t here, the least-sugar list is the neighboring compromise: La Colombe\'s Everyday and Oatmilk Vanilla Draft Lattes publish 4 g and 6 g of added sugar respectively, and both taste barely sweetened.',
     ],
     faqs: [
       { q: 'What does "no added sugar" mean on a canned latte?', a: 'The added-sugars line on the nutrition panel reads 0 g. The can may still show total sugars from milk (lactose) or fruit-based sweeteners like dates.' },

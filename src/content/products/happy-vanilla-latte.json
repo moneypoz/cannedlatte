@@ -27,8 +27,8 @@
       "affiliate": true
     }
   ],
-  "verified": false,
-  "updated": "2026-09-06",
+  "verified": true,
+  "updated": "2026-09-10",
   "sources": [
     "https://www.happyproducts.com/collections/best-sellers",
     "https://www.happyproducts.com/products/vanilla-latte-4pk",
@@ -41,5 +41,6 @@
   "caffeineNote": "Brand states 40–50 mg",
   "milk": "dairy",
   "dairyFree": false,
-  "summary": "Colombian arabica espresso with real milk and sugar, on the mild end for caffeine at 40–50 mg per 11 oz can."
+  "summary": "Colombian arabica espresso with real milk and sugar, on the mild end for caffeine at 40–50 mg per 11 oz can.",
+  "image": "/images/products/happy-vanilla-latte.jpg"
 }
