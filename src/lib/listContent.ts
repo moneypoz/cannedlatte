@@ -70,7 +70,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'dairy-free': {
     paragraphs: [
-      'Every can here is made without dairy — oat milk dominates, with a single coconut can alongside it. Beyond the milk itself, the differences that matter are caffeine (50 to 207 mg across this list), sweetener (dates, cane sugar, or none), and storage (most are shelf-stable; NOBL is refrigerated and ships cold).',
+      'Every can here is made without dairy — oat milk dominates, with one coconut and one almond can alongside it. Beyond the milk itself, the differences that matter are caffeine (50 to 207 mg across this list), sweetener (dates, cane sugar, or none), and storage (most are shelf-stable; NOBL is refrigerated and ships cold).',
       'Lactose-intolerant but not dairy-free? Note that La Colombe\'s reformulated Draft Lattes use lactose-free whole milk — real dairy, no lactose — which sits between this list and the standard dairy cans.',
     ],
     faqs: [

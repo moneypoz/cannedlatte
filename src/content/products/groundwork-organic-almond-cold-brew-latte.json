@@ -1,0 +1,43 @@
+{
+  "type": "latte",
+  "sizeOz": 8,
+  "caffeineMg": 74,
+  "sugarG": null,
+  "addedSugar": null,
+  "addedSugarG": null,
+  "proteinG": null,
+  "calories": 80,
+  "refrigerated": false,
+  "pricePerCan": 4.5,
+  "packPrice": 54.0,
+  "packSize": 12,
+  "retailers": [
+    "Amazon",
+    "Groundwork (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "Groundwork",
+      "url": "https://www.groundworkcoffee.com/products/organic-cold-brew-latte",
+      "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4czNanl",
+      "affiliate": true
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-10",
+  "sources": [
+    "https://www.groundworkcoffee.com/products/organic-cold-brew-latte",
+    "https://www.amazon.com/Groundwork-USDA-Organic-Coffee-Latte/dp/B0G1ZQMWM1"
+  ],
+  "brand": "Groundwork Coffee",
+  "brandSlug": "groundwork",
+  "name": "Organic Almond Cold Brew Latte",
+  "caffeineNote": "Brand states 70–78 mg per 8 oz can",
+  "milk": "almond",
+  "dairyFree": true,
+  "summary": "USDA Organic cold brew on almond milk from the Los Angeles roaster, at 80 calories per 8 oz can and a brand-stated 70–78 mg of caffeine. It is the first almond can in this database — the milk type has been in the schema since the start with no product using it. Groundwork publishes no sugar or protein figure, so those columns stay blank until we check a can."
+}
