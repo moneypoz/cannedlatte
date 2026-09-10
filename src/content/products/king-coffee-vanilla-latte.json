@@ -1,0 +1,38 @@
+{
+  "type": "latte",
+  "sizeOz": 8.04,
+  "caffeineMg": null,
+  "sugarG": null,
+  "addedSugar": true,
+  "addedSugarG": null,
+  "proteinG": null,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": 3.33,
+  "packPrice": 19.99,
+  "packSize": 6,
+  "retailers": [
+    "Amazon"
+  ],
+  "buyLinks": [
+    {
+      "label": "Amazon (6-pack)",
+      "url": "https://amzn.to/4iodMeH",
+      "affiliate": true
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-10",
+  "sources": [
+    "https://us.kingcoffee.com/products/coming-soon-king-coffee-rtd-latte-vanilla-pack-of-6-can-delicious-taste-suitable-for-new-and-light-drinkers",
+    "https://www.amazon.com/King-Coffee-Vanilla-Latte-Drink/dp/B0HCX7JLHF"
+  ],
+  "brand": "King Coffee",
+  "brandSlug": "king-coffee",
+  "name": "Vanilla Latte",
+  "flavor": "Vanilla",
+  "caffeineNote": "Not published by the brand or its listings",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Vietnamese cà phê sữa sold as a vanilla latte: concentrated Da Lat and Colombian arabica over non-dairy creamer and milk powders, aseptically filled so it keeps without preservatives. King Coffee publishes an 8.04 oz can and a $19.99 six-pack but no nutrition panel, so those columns stay blank until we check a can."
+}
