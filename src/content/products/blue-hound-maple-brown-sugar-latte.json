@@ -12,13 +12,19 @@
   "packPrice": 39.99,
   "packSize": 12,
   "retailers": [
-    "Blue Hound Brew (direct)"
+    "Blue Hound Brew (direct)",
+    "Amazon"
   ],
   "buyLinks": [
     {
       "label": "Blue Hound Brew",
       "url": "https://bluehoundbrew.com/products/maple-brown-sugar-latte",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4xCST3z",
+      "affiliate": true
     }
   ],
   "verified": false,
@@ -26,7 +32,8 @@
   "sources": [
     "https://bluehoundbrew.com/",
     "https://bluehoundbrew.com/products/maple-brown-sugar-latte",
-    "https://cdn.shopify.com/s/files/1/0845/6372/2515/files/Shopify_Product_Photos_26.png"
+    "https://cdn.shopify.com/s/files/1/0845/6372/2515/files/Shopify_Product_Photos_26.png",
+    "https://www.amazon.com/Blue-Hound-Brew-Pasture-Raised-Artificial/dp/B0FGL2B73V"
   ],
   "brand": "Blue Hound Brew",
   "brandSlug": "blue-hound",
