@@ -1,0 +1,45 @@
+{
+  "type": "latte",
+  "sizeOz": 8,
+  "caffeineMg": 80,
+  "sugarG": null,
+  "addedSugar": false,
+  "addedSugarG": 0,
+  "proteinG": 2,
+  "calories": 100,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": 12,
+  "retailers": [
+    "Amazon",
+    "Kroger",
+    "Walmart"
+  ],
+  "buyLinks": [
+    {
+      "label": "Pop & Bottle",
+      "url": "https://www.popandbottle.com/products/mocha-oat-latte",
+      "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4xelBr1",
+      "affiliate": true
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-10",
+  "sources": [
+    "https://www.popandbottle.com/products/mocha-oat-latte",
+    "https://www.amazon.com/Pop-Bottle-Adaptogens-Ashwagandha-Sweetened/dp/B089PVWRTT"
+  ],
+  "brand": "Pop & Bottle",
+  "brandSlug": "pop-and-bottle",
+  "name": "Mocha Oat Milk Latte",
+  "flavor": "Mocha",
+  "caffeineNote": "Brand states 80 mg from organic fair trade coffee",
+  "milk": "oat",
+  "dairyFree": true,
+  "summary": "Cold brew mocha on organic oat milk with an adaptogenic blend of ashwagandha and maca, sweetened with dates alone and so 0 g added sugar. 80 mg of caffeine and 2 g of protein per 8 oz can at 100 calories. Pop & Bottle publishes no total-sugar figure for this one — only an “around 8 g” for the line — so that column stays blank."
+}
