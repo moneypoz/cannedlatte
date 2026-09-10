@@ -12,13 +12,19 @@
   "packPrice": 39.99,
   "packSize": 12,
   "retailers": [
-    "Blue Hound Brew (direct)"
+    "Blue Hound Brew (direct)",
+    "Amazon"
   ],
   "buyLinks": [
     {
       "label": "Blue Hound Brew",
       "url": "https://bluehoundbrew.com/products/vanilla-bean-latte",
       "affiliate": false
+    },
+    {
+      "label": "Amazon",
+      "url": "https://amzn.to/4xfPmrm",
+      "affiliate": true
     }
   ],
   "verified": false,
