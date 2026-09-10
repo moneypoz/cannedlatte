@@ -1,0 +1,39 @@
+{
+  "type": "latte",
+  "sizeOz": 8,
+  "caffeineMg": null,
+  "sugarG": 10,
+  "addedSugar": true,
+  "addedSugarG": 4,
+  "proteinG": 5,
+  "calories": 90,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Target",
+    "Bee Keeper (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "Bee Keeper Coffee",
+      "url": "https://beekeepercoffee.com/",
+      "affiliate": false
+    }
+  ],
+  "verified": true,
+  "updated": "2026-09-10",
+  "sources": [
+    "https://beekeepercoffee.com/"
+  ],
+  "brand": "Bee Keeper Coffee",
+  "brandSlug": "beekeeper-coffee",
+  "name": "Vanilla Latte",
+  "flavor": "Vanilla",
+  "caffeineNote": "Not stated on the label, and the brand publishes no figure for this flavor",
+  "milk": "dairy",
+  "dairyFree": false,
+  "image": "/images/products/beekeeper-vanilla-latte.jpg",
+  "summary": "Vanilla cold brew latte on reduced-fat milk sweetened with organic honey, at 10 g of sugar (just 4 g of it added) and 5 g of protein per 8 oz can at 90 calories. Bee Keeper lists no caffeine figure or price for this flavor, so both stay blank here."
+}

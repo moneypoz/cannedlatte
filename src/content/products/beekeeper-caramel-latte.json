@@ -1,0 +1,39 @@
+{
+  "type": "latte",
+  "sizeOz": 8,
+  "caffeineMg": 125,
+  "sugarG": 11,
+  "addedSugar": true,
+  "addedSugarG": 4,
+  "proteinG": 5,
+  "calories": 100,
+  "refrigerated": false,
+  "pricePerCan": 3.75,
+  "packPrice": 44.99,
+  "packSize": 12,
+  "retailers": [
+    "Target",
+    "Bee Keeper (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "Bee Keeper Coffee",
+      "url": "https://beekeepercoffee.com/",
+      "affiliate": false
+    }
+  ],
+  "verified": true,
+  "updated": "2026-09-10",
+  "sources": [
+    "https://beekeepercoffee.com/"
+  ],
+  "brand": "Bee Keeper Coffee",
+  "brandSlug": "beekeeper-coffee",
+  "name": "Caramel Latte",
+  "flavor": "Caramel",
+  "caffeineNote": "Not stated on the label; the brand publishes 125 mg",
+  "milk": "dairy",
+  "dairyFree": false,
+  "image": "/images/products/beekeeper-caramel-latte.jpg",
+  "summary": "Caramel cold brew latte on reduced-fat milk sweetened with organic honey, at 11 g of sugar (just 4 g of it added) and 5 g of protein per 8 oz can, 100 calories, with 125 mg of caffeine."
+}

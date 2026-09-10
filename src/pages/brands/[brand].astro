@@ -23,6 +23,13 @@ const maxMg = mgs.length ? Math.max(...mgs) : null;
 const strongest = withCaffeine[0];
 const oneCan = withCaffeine.length === 1;
 const flatMg = !oneCan && minMg === maxMg;
+// Some lineups mix cans that publish a figure with cans that don't. Saying "every
+// can we track" then overstates what we know, so the wording narrows to the cans
+// that actually carry a number. Bee Keeper is the first brand to hit this: four
+// flavors publish 125 mg and the fifth publishes nothing at all.
+const allKnown = withCaffeine.length === items.length;
+const everyCan = allKnown ? `Every ${name} can we track` : `Every ${name} can with a published figure`;
+const theCans = allKnown ? `${name}'s cans` : `The ${name} cans with a published figure`;
 
 // Spread of the rest of the lineup, for the second supporting paragraph.
 const milks = [...new Set(items.map((p) => milkLabel[p.data.milk]))].map((m) => m.toLowerCase());
@@ -43,8 +50,8 @@ const caffeineAnswer = !mgs.length
   : oneCan
     ? `${strongest.data.name} is the only ${name} can we track with a published figure, at ${maxMg} mg of caffeine.`
     : flatMg
-      ? `Every ${name} can we track carries about ${maxMg} mg of caffeine, ${strongest.data.name} included.`
-      : `${name} cans run from ${minMg} to ${maxMg} mg of caffeine. The strongest is ${strongest.data.name} at ${maxMg} mg.`;
+      ? `${everyCan} carries about ${maxMg} mg of caffeine, ${strongest.data.name} included.`
+      : `${theCans} run from ${minMg} to ${maxMg} mg of caffeine. The strongest is ${strongest.data.name} at ${maxMg} mg.`;
 
 const buyAnswer = [
   directLink ? `You can order ${name} direct from ${directLink.label}.` : null,
@@ -91,7 +98,7 @@ const desc = `${name} canned lattes compared side by side: caffeine content, sug
         {oneCan ? (
           <p>{name}'s one tracked can, <a href={`/caffeine/${strongest.id}`}>{strongest.data.name}</a>, carries {maxMg} mg of caffeine. To see where it sits against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
         ) : (
-          <p>{flatMg ? `Every ${name} can we track lands at the same ${maxMg} mg of caffeine per can.` : `${name}'s cans range from ${minMg} to ${maxMg} mg of caffeine per can.`} Strongest first, that's {withCaffeine.map((p, i) => (<>{listSep(i, withCaffeine.length)}<a href={`/caffeine/${p.id}`}>{p.data.name}</a> at {p.data.caffeineMg} mg</>))}. To see where they sit against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
+          <p>{flatMg ? `${everyCan} lands at the same ${maxMg} mg of caffeine per can.` : `${theCans} range from ${minMg} to ${maxMg} mg of caffeine per can.`} Strongest first, that's {withCaffeine.map((p, i) => (<>{listSep(i, withCaffeine.length)}<a href={`/caffeine/${p.id}`}>{p.data.name}</a> at {p.data.caffeineMg} mg</>))}. To see where they sit against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
         )}
       </>
     )}
