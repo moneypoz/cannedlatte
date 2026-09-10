@@ -152,6 +152,9 @@ export const comparePairs: [string, string][] = [
   ['starbucks-doubleshot-espresso-salted-caramel-cream', 'illy-cold-brew-latte-macchiato'],
   ['death-wish-original-latte', 'bones-holy-cannoli-latte'],
   ['slate-vanilla-latte', 'happy-vanilla-latte'],
+  // Same shelf, same flavour name, two different cans: the 200 mg flavored latte
+  // against the 255 mg cold brew latte. The pair exists to answer the mix-up.
+  ['bones-cannoli-latte', 'bones-holy-cannoli-latte'],
 ];
 
 /* ---- head-to-head differences -------------------------------------------

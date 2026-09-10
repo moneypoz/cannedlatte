@@ -1,0 +1,38 @@
+{
+  "type": "latte",
+  "sizeOz": 11,
+  "caffeineMg": null,
+  "sugarG": null,
+  "addedSugar": null,
+  "addedSugarG": null,
+  "proteinG": null,
+  "calories": null,
+  "refrigerated": false,
+  "pricePerCan": 3.08,
+  "packPrice": 36.99,
+  "packSize": 12,
+  "retailers": [
+    "Bones (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "Bones Coffee",
+      "url": "https://www.bonescoffee.com/products/cookies-cream-latte",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-10",
+  "sources": [
+    "https://www.bonescoffee.com/",
+    "https://www.bonescoffee.com/products/cookies-cream-latte"
+  ],
+  "brand": "Bones Coffee Company",
+  "brandSlug": "bones-coffee",
+  "name": "Cookies & Cream Latte",
+  "flavor": "Cookies & Cream",
+  "caffeineNote": "No figure published for this can; the three linemates we have checked print 200 mg on the label",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Cookies-and-cream latte sold in Bones' flavored-latte line alongside their Cannoli, French Toast and S'mores cans, at the same 11 oz and $36.99 for twelve. The brand publishes no nutrition panel for this one, so its figures stay blank here until we check a can. Their Cookies N' Dreams Latte is a separate, sweeter can from the cold brew line."
+}
