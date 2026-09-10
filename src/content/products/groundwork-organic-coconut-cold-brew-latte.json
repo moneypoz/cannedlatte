@@ -1,0 +1,43 @@
+{
+  "type": "latte",
+  "sizeOz": 8,
+  "caffeineMg": 79,
+  "sugarG": null,
+  "addedSugar": null,
+  "addedSugarG": null,
+  "proteinG": null,
+  "calories": 100,
+  "refrigerated": false,
+  "pricePerCan": 4.5,
+  "packPrice": 54.0,
+  "packSize": 12,
+  "retailers": [
+    "Amazon",
+    "Groundwork (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "Groundwork",
+      "url": "https://www.groundworkcoffee.com/products/organic-cold-brew-latte",
+      "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://amzn.to/4yw3v54",
+      "affiliate": true
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-10",
+  "sources": [
+    "https://www.groundworkcoffee.com/products/organic-cold-brew-latte",
+    "https://www.amazon.com/Groundwork-Organic-Coffee-Coconut-Latte/dp/B0G21K95PP"
+  ],
+  "brand": "Groundwork Coffee",
+  "brandSlug": "groundwork",
+  "name": "Organic Coconut Cold Brew Latte",
+  "caffeineNote": "Brand states 75–83 mg per 8 oz can",
+  "milk": "coconut",
+  "dairyFree": true,
+  "summary": "USDA Organic cold brew on coconut cream from the Los Angeles roaster — the only coconut-milk can we track — at 100 calories per 8 oz can and a brand-stated 75–83 mg of caffeine. Groundwork publishes no sugar or protein figure, so those columns stay blank until we check a can."
+}

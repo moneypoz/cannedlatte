@@ -19,7 +19,7 @@ const products = defineCollection({
     addedSugarG: z.number().nullable().default(null),   // brand-published "includes Xg added sugars", where stated
     proteinG: z.number().nullable(),
     calories: z.number().nullable(),
-    milk: z.enum(['dairy', 'lactose-free dairy', 'skim', 'oat', 'almond', 'none']),
+    milk: z.enum(['dairy', 'lactose-free dairy', 'skim', 'oat', 'almond', 'coconut', 'none']),
     dairyFree: z.boolean(),
     refrigerated: z.boolean().default(false),
     pricePerCan: z.number().nullable(),

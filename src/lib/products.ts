@@ -39,6 +39,7 @@ export const milkLabel: Record<P['milk'], string> = {
   skim: 'Ultra-filtered skim',
   oat: 'Oat',
   almond: 'Almond',
+  coconut: 'Coconut',
   none: 'None',
 };
 
