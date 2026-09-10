@@ -6,7 +6,7 @@
   "addedSugar": true,
   "addedSugarG": 5,
   "proteinG": 7,
-  "calories": 140,
+  "calories": 150,
   "refrigerated": false,
   "pricePerCan": 3.08,
   "packPrice": 36.99,
@@ -18,7 +18,7 @@
   "buyLinks": [
     {
       "label": "Bones Coffee",
-      "url": "https://www.bonescoffee.com/",
+      "url": "https://www.bonescoffee.com/products/smores-latte",
       "affiliate": false
     }
   ],
@@ -29,11 +29,11 @@
   ],
   "brand": "Bones Coffee Company",
   "brandSlug": "bones-coffee",
-  "name": "Sea Salt Caramel Mocha Latte",
-  "flavor": "Sea Salt Caramel Mocha",
-  "caffeineNote": "Label: 200 mg per can",
+  "name": "S'mores Latte",
+  "flavor": "S'mores",
+  "caffeineNote": "Label states 200 mg; brand notes contents may vary",
   "milk": "dairy",
   "dairyFree": false,
-  "image": "/images/products/bones-sea-salt-caramel-mocha-latte.jpg",
-  "summary": "Sea salt caramel and mocha on dairy milk, one of the stronger cans we track at 200 mg of caffeine, with 16 g of sugar and 7 g of protein per 11 oz can at 140 calories."
+  "image": "/images/products/bones-smores-latte.jpg",
+  "summary": "Toasted-marshmallow-and-graham s'mores latte on reduced-fat milk at a label-printed 200 mg of caffeine per 11 oz can, with 16 g of sugar (only 5 g of it added, alongside sucralose) and 7 g of protein at 150 calories."
 }

@@ -19,7 +19,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   'most-caffeine': {
     paragraphs: [
       'Caffeine in canned lattes ranges from a gentle 34 mg to over 250 mg per can — the difference between a soda\'s worth and two strong cups of coffee. For reference, a 12 oz drip coffee is typically 140–200 mg and a single espresso shot is 65–75 mg, so the strongest cans on this list genuinely replace a large coffee-shop order.',
-      'Two things drive the number: the coffee format (cold brew concentrates and triple-shot builds carry more) and the can size. Bones Coffee\'s Holy Cannoli Cold Brew Latte tops our database at the 250–260 mg the brand publishes, with La Colombe\'s Triple Draft Latte at 230 mg, Projo\'s Power Coffee at 225 mg and NOBL\'s cold brew oat latte at 207 mg; most dairy lattes land somewhere between 75 and 190 mg.',
+      'Two things drive the number: the coffee format (cold brew concentrates and triple-shot builds carry more) and the can size. Bones Coffee\'s Holy Cannoli Cold Brew Latte tops our database at the 250–260 mg the brand publishes, with La Colombe\'s Triple Draft Latte at 230 mg, Projo\'s Power Coffee at 225 mg and NOBL\'s cold brew oat latte at 207 mg; most dairy lattes land somewhere between 75 and 200 mg, the figure Bones prints on its whole flavored-latte line.',
       'Brands aren\'t required to print caffeine on the label, and actual content varies batch to batch, so treat every figure as typical rather than exact. Where a brand publishes a range, we note it on the product page.',
     ],
     faqs: [
@@ -60,7 +60,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   'no-added-sugar': {
     paragraphs: [
       'These are the cans with a 0 in the added-sugars line: sweetness, where there is any, comes from the milk itself, from whole ingredients like dates, or from non-nutritive sweeteners that carry no sugar at all. Seven cans qualify, and they get there three different ways. NOBL keeps it to literally two ingredients (cold brew and oat milk), so the 5 g on its label is oat-milk sugar with nothing added. Slate\'s five lattes lean on stevia and monk fruit, which leaves 1 g of naturally occurring milk sugar next to 20 g of protein. Pop & Bottle sweetens with dates, so its label shows around 8 g of total sugar but none added.',
-      'If a can you love isn\'t here, the least-sugar list is the neighboring compromise: La Colombe\'s Everyday and Oatmilk Vanilla Draft Lattes publish 4 g and 6 g of added sugar respectively, and both taste barely sweetened.',
+      'If a can you love isn\'t here, the least-sugar list is the neighboring compromise: six cans publish added sugar in the low single digits without reaching zero — La Colombe\'s Everyday Draft Latte at 4 g, Bones Coffee\'s four flavored lattes at 5 g, and La Colombe\'s Oatmilk Vanilla Draft Latte at 6 g. All of them taste barely sweetened.',
     ],
     faqs: [
       { q: 'What does "no added sugar" mean on a canned latte?', a: 'The added-sugars line on the nutrition panel reads 0 g. The can may still show total sugars from milk (lactose) or fruit-based sweeteners like dates.' },
