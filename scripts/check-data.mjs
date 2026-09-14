@@ -93,6 +93,23 @@ for (const { id, data } of products) {
   }
 }
 
+// (c2) every brand caffeine guide declared in src/lib/products.ts must have a page.
+// The map is read out of the TypeScript by regex because this script is plain node
+// and cannot import it. An entry with no src/pages/caffeine/<slug>.astro behind it
+// puts a dead link on that brand's hub, on each of its product pages and on each of
+// its per-flavor caffeine pages at once — the one failure mode worth a build stop.
+const PRODUCTS_TS = 'src/lib/products.ts';
+const productsTs = existsSync(PRODUCTS_TS) ? readFileSync(PRODUCTS_TS, 'utf8') : '';
+const guideBlock = (productsTs.match(/brandCaffeineGuides[^=]*=\s*\{([\s\S]*?)\n\};/) || [])[1] ?? '';
+if (productsTs && !guideBlock) {
+  failures.push(`could not read brandCaffeineGuides out of ${PRODUCTS_TS} — this check is broken, not the data`);
+}
+for (const [, slug] of guideBlock.matchAll(/slug:\s*'([^']+)'/g)) {
+  if (!existsSync(`src/pages/caffeine/${slug}.astro`)) {
+    failures.push(`brandCaffeineGuides lists "${slug}" but src/pages/caffeine/${slug}.astro does not exist`);
+  }
+}
+
 // (d) the two image directories must stay in lockstep
 if (publicFiles.length !== assetFiles.length) {
   failures.push(`image count drift: ${PUBLIC_IMG} has ${publicFiles.length}, ${ASSET_IMG} has ${assetFiles.length}`);

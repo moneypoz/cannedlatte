@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import ProductTable from '../../components/ProductTable.astro';
 import Disclosure from '../../components/Disclosure.astro';
-import { allProducts, fmt, milkLabel } from '../../lib/products';
+import { allProducts, caffeineGuideFor, fmt, milkLabel } from '../../lib/products';
 
 export async function getStaticPaths() {
   const products = await allProducts();
@@ -11,6 +11,10 @@ export async function getStaticPaths() {
 }
 const { items } = Astro.props;
 const name = items[0].data.brand;
+// Brands with enough brand-level caffeine demand have a dedicated guide at
+// /caffeine/<brandSlug>. Where one exists the hub hands the caffeine question to
+// it rather than growing a second copy of that table here.
+const guide = caffeineGuideFor(items[0].data.brandSlug);
 const buy = items.flatMap((p) => p.data.buyLinks).find((l) => l.affiliate) ?? items[0].data.buyLinks[0];
 
 // Strongest first, and only cans whose caffeine we actually know.
@@ -107,6 +111,7 @@ const desc = `${name} canned lattes compared side by side: caffeine content, sug
         ) : (
           <p>{flatMg ? `${everyCan} lands at the same ${maxMg} mg of caffeine per can.` : `${theCans} range from ${minMg} to ${maxMg} mg of caffeine per can.`} Strongest first, that's {withCaffeine.map((p, i) => (<>{listSep(i, withCaffeine.length)}<a href={`/caffeine/${p.id}`}>{p.data.name}</a> at {p.data.caffeineMg} mg</>))}. To see where they sit against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
         )}
+        {guide && <p><a href={`/caffeine/${guide.slug}`}>{guide.linkText}</a> — every flavor in one table, with can size and milligrams per ounce.</p>}
       </>
     )}
     <p>{milks.length === 1 ? `${items.length === 1 ? 'It is made' : 'They are all made'} with ${milks[0]} milk.` : `The lineup spans ${prose(milks)} milk.`}{sugars.length > 0 && ` Sugar runs ${gRange(Math.min(...sugars), Math.max(...sugars))} per can${prices.length > 0 ? ',' : '.'}`}{prices.length > 0 && `${sugars.length > 0 ? ' and a can costs' : ' A can costs'} ${fmt.usd(Math.min(...prices))}${Math.min(...prices) === Math.max(...prices) ? '' : ` to ${fmt.usd(Math.max(...prices))}`}.`} For the low-sugar end of the whole category, see the <a href="/best/least-sugar">canned lattes with the least sugar</a>.</p>

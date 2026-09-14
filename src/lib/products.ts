@@ -126,6 +126,24 @@ export const bestPages = [
   },
 ];
 
+/* ---- brand-level caffeine guides ---------------------------------------
+ * A hand-built page at /caffeine/<slug> for a brand whose search demand is
+ * brand-level ("la colombe caffeine") rather than flavor-level. The guide owns
+ * those queries; the per-flavor /caffeine/<product> pages keep their own. So
+ * everything points at the guide — brand hub, product page, per-flavor caffeine
+ * page — and the guide points back down at every can, rather than either side
+ * repeating the other's prose.
+ *
+ * Keys are brandSlug. Every entry needs a matching src/pages/caffeine/<slug>.astro;
+ * check-data.mjs fails the build if one is missing, because an entry without a
+ * page puts a dead link on every product page for that brand.
+ */
+export const brandCaffeineGuides: Record<string, { slug: string; linkText: string }> = {
+  'la-colombe': { slug: 'la-colombe', linkText: 'La Colombe caffeine content: every flavor compared' },
+};
+
+export const caffeineGuideFor = (brandSlug: string) => brandCaffeineGuides[brandSlug] ?? null;
+
 /** Every comparison featuring a given product, with the id of the other can. */
 export const comparisonsFor = (id: string) =>
   comparePairs

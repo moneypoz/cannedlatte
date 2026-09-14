@@ -1,0 +1,250 @@
+---
+import Base from '../../layouts/Base.astro';
+import { allProducts, fmt } from '../../lib/products';
+
+// Brand-level caffeine guide. Search Console shows La Colombe demand arriving as
+// brand queries ("la colombe caffeine", "everyday draft latte caffeine") rather
+// than as the single-flavor phrasing the /caffeine/<product> pages answer, so this
+// page owns the brand query and links down to the per-flavor pages instead of
+// repeating them.
+//
+// Nothing numeric below is typed by hand. The opening answer, the table, the
+// per-ounce column, the FAQ answers, the title tag and the meta description all
+// recompute from the same array, so correcting a figure in one product JSON moves
+// every claim on this page at once. scripts/check-claims.mjs re-reads the built
+// HTML and cross-checks the prose against this page's own table.
+const BRAND_SLUG = 'la-colombe';
+
+const items = (await allProducts()).filter((p) => p.data.brandSlug === BRAND_SLUG);
+type Row = (typeof items)[number];
+const brand = items[0]!.data.brand;
+
+const mgOf = (p: Row) => p.data.caffeineMg!;
+const ozOf = (p: Row) => (p.data.sizeOz ? +(mgOf(p) / p.data.sizeOz).toFixed(1) : null);
+// Kept as a number for sorting and comparison, but printed to a fixed decimal so a
+// whole-number result (135 over 9) doesn't render as "15" in a column of "17.3"s.
+const ozText = (p: Row) => ozOf(p)?.toFixed(1) ?? '—';
+
+// Strongest first, alphabetical inside a tie so the flavors that share a figure
+// hold a stable order between builds.
+const ranked = items
+  .filter((p) => p.data.caffeineMg != null)
+  .sort((a, b) => mgOf(b) - mgOf(a) || a.data.name.localeCompare(b.data.name));
+const unknown = items.filter((p) => p.data.caffeineMg == null);
+
+const strongest = ranked[0]!;
+const weakest = ranked[ranked.length - 1]!;
+const maxMg = mgOf(strongest);
+const minMg = mgOf(weakest);
+
+const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+const count = (n: number) => WORDS[n] ?? String(n);
+const prose = (arr: string[]) => (arr.length > 1 ? `${arr.slice(0, -1).join(', ')} and ${arr.at(-1)}` : (arr[0] ?? ''));
+
+// --- can sizes: the line is not one format, and the odd can out changes how the
+// per-can column should be read. Worked out rather than asserted, so a future
+// size change rewrites the sentence instead of leaving it wrong.
+const sizeTally = new Map<number, number>();
+for (const p of ranked) if (p.data.sizeOz != null) sizeTally.set(p.data.sizeOz, (sizeTally.get(p.data.sizeOz) ?? 0) + 1);
+const sizeGroups = [...sizeTally.entries()].sort((a, b) => b[1] - a[1]);
+const commonSize = sizeGroups[0]?.[0] ?? null;
+const oddSized = ranked.filter((p) => p.data.sizeOz != null && p.data.sizeOz !== commonSize);
+const oddSizes = [...new Set(oddSized.map((p) => p.data.sizeOz))];
+const sizeNote =
+  commonSize != null && oddSized.length > 0
+    ? `The line is not one format: ${prose(sizeGroups.map(([oz, n]) => `${count(n)} ${n === 1 ? 'can is' : 'cans are'} ${oz} oz`))}. Per-can and per-ounce therefore do not rank these flavors the same way.${
+        oddSizes.length === 1 ? ` The ${oddSizes[0]} oz cans are ${prose(oddSized.map((p) => p.data.name))}.` : ''
+      }`
+    : null;
+
+// --- per ounce: the two orders disagree, and which can moves furthest between
+// them is the one thing here the brand never publishes. Computed from the two
+// rankings rather than asserted, because which can that is changes every time a
+// flavor is added.
+const ozRanked = ranked.filter((p) => ozOf(p) != null).sort((a, b) => ozOf(b)! - ozOf(a)!);
+const ozLeader = ozRanked[0] ?? null;
+const ozTrailer = ozRanked[ozRanked.length - 1] ?? null;
+const canRank = new Map(ranked.map((p, i) => [p.id, i + 1]));
+const ozRank = new Map(ozRanked.map((p, i) => [p.id, i + 1]));
+const mover =
+  ozRanked
+    .map((p) => ({ p, from: canRank.get(p.id)!, to: ozRank.get(p.id)! }))
+    .sort((a, b) => Math.abs(b.from - b.to) - Math.abs(a.from - a.to))[0] ?? null;
+const moved = mover && mover.from !== mover.to ? mover : null;
+
+// --- how each figure is sourced. The site's rule is that a number is only ours
+// once it has been read off a can, so an unverified row says so here too.
+const sourcePhrase = (p: Row) =>
+  p.data.caffeineNote
+    ? `${p.data.caffeineNote}${p.data.verified ? '' : ' — a brand figure we have not yet checked against a label'}.`
+    : p.data.verified
+      ? 'Read off the can.'
+      : 'From the brand, not yet checked against a label.';
+const unverified = ranked.filter((p) => !p.data.verified);
+
+// --- FAQs, phrased as the queries that actually arrive, answered number first ---
+const byId = (id: string) => ranked.find((p) => p.id === id) ?? null;
+const peersAt = (p: Row) => ranked.filter((x) => x.id !== p.id && mgOf(x) === mgOf(p));
+
+const perCan = (p: Row) =>
+  `${brand} ${p.data.name} has ${mgOf(p)} mg of caffeine per ${p.data.sizeOz} oz can${ozOf(p) != null ? `, or ${ozOf(p)} mg per ounce` : ''}.`;
+
+const everyday = byId('la-colombe-everyday-draft-latte');
+const pumpkin = byId('la-colombe-pumpkin-spice-draft-latte');
+const vanilla = byId('la-colombe-vanilla-draft-latte');
+const oats = ranked.filter((p) => p.data.milk === 'oat');
+
+const peerSentence = (p: Row) => {
+  const peers = peersAt(p);
+  return peers.length
+    ? ` That is the same figure as ${prose(peers.map((x) => x.data.name))}, which all share the ${mgOf(p)} mg espresso base.`
+    : '';
+};
+
+// How this can's format compares with the rest of the line. Counted, not stated:
+// "the one 9 oz can" stopped being true the moment a second 9 oz flavor landed.
+const sizeClause = (p: Row) => {
+  if (commonSize == null || p.data.sizeOz == null || p.data.sizeOz === commonSize) return '';
+  const peers = ranked.filter((x) => x.id !== p.id && x.data.sizeOz === p.data.sizeOz);
+  return peers.length
+    ? ` That is one of ${count(peers.length + 1)} ${p.data.sizeOz} oz cans in a line that is otherwise ${commonSize} oz.`
+    : ` That is the only ${p.data.sizeOz} oz can in a line that is otherwise ${commonSize} oz.`;
+};
+
+const oatVerified = oats.filter((p) => p.data.verified);
+const oatUnverified = oats.filter((p) => !p.data.verified);
+const oatSourcing = [
+  oatVerified.length
+    ? `${prose(oatVerified.map((p) => p.data.name))} ${oatVerified.length === 1 ? 'is' : 'are'} read off the can.`
+    : '',
+  oatUnverified.length
+    ? `${prose(oatUnverified.map((p) => p.data.name))} ${oatUnverified.length === 1 ? 'carries' : 'carry'} ${brand}'s own published figure, which we have not yet checked against a label.`
+    : '',
+]
+  .filter(Boolean)
+  .join(' ');
+
+const faqs = [
+  everyday && {
+    q: `How much caffeine is in ${brand} ${everyday.data.name}?`,
+    a: `${perCan(everyday)}${sizeClause(everyday)} ${sourcePhrase(everyday)}`,
+  },
+  pumpkin && {
+    q: `How much caffeine is in ${brand} ${pumpkin.data.name}?`,
+    a: `${perCan(pumpkin)}${peerSentence(pumpkin)} ${sourcePhrase(pumpkin)}`,
+  },
+  vanilla && {
+    q: `How much caffeine is in ${brand} ${vanilla.data.name}?`,
+    a: `${perCan(vanilla)}${peerSentence(vanilla)} ${sourcePhrase(vanilla)}`,
+  },
+  oats.length > 0 && {
+    q: `Does ${brand} make an oat milk latte and how much caffeine does it have?`,
+    a:
+      oats.length === 1
+        ? `Yes — ${brand}'s ${oats[0]!.data.name} has ${mgOf(oats[0]!)} mg of caffeine per ${oats[0]!.data.sizeOz} oz can${ozOf(oats[0]!) != null ? `, or ${ozOf(oats[0]!)} mg per ounce` : ''}. ${sourcePhrase(oats[0]!)}`
+        : `Yes — ${brand} makes ${count(oats.length)} oat milk Draft Lattes: ${prose(
+            oats.map((p) => `${p.data.name} at ${mgOf(p)} mg of caffeine per ${p.data.sizeOz} oz can`),
+          )}. That works out to ${prose(
+            oats.filter((p) => ozOf(p) != null).map((p) => `${ozOf(p)} mg per ounce for the ${p.data.name}`),
+          )}. ${oatSourcing}`,
+  },
+].filter(Boolean) as { q: string; a: string }[];
+
+// Base.astro appends " · Canned Latte", so the tag runs ~15 characters longer than
+// this. Kept short enough that the milligram range — the part that earns the click
+// — survives Google's truncation rather than being clipped off the end.
+const title = `${brand} Caffeine: Every Canned Latte (${minMg}–${maxMg} mg)`;
+const desc = `Caffeine in every ${brand} canned latte, strongest to mildest: ${minMg} to ${maxMg} mg per can, with can size and mg per ounce for all ${count(ranked.length)} flavors.`;
+
+const jsonLd: Record<string, unknown>[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Canned Latte', item: 'https://cannedlatte.com/' },
+      { '@type': 'ListItem', position: 2, name: brand, item: `https://cannedlatte.com/brands/${BRAND_SLUG}` },
+      { '@type': 'ListItem', position: 3, name: 'Caffeine' },
+    ],
+  },
+];
+---
+<Base title={title} description={desc} jsonLd={jsonLd}>
+  <p class="eyebrow"><a href="/">Canned Latte</a> · <a href={`/brands/${BRAND_SLUG}`}>{brand}</a> · Caffeine</p>
+  <h1>{brand} Canned Latte Caffeine Content (Every Flavor)</h1>
+
+  <p class="lede">
+    <strong>{brand}'s canned lattes range from {minMg} mg ({weakest.data.name}) to {maxMg} mg ({strongest.data.name}), with exact figures per flavor below.</strong>
+  </p>
+
+  <div class="stats">
+    <div class="stat-card"><div class="n">{maxMg} mg</div><div class="l">strongest — {strongest.data.name}</div></div>
+    <div class="stat-card"><div class="n">{minMg} mg</div><div class="l">mildest — {weakest.data.name}</div></div>
+    {ozLeader && ozOf(ozLeader) != null && (
+      <div class="stat-card"><div class="n">{ozOf(ozLeader)}</div><div class="l">mg per oz, {ozLeader.data.name}</div></div>
+    )}
+    <div class="stat-card"><div class="n">{ranked.length}</div><div class="l">flavors with a published figure</div></div>
+  </div>
+
+  <h2>Every {brand} latte by caffeine</h2>
+  <div class="tablewrap">
+    <table id="caffeine-by-flavor" data-claims="brand-caffeine">
+      <thead>
+        <tr><th>Flavor</th><th>Caffeine</th><th>Can size</th><th>Per oz (mg)</th></tr>
+      </thead>
+      <tbody>
+        {ranked.map((p) => (
+          <tr>
+            <th><a href={`/latte/${p.id}`}>{p.data.name}</a>{!p.data.verified && <> <span class="tag warn">unverified</span></>}</th>
+            <td class="num">{mgOf(p)} mg</td>
+            <td class="num">{fmt.oz(p.data.sizeOz)}</td>
+            <td class="num">{ozText(p)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  {sizeNote && <p>{sizeNote}</p>}
+
+  {unverified.length > 0 && (
+    <p class="meta">
+      {prose(unverified.map((p) => p.data.name))} {unverified.length === 1 ? 'is' : 'are'} marked unverified: the figure is {brand}'s
+      own published number and we have not yet read it off a can. Every other row here comes from the label.
+    </p>
+  )}
+
+  {unknown.length > 0 && (
+    <p class="meta">Not listed: {prose(unknown.map((p) => p.data.name))} — no caffeine figure is published, and we would rather show nothing than an estimate.</p>
+  )}
+
+  <p class="meta">
+    Per-flavor pages: {ranked.map((p, i) => (<>{i > 0 && ' · '}<a href={`/caffeine/${p.id}`}>{p.data.name}</a></>))}
+  </p>
+
+  <h2>Reading the per-ounce column</h2>
+  {ozLeader && ozTrailer && ozOf(ozLeader) != null && ozOf(ozTrailer) != null && (
+    <p>
+      Because the line mixes can sizes, the per-ounce order is not the per-can order. {ozLeader.data.name} is the most
+      concentrated at {ozOf(ozLeader)} mg/oz and {ozTrailer.data.name} the least at {ozOf(ozTrailer)} mg/oz.
+      {moved && ` ${moved.p.data.name} moves furthest between the two: #${moved.from} of ${ranked.length} by the can, #${moved.to} by the ounce.`}
+    </p>
+  )}
+  <p>
+    For context, a 12 oz drip coffee is usually 140–200 mg and an espresso shot is 65–75 mg. To see where these cans sit
+    against every other brand, check the <a href="/best/most-caffeine">canned lattes with the most caffeine</a>, or the full
+    <a href={`/brands/${BRAND_SLUG}`}> {brand} lineup</a> with sugar, protein and price alongside.
+  </p>
+
+  <h2>Questions</h2>
+  {faqs.map((f) => (<><h3>{f.q}</h3><p>{f.a}</p></>))}
+
+  <p>
+    <a class="btn" href={`/brands/${BRAND_SLUG}`}>All {brand} cans compared</a>
+    <a class="btn secondary" href="/best/most-caffeine">Every latte by caffeine</a>
+  </p>
+</Base>

@@ -1,0 +1,37 @@
+{
+  "type": "latte",
+  "sizeOz": 9,
+  "caffeineMg": 120,
+  "sugarG": 6,
+  "addedSugar": true,
+  "addedSugarG": 5,
+  "proteinG": 2,
+  "calories": 130,
+  "refrigerated": false,
+  "pricePerCan": 3.17,
+  "packPrice": 38,
+  "packSize": 12,
+  "retailers": [
+    "La Colombe"
+  ],
+  "buyLinks": [
+    {
+      "label": "La Colombe",
+      "url": "https://www.lacolombe.com/products/oatmilk-draft-latte",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-14",
+  "sources": [
+    "https://www.lacolombe.com/products/oatmilk-draft-latte"
+  ],
+  "brand": "La Colombe",
+  "brandSlug": "la-colombe",
+  "name": "Oatmilk Everyday Draft Latte",
+  "flavor": "Original",
+  "caffeineNote": "120 mg per La Colombe's product page (shown as a marketing badge; caffeine is not listed on the nutrition panel). Not yet label-verified.",
+  "milk": "oat",
+  "dairyFree": true,
+  "summary": "The dairy-free version of the Everyday Draft Latte, built on oatmilk instead of lactose-free whole milk and sold in the same 9 oz nitrous-charged can. A long-running SKU rather than a new launch; we have not yet checked a can against its label."
+}

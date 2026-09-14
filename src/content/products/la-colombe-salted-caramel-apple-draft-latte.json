@@ -1,0 +1,37 @@
+{
+  "type": "latte",
+  "sizeOz": 9,
+  "caffeineMg": 135,
+  "sugarG": 14,
+  "addedSugar": true,
+  "addedSugarG": 6,
+  "proteinG": 6,
+  "calories": 140,
+  "refrigerated": false,
+  "pricePerCan": 2.83,
+  "packPrice": 34,
+  "packSize": 12,
+  "retailers": [
+    "La Colombe"
+  ],
+  "buyLinks": [
+    {
+      "label": "La Colombe",
+      "url": "https://www.lacolombe.com/products/salted-caramel-apple-draft-latte",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-09-14",
+  "sources": [
+    "https://www.lacolombe.com/products/salted-caramel-apple-draft-latte"
+  ],
+  "brand": "La Colombe",
+  "brandSlug": "la-colombe",
+  "name": "Salted Caramel Apple Draft Latte",
+  "flavor": "Salted Caramel Apple",
+  "caffeineNote": "135 mg per La Colombe's product page (shown as a marketing badge; caffeine is not listed on the nutrition panel). Not yet label-verified.",
+  "milk": "lactose-free dairy",
+  "dairyFree": false,
+  "summary": "Fall seasonal Draft Latte: espresso roast cold brew with lactose-free milk, apple, buttery caramel and sea salt, in the same 9 oz can as the Everyday. Listed out of stock at La Colombe on the day we recorded it."
+}

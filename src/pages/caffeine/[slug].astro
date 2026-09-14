@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { allProducts, fullName, shortName, fmt } from '../../lib/products';
+import { allProducts, caffeineGuideFor, fullName, shortName, fmt } from '../../lib/products';
 
 // One-question pages: "how much caffeine in X". Only built for products with a known
 // figure. Everything below the direct answer is computed from the database, so all
@@ -43,6 +43,9 @@ const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
 // --- same brand ---
 const siblings = ranked.filter((x) => x.data.brandSlug === p.brandSlug && x.id !== product.id);
+// This page answers the flavor query; the brand guide, where one exists, answers
+// the brand query. Link up to it rather than restating its table.
+const guide = caffeineGuideFor(p.brandSlug);
 
 // --- closest strength from other brands ---
 const nearest = all
@@ -123,6 +126,10 @@ const jsonLd = {
         </table>
       </div>
     </>
+  )}
+
+  {guide && (
+    <p><a href={`/caffeine/${guide.slug}`}>{guide.linkText}</a> — every flavor ranked by milligrams per can and per ounce, with can sizes.</p>
   )}
 
   {nearest.length > 0 && (

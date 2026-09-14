@@ -36,6 +36,11 @@ export type NewsItem = {
 
 export const news: NewsItem[] = [
   {
+    date: '2026-09-14',
+    text: 'Two La Colombe cans we were not tracking are listed on the brand’s own site: an Oatmilk Everyday Draft Latte badged at 120 mg, and a fall-seasonal Salted Caramel Apple Draft Latte badged at 135 mg and already out of stock. Both are 9 oz, both are in the database unverified.',
+    link: { href: '/brands/la-colombe', label: 'La Colombe' },
+  },
+  {
     date: '2026-09-10',
     text: 'King Coffee’s Vietnamese ready-to-drink lattes are on sale in the US, $19.99 for six 8 oz cans direct from the brand.',
     link: { href: '/latte/king-coffee-vanilla-latte', label: 'King Coffee Vanilla Latte' },
