@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { allProducts, caffeineGuideFor, fullName, shortName, fmt } from '../../lib/products';
+import { allProducts, caffeineGuideFor, fullName, shortName, fmt, caffeineTitle, caffeineQuestionTitle } from '../../lib/products';
 
 // One-question pages: "how much caffeine in X". Only built for products with a known
 // figure. Everything below the direct answer is computed from the database, so all
@@ -78,7 +78,7 @@ const jsonLd = {
 };
 ---
 <Base
-  title={`How much caffeine is in ${name}?`}
+  title={p.caffeineMg != null ? caffeineTitle(p, mg) : caffeineQuestionTitle(p)}
   description={`${name} has about ${mg} mg of caffeine per can${perOz ? ` (${perOz} mg per oz)` : ''} — #${rank} of ${all.length} canned lattes we track.`}
   jsonLd={jsonLd}>
   <p class="eyebrow"><a href="/">Canned Latte</a> · Caffeine</p>

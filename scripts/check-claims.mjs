@@ -13,10 +13,18 @@ let totalClaims = 0;
 const text = (s) => s.replace(/<[^>]+>/g, '').replace(/&#39;/g, "'").replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
 const num = (s) => parseFloat(String(s).replace('$', ''));
 
-/** Read a two-column spec row, tolerating Astro's data-astro-cid attributes. */
+/** Read a two-column spec row, tolerating Astro's data-astro-cid attributes.
+ *  The cells carry inline markup now — an unverified figure trails a <sup> marker —
+ *  so each value is captured non-greedily and stripped, rather than matched as a run
+ *  of non-'<' characters. That earlier [^<]* silently cut this group from 45 claims
+ *  to 6 the moment the marker was added, which is why the minimum for this group is
+ *  now the real expected count instead of 1. */
 const rowVal = (html, label) => {
-  const m = html.match(new RegExp(`<th[^>]*>${label}<\\/th>\\s*<td[^>]*>([^<]*)<\\/td>\\s*<td[^>]*>([^<]*)<\\/td>`));
-  return m ? [m[1].trim(), m[2].trim()] : null;
+  for (const m of html.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)) {
+    const c = [...m[1].matchAll(/<t[hd][^>]*>([\s\S]*?)<\/t[hd]>/g)].map((x) => text(x[1]));
+    if (c.length === 3 && c[0] === label) return [c[1], c[2]];
+  }
+  return null;
 };
 
 // ---- compare pages: every delta in the opener must match its own spec table ----
@@ -231,15 +239,281 @@ for (const slug of EXPECTED_GUIDES) {
   }
 }
 
-totalClaims = compareClaims + caffeineClaims + guideClaims;
+/* ======================================================================
+ * Shared source of truth for the two groups below.
+ *
+ * Both re-derive what a page *should* say from the product JSONs and from
+ * src/lib/products.ts, never from the rendered page alone. A check that read only
+ * dist/ would pass the moment a template stopped emitting the thing being checked,
+ * which is the failure mode this whole file exists to prevent.
+ * ==================================================================== */
+const SRC = existsSync('src/lib/products.ts') ? readFileSync('src/lib/products.ts', 'utf8') : '';
+
+const PRODUCTS = existsSync('src/content/products')
+  ? Object.fromEntries(
+      readdirSync('src/content/products')
+        .filter((f) => f.endsWith('.json'))
+        .map((f) => [f.replace(/\.json$/, ''), JSON.parse(readFileSync(`src/content/products/${f}`, 'utf8'))]),
+    )
+  : {};
+
+const COMPARE_PAIRS = [
+  ...((SRC.match(/comparePairs[^=]*=\s*\[([\s\S]*?)\n\];/) || [])[1] ?? '').matchAll(/\['([^']+)',\s*'([^']+)'\]/g),
+].map((m) => [m[1], m[2]]);
+
+/** Each ranking's headline config, or null where the list crowns no single figure
+ *  (dairy-free, oat milk). Read from source because whether a /best title is
+ *  allowed to carry a superlative is a decision made there, and the rendered page
+ *  does not reveal it. */
+const BEST_CONFIG = (() => {
+  const arr = (SRC.match(/export const bestPages: BestPage\[\] = \[([\s\S]*?)\n\];/) || [])[1] ?? '';
+  const out = {};
+  for (const m of arr.matchAll(/slug:\s*'([^']+)',([\s\S]*?)metricLabel:/g)) {
+    const h = m[2].match(/headline:\s*\{\s*field:\s*'(\w+)',\s*lowerWins:\s*(true|false)/);
+    out[m[1]] = h ? { field: h[1], lowerWins: h[2] === 'true' } : null;
+  }
+  return out;
+})();
+
+const rawCells = (row) => [...row.matchAll(/<t[hd][^>]*>([\s\S]*?)<\/t[hd]>/g)].map((m) => m[1]);
+const bodyRows = (h) => {
+  const tb = h.match(/<tbody[^>]*>([\s\S]*?)<\/tbody>/);
+  return tb ? [...tb[1].matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)].map((m) => m[1]) : [];
+};
+
+/* ---- compare pages: sourcing disclosure -------------------------------------
+ * A /compare title is allowed to restate a can's figure ("230 vs 255 mg") only
+ * because the table below discloses where each figure came from. That makes the
+ * marker load-bearing rather than decorative: if it stops rendering, the titles
+ * above it silently become undisclosed claims. So every figure belonging to a
+ * verified:false record must carry the marker — and, the other direction, no
+ * figure from a label-checked record may wear it. */
+const MARK = 'class="unv"';
+let discloseClaims = 0, disclosePages = 0;
+for (const [a, b] of COMPARE_PAIRS) {
+  const A = PRODUCTS[a], B = PRODUCTS[b];
+  if (!A || !B) continue;
+  const path = `dist/compare/${a}-vs-${b}.html`;
+  if (!existsSync(path)) { failures.push(`compare page ${a}-vs-${b} did not build — ${path} is missing`); continue; }
+  const h = readFileSync(path, 'utf8');
+  disclosePages++;
+  const rows = bodyRows(h);
+  if (!rows.length) { failures.push(`${a}-vs-${b}: parsed 0 spec rows, so no figure was checked for disclosure`); continue; }
+
+  let expected = 0;
+  for (const row of rows) {
+    const c = rawCells(row);
+    if (c.length < 3) continue;
+    const label = text(c[0]);
+    for (const [i, rec, who] of [[1, A, a], [2, B, b]]) {
+      const val = text(c[i]);
+      const marked = c[i].includes(MARK);
+      // "Oat", "Yes" and "Shelf-stable" are specs but not figures; "—" is unpublished.
+      if (!/\d/.test(val)) {
+        if (marked) failures.push(`${a}-vs-${b}: "${label}" marks ${who}'s non-figure cell "${val}"`);
+        continue;
+      }
+      discloseClaims++;
+      if (!rec.verified) {
+        expected++;
+        if (!marked) failures.push(`${a}-vs-${b}: "${label}" shows ${who}'s ${val} from an unverified record with no sourcing marker`);
+      } else if (marked) {
+        failures.push(`${a}-vs-${b}: "${label}" marks ${who}'s ${val} as brand-published, but that record is label-verified`);
+      }
+    }
+  }
+
+  const note = /class="tablenote"/.test(h);
+  discloseClaims++;
+  if (expected > 0 && !note) failures.push(`${a}-vs-${b}: ${expected} marked figure(s) but no footnote saying what the marker means`);
+  if (expected === 0 && note) failures.push(`${a}-vs-${b}: carries the marker footnote but marks nothing`);
+}
+
+/* ---- titles: every number in a <title> must match that page's own data -------
+ * Titles are the one piece of copy nobody re-reads after shipping, and they render
+ * into <head> where looking at the page will never reveal a stale one. Every figure
+ * in them is computed at build time from the same records the table renders, so
+ * this re-derives each and fails when the two drift apart. */
+const SUFFIX = ' · Canned Latte';
+const titleOf = (h) => {
+  const raw = (h.match(/<title>([\s\S]*?)<\/title>/) || [])[1];
+  if (raw == null) return null;
+  const t = text(raw);
+  return t.endsWith(SUFFIX) ? t.slice(0, -SUFFIX.length) : t;
+};
+/** The stat cards on a product page, as displayed value + label. */
+const statCards = (h) =>
+  [...h.matchAll(/<div class="stat-card"[^>]*>\s*<div class="n"[^>]*>([\s\S]*?)<\/div>\s*<div class="l"[^>]*>([\s\S]*?)<\/div>/g)]
+    .map((m) => ({ v: text(m[1]), l: text(m[2]) }));
+
+let titleClaims = 0;
+const titlePages = { caffeine: 0, latte: 0, brands: 0, best: 0, compare: 0, table: 0 };
+
+// (a) /caffeine/<product> — "<name> Caffeine: N mg per Can"
+for (const f of existsSync('dist/caffeine') ? readdirSync('dist/caffeine') : []) {
+  const h = readFileSync('dist/caffeine/' + f, 'utf8');
+  if (h.includes(GUIDE_MARK)) continue;
+  const t = titleOf(h);
+  if (t == null) { failures.push(`caffeine/${f}: no <title>`); continue; }
+  titlePages.caffeine++;
+  const statMg = h.match(/<div class="n"[^>]*>(\d+(?:\.\d+)?) mg<\/div>/);
+  titleClaims++;
+  if (/^How much caffeine is in /.test(t)) {
+    // The pre-numbers fallback. Legitimate only for a page with no figure at all,
+    // and this route builds only pages that have one, so it should never fire.
+    if (statMg) failures.push(`caffeine/${f}: title fell back to the question form though the page states ${statMg[1]} mg`);
+    continue;
+  }
+  const m = t.match(/ Caffeine: (\d+(?:\.\d+)?) mg per Can$/);
+  if (!m) { failures.push(`caffeine/${f}: title "${t}" is not in the "<name> Caffeine: N mg per Can" form`); continue; }
+  if (!statMg) failures.push(`caffeine/${f}: title states ${m[1]} mg but the page has no mg stat card to check it against`);
+  else if (parseFloat(m[1]) !== parseFloat(statMg[1])) failures.push(`caffeine/${f}: title says ${m[1]} mg, stat card shows ${statMg[1]} mg`);
+}
+
+// (b) /latte/<product> — "<name>: N mg Caffeine, N g Sugar", each part present
+// only where the record publishes it. Checked in both directions, so a title can
+// neither state a figure the page lacks nor drop one the page shows.
+for (const f of existsSync('dist/latte') ? readdirSync('dist/latte') : []) {
+  const h = readFileSync('dist/latte/' + f, 'utf8');
+  const t = titleOf(h);
+  if (t == null) { failures.push(`latte/${f}: no <title>`); continue; }
+  titlePages.latte++;
+  const cards = statCards(h);
+  const card = (name) => cards.find((c) => c.l === name || c.l.startsWith(name + ' '));
+  for (const [re, label, unit] of [
+    [/(\d+(?:\.\d+)?) mg Caffeine/, 'caffeine', 'mg'],
+    [/(\d+(?:\.\d+)?) g Sugar/, 'sugar', 'g'],
+  ]) {
+    const inTitle = t.match(re);
+    const c = card(label);
+    const shown = c ? parseFloat(c.v) : NaN;
+    const published = c != null && !Number.isNaN(shown);
+    if (inTitle) {
+      titleClaims++;
+      if (!published) failures.push(`latte/${f}: title states ${inTitle[1]} ${unit} of ${label}, but that stat card shows "${c ? c.v : 'nothing'}"`);
+      else if (parseFloat(inTitle[1]) !== shown) failures.push(`latte/${f}: title says ${inTitle[1]} ${unit} ${label}, stat card shows ${c.v}`);
+    } else if (published) {
+      titleClaims++;
+      failures.push(`latte/${f}: page publishes ${c.v} of ${label} but the title omits it`);
+    }
+  }
+}
+
+// (c) /brands/<brand> — "All N Compared", or "Full Specs" for a one-can lineup
+for (const f of existsSync('dist/brands') ? readdirSync('dist/brands') : []) {
+  if (f === 'index.html') continue;
+  const h = readFileSync('dist/brands/' + f, 'utf8');
+  const t = titleOf(h);
+  if (t == null) { failures.push(`brands/${f}: no <title>`); continue; }
+  titlePages.brands++;
+  const n = bodyRows(h).length;
+  titleClaims++;
+  const m = t.match(/Canned Lattes: All (\d+) Compared$/);
+  if (m) {
+    if (parseInt(m[1], 10) !== n) failures.push(`brands/${f}: title counts ${m[1]} cans, the table lists ${n}`);
+  } else if (/Canned Latte: Full Specs$/.test(t)) {
+    if (n !== 1) failures.push(`brands/${f}: title is the single-can form but the table lists ${n} cans`);
+  } else {
+    failures.push(`brands/${f}: title "${t}" matches neither brand form`);
+  }
+}
+
+// (d) /best/<slug> — the headline stat, and Gate 1 over it.
+// Exactly one number per title, so its value is the whole claim: either the
+// crowned extreme, or the count the title falls back to when that extreme belongs
+// to an unverified record. Checking the fallback too means the Gate 1 rule cannot
+// quietly stop applying in either direction.
+for (const f of existsSync('dist/best') ? readdirSync('dist/best') : []) {
+  const slug = f.replace(/\.html$/, '');
+  const h = readFileSync('dist/best/' + f, 'utf8');
+  const t = titleOf(h);
+  if (t == null) { failures.push(`best/${f}: no <title>`); continue; }
+  titlePages.best++;
+  if (!(slug in BEST_CONFIG)) { failures.push(`best/${slug} built but is not in bestPages, so its title went unchecked`); continue; }
+
+  const rows = bodyRows(h).map((r) => {
+    const c = rawCells(r);
+    return { unverified: /tag warn/.test(c[0] ?? ''), metric: num(text(c[1] ?? '')) };
+  });
+  if (!rows.length) { failures.push(`best/${slug}: parsed 0 rows`); continue; }
+
+  const cfg = BEST_CONFIG[slug];
+  const vals = rows.filter((r) => !Number.isNaN(r.metric));
+  let expect, why;
+  if (cfg && vals.length) {
+    // The same leader the page's own sort puts first: the first row at the extreme.
+    const extreme = vals.reduce((x, y) => ((cfg.lowerWins ? y.metric < x.metric : y.metric > x.metric) ? y : x)).metric;
+    const holder = vals.find((r) => r.metric === extreme);
+    if (holder.unverified) { expect = rows.length; why = `the row count, because the ${extreme} leader is unverified and Gate 1 bars crowning it`; }
+    else { expect = extreme; why = `the crowned leader, which is label-verified`; }
+  } else {
+    expect = rows.length; why = 'the row count, since this list crowns no single figure';
+  }
+
+  const nums = [...t.matchAll(/\d+(?:\.\d+)?/g)].map((m) => parseFloat(m[0]));
+  titleClaims++;
+  if (nums.length !== 1) {
+    failures.push(`best/${slug}: title "${t}" carries ${nums.length} numbers, expected exactly one — ${expect}, ${why}`);
+  } else if (nums[0] !== expect) {
+    failures.push(`best/${slug}: title says ${nums[0]}, expected ${expect} — ${why}`);
+  }
+}
+
+// (e) /compare/<a>-vs-<b> — "A vs B: N vs N mg", against the Caffeine row
+for (const f of existsSync('dist/compare') ? readdirSync('dist/compare') : []) {
+  const h = readFileSync('dist/compare/' + f, 'utf8');
+  const t = titleOf(h);
+  if (t == null) { failures.push(`compare/${f}: no <title>`); continue; }
+  titlePages.compare++;
+  const r = rowVal(h, 'Caffeine');
+  if (!r) { failures.push(`compare/${f}: no Caffeine row to check the title against`); continue; }
+  const x = num(r[0]), y = num(r[1]);
+  const m = t.match(/: (\d+(?:\.\d+)?) vs (\d+(?:\.\d+)?) mg$/);
+  titleClaims++;
+  if (m) {
+    if (parseFloat(m[1]) !== x || parseFloat(m[2]) !== y) {
+      failures.push(`compare/${f}: title says ${m[1]} vs ${m[2]} mg, the table shows ${r[0]} / ${r[1]}`);
+    }
+  } else if (/ Compared$/.test(t)) {
+    // The numberless form is only right when one of the cans publishes no figure.
+    if (!Number.isNaN(x) && !Number.isNaN(y)) {
+      failures.push(`compare/${f}: title omits the figures though both cans publish one (${r[0]} / ${r[1]})`);
+    }
+  } else {
+    failures.push(`compare/${f}: title "${t}" matches neither compare form`);
+  }
+}
+
+// (f) /table — "N Cans, One Table"
+if (existsSync('dist/table.html')) {
+  const h = readFileSync('dist/table.html', 'utf8');
+  const t = titleOf(h);
+  titlePages.table++;
+  const n = bodyRows(h).length;
+  const m = (t ?? '').match(/(\d+) Cans, One Table$/);
+  titleClaims++;
+  if (!m) failures.push(`table.html: title "${t}" is not in the "N Cans, One Table" form`);
+  else if (parseInt(m[1], 10) !== n) failures.push(`table.html: title counts ${m[1]} cans, the table lists ${n}`);
+}
+
+totalClaims = compareClaims + caffeineClaims + guideClaims + discloseClaims + titleClaims;
 
 // ---- the zero-coverage guard ----
 // The guide row counts declared guides, not discovered ones, so "no guide pages
 // were found" fails here instead of skipping the row.
+//
+// The minimums are the real expected counts, not 1. A minimum of 1 let the compare
+// group fall from 45 claims to 6 — when a <sup> marker was added inside the table
+// cells its selector read — and still report a pass. A floor that only catches
+// total blindness does not catch a group going nearly blind, so each is set just
+// under what the group inspects today and has to be raised, deliberately, when the
+// content it covers shrinks.
 const groups = [
-  ['compare pages', comparePages, 'compare claims', compareClaims, 1],
-  ['caffeine pages', caffeinePages, 'caffeine claims', caffeineClaims, 1],
+  ['compare pages', comparePages, 'compare claims', compareClaims, 40],
+  ['caffeine pages', caffeinePages, 'caffeine claims', caffeineClaims, 60],
   ['brand caffeine guides', Math.max(guidePages, EXPECTED_GUIDES.length), 'brand guide claims', guideClaims, 6],
+  ['compare pages', disclosePages, 'sourcing-disclosure checks', discloseClaims, 150],
+  ['titled pages', Object.values(titlePages).reduce((a, b) => a + b, 0), 'title claims', titleClaims, 190],
 ];
 for (const [pageWhat, pageN, claimWhat, claimN, min] of groups) {
   if (pageN > 0 && claimN < min) {
@@ -257,8 +531,12 @@ if (failures.length) {
   process.exit(1);
 }
 
+const titled = Object.entries(titlePages).filter(([, n]) => n > 0);
 console.log(
   `  Claims OK — ${totalClaims} numeric claims cross-checked against their own tables ` +
   `(${compareClaims} across ${comparePages} compare pages, ${caffeineClaims} across ${caffeinePages} caffeine pages, ` +
-  `${guideClaims} across ${guidePages} brand caffeine guide${guidePages === 1 ? '' : 's'}).`
+  `${guideClaims} across ${guidePages} brand caffeine guide${guidePages === 1 ? '' : 's'}, ` +
+  `${discloseClaims} sourcing-disclosure checks across ${disclosePages} compare pages, ` +
+  `${titleClaims} title claims across ${titled.reduce((a, [, n]) => a + n, 0)} pages ` +
+  `[${titled.map(([k, n]) => `${k} ${n}`).join(', ')}]).`
 );

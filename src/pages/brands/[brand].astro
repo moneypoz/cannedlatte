@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import ProductTable from '../../components/ProductTable.astro';
 import Disclosure from '../../components/Disclosure.astro';
-import { allProducts, caffeineGuideFor, fmt, milkLabel } from '../../lib/products';
+import { allProducts, caffeineGuideFor, fmt, milkLabel, brandTitle } from '../../lib/products';
 
 export async function getStaticPaths() {
   const products = await allProducts();
@@ -94,7 +94,7 @@ const jsonLd: Record<string, unknown>[] = [
 
 const desc = `${name} canned lattes compared side by side: caffeine content, sugar, protein, milk and price for all ${items.length} cans we track.`;
 ---
-<Base title={`${name} canned lattes`} description={desc} jsonLd={jsonLd}>
+<Base title={brandTitle(name, items.length)} description={desc} jsonLd={jsonLd}>
   <p class="eyebrow"><a href="/">Canned Latte</a> · <a href="/brands">Brands</a> · {name}</p>
   <h1>{name} canned lattes</h1>
   <p class="lede">Every {name} coffee in a can we track, side by side.</p>

@@ -4,7 +4,7 @@ import BuyLinks from '../../components/BuyLinks.astro';
 import Disclosure from '../../components/Disclosure.astro';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { allProducts, caffeineGuideFor, comparisonsFor, fmt, milkLabel, typeLabel, fullName } from '../../lib/products';
+import { allProducts, caffeineGuideFor, comparisonsFor, fmt, milkLabel, typeLabel, fullName, productTitle } from '../../lib/products';
 import { editionsFor } from '../../lib/editions';
 
 // Originals stay in public/ (used for the absolute JSON-LD URL); these copies under
@@ -87,7 +87,7 @@ jsonLd.push({
   ],
 });
 ---
-<Base title={name} description={desc} jsonLd={jsonLd}>
+<Base title={productTitle(p)} description={desc} jsonLd={jsonLd}>
   <div class="product-top">
     <div class="product-info">
       <p class="eyebrow"><a href={`/brands/${p.brandSlug}`}>{p.brand}</a> · <span class="tag">{typeLabel[p.type]}</span>{!p.verified && <> <span class="tag warn">specs unverified</span></>}</p>

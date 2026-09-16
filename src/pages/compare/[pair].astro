@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Disclosure from '../../components/Disclosure.astro';
 import BuyLinks from '../../components/BuyLinks.astro';
-import { allProducts, comparePairs, fullName, fmt, milkLabel, metricSpread, rankedDiffs } from '../../lib/products';
+import { allProducts, comparePairs, fullName, fmt, milkLabel, metricSpread, rankedDiffs, compareTitle } from '../../lib/products';
 
 export async function getStaticPaths() {
   const products = await allProducts();
@@ -34,6 +34,22 @@ const rows: [string, string, string][] = [
   ['Storage', A.refrigerated ? 'Refrigerated' : 'Shelf-stable', B.refrigerated ? 'Refrigerated' : 'Shelf-stable'],
   ['Price per can', fmt.usd(A.pricePerCan), fmt.usd(B.pricePerCan)],
 ];
+
+// Sourcing disclosure. Every figure here comes from one record, and a record is
+// either label-checked or brand-published as a whole — so each side's figures
+// carry the mark if that side is unverified. Without this the page showed a
+// brand-sourced 255 mg exactly like a label-read one, which is the disclosure the
+// /best tables have always made and these did not. It is also what lets the
+// <title> restate these numbers at all: a reported figure may be unverified only
+// where the page says so. check-claims.mjs re-derives this from the product JSONs
+// and fails the build if a figure loses its mark.
+//
+// A cell is a figure when it states a number; "Oat", "Yes" and "Shelf-stable" are
+// specs but not figures, and an unpublished "—" has nothing to disclose.
+const isFigure = (v: string) => /\d/.test(v);
+const unverified = [!A.verified, !B.verified] as const;
+const anyUnverified = rows.some(([, va, vb]) =>
+  (unverified[0] && isFigure(va)) || (unverified[1] && isFigure(vb)));
 
 /** Compare one field. Returns null when either side is unpublished or they tie. */
 const cmp = (key: 'caffeineMg' | 'sugarG' | 'proteinG' | 'pricePerCan', lowerWins = false) => {
@@ -118,14 +134,20 @@ if (faqs.length) {
   });
 }
 
-// The two names alone can run past 100 characters, so the description states the
-// metrics first and appends the widest gap only when the whole thing stays under
-// 155 — the old tail repeated a winner's full name and pushed pages to 209.
-const descBase = `${na} vs ${nb}: caffeine, sugar, protein and price compared.`;
+// The two names alone can run past 100 characters, so the description leads with
+// the caffeine figures where both cans publish one, states the metrics, and
+// appends the widest gap only while the whole thing stays under 155 — the old tail
+// repeated a winner's full name and pushed pages to 209.
+const bothMg = A.caffeineMg != null && B.caffeineMg != null;
+const descBase = bothMg
+  ? `${na} (${A.caffeineMg} mg) vs ${nb} (${B.caffeineMg} mg): caffeine, sugar, protein and price compared.`
+  : `${na} vs ${nb}: caffeine, sugar, protein and price compared.`;
 const descGap = diffs[0] ? ` ${diffs[0].display} ${diffs[0].label} gap.` : '';
 const desc = descBase.length + descGap.length <= 155 ? descBase + descGap : descBase;
+
+const title = compareTitle(A, B);
 ---
-<Base title={`${na} vs ${nb}`} description={desc} jsonLd={jsonLd}>
+<Base title={title} description={desc} jsonLd={jsonLd}>
   <p class="eyebrow"><a href="/">Canned Latte</a> · <a href="/compare">Compare</a></p>
   <h1>{na} vs {nb}</h1>
   {!noNumbers && (
@@ -145,9 +167,18 @@ const desc = descBase.length + descGap.length <= 155 ? descBase + descGap : desc
   <div class="tablewrap">
     <table>
       <thead><tr><th></th><th><a href={`/latte/${a.id}`}>{na}</a></th><th><a href={`/latte/${b.id}`}>{nb}</a></th></tr></thead>
-      <tbody>{rows.map(([k, va, vb]) => <tr><th>{k}</th><td class="num">{va}</td><td class="num">{vb}</td></tr>)}</tbody>
+      <tbody>{rows.map(([k, va, vb]) => (
+        <tr>
+          <th>{k}</th>
+          <td class="num">{va}{unverified[0] && isFigure(va) && <sup class="unv" title="Brand-published figure, not yet checked against a label">*</sup>}</td>
+          <td class="num">{vb}{unverified[1] && isFigure(vb) && <sup class="unv" title="Brand-published figure, not yet checked against a label">*</sup>}</td>
+        </tr>
+      ))}</tbody>
     </table>
   </div>
+  {anyUnverified && (
+    <p class="tablenote">* figures marked this way are brand-published and not yet label-verified.</p>
+  )}
 
   {sizesDiffer && aOz != null && bOz != null && (
     <p>These aren't the same size can — {fmt.oz(A.sizeOz)} against {fmt.oz(B.sizeOz)} — so the caffeine totals aren't quite like for like. Per ounce it's {aOz} mg versus {bOz} mg, which is the number to use if you're comparing strength rather than how long the can lasts.</p>
@@ -188,4 +219,8 @@ const desc = descBase.length + descGap.length <= 155 ? descBase + descGap : desc
 
 <style>
   .pickline { font-weight: 600; color: var(--primary); margin: 0 0 8px; font-size: 15px; }
+  /* Same marker and footnote the product tables use, so "brand-sourced" reads the
+     same way wherever a figure appears on the site. */
+  .unv { color: var(--muted-foreground); font-size: 11px; cursor: help; line-height: 1; }
+  .tablenote { margin: -8px 0 16px; font-size: 12.5px; color: var(--muted-foreground); }
 </style>

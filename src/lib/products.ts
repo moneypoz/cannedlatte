@@ -1,7 +1,11 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 // Re-exported so pages keep importing every helper from one place.
-export { fullName, shortName, dedupeWords } from './names';
+export { fullName, shortName, dedupeWords, fitName, clipName } from './names';
+export {
+  TITLE_BUDGET, caffeineTitle, caffeineQuestionTitle, productTitle,
+  brandTitle, compareTitle, tableTitle, bestHeadline,
+} from './titles';
 
 export type Product = CollectionEntry<'products'>;
 export type P = Product['data'];
@@ -52,12 +56,35 @@ export const typeLabel: Record<P['type'], string> = {
   'milk-coffee': 'Milk coffee',
 };
 
+/** Which figure a ranking's <title> is allowed to crown, and the sentence it goes
+ *  into. `countTitle` is the fallback the page drops to when Gate 1 will not let
+ *  that figure be crowned — see bestHeadline in lib/titles.ts. A list with no
+ *  single headline figure (dairy-free, oat milk) declares only `countTitle`. */
+export type BestPage = {
+  slug: string;
+  short: string;
+  title: string;
+  countTitle: (n: number) => string;
+  headline?: {
+    field: 'caffeineMg' | 'sugarG' | 'proteinG' | 'pricePerCan';
+    lowerWins: boolean;
+    crown: (v: number) => string;
+  };
+  intro: string;
+  filter: (p: P) => boolean;
+  sort: (a: P, b: P) => number;
+  metric: (p: P) => string;
+  metricLabel: string;
+};
+
 /** "Best for" pages. Each one sorts/filters the database; adding a product updates all of them. */
-export const bestPages = [
+export const bestPages: BestPage[] = [
   {
     slug: 'least-sugar',
     short: 'Least sugar',
     title: 'Canned lattes with the least sugar',
+    countTitle: (n: number) => `Lowest-Sugar Canned Lattes: ${n} Cans Ranked`,
+    headline: { field: 'sugarG', lowerWins: true, crown: (v: number) => `Lowest-Sugar Canned Lattes: From ${v} g` },
     intro: 'Sorted by grams of sugar per can, lowest first. Products without a verified sugar figure are listed at the end.',
     filter: (p: P) => p.type === 'latte',
     sort: (a: P, b: P) => (a.sugarG ?? 999) - (b.sugarG ?? 999),
@@ -68,6 +95,8 @@ export const bestPages = [
     slug: 'most-caffeine',
     short: 'Most caffeine',
     title: 'Canned lattes with the most caffeine',
+    countTitle: (n: number) => `Strongest Canned Lattes: ${n} Cans Ranked`,
+    headline: { field: 'caffeineMg', lowerWins: false, crown: (v: number) => `Strongest Canned Lattes: Up to ${v} mg` },
     intro: 'Sorted by milligrams of caffeine per can, highest first. For reference, a 12 oz drip coffee is roughly 140–200 mg.',
     filter: (p: P) => p.type === 'latte',
     sort: (a: P, b: P) => (b.caffeineMg ?? -1) - (a.caffeineMg ?? -1),
@@ -78,6 +107,7 @@ export const bestPages = [
     slug: 'oat-milk',
     short: 'Oat milk',
     title: 'Oat milk canned lattes',
+    countTitle: (n: number) => `${n} Oat Milk Canned Lattes, Compared`,
     intro: 'Every dairy-free latte in a can made with oat milk, sorted by caffeine.',
     filter: (p: P) => p.milk === 'oat',
     sort: (a: P, b: P) => (b.caffeineMg ?? -1) - (a.caffeineMg ?? -1),
@@ -88,6 +118,8 @@ export const bestPages = [
     slug: 'high-protein',
     short: 'Most protein',
     title: 'High-protein canned lattes',
+    countTitle: (n: number) => `High-Protein Canned Lattes: ${n} Ranked`,
+    headline: { field: 'proteinG', lowerWins: false, crown: (v: number) => `High-Protein Canned Lattes: Up to ${v} g` },
     intro: 'Sorted by grams of protein per can. Anything over 10 g is doing double duty as a snack.',
     filter: (p: P) => p.type === 'latte' && (p.proteinG ?? 0) > 0,
     sort: (a: P, b: P) => (b.proteinG ?? -1) - (a.proteinG ?? -1),
@@ -98,6 +130,8 @@ export const bestPages = [
     slug: 'cheapest-per-can',
     short: 'Cheapest',
     title: 'Cheapest canned lattes per can',
+    countTitle: (n: number) => `Cheapest Canned Lattes: ${n} Ranked`,
+    headline: { field: 'pricePerCan', lowerWins: true, crown: (v: number) => `Cheapest Canned Lattes: From $${v.toFixed(2)}` },
     intro: 'Price per can at the brand\'s own site or the most common retailer, lowest first. Grocery prices vary; treat these as a ranking, not a quote.',
     filter: (p: P) => p.type === 'latte' && p.pricePerCan != null,
     sort: (a: P, b: P) => (a.pricePerCan ?? 999) - (b.pricePerCan ?? 999),
@@ -108,6 +142,7 @@ export const bestPages = [
     slug: 'no-added-sugar',
     short: 'No added sugar',
     title: 'Canned lattes with no added sugar',
+    countTitle: (n: number) => `${n} Canned Lattes With No Added Sugar`,
     intro: 'Lattes sweetened only by the milk itself or by whole ingredients like dates. Sorted by caffeine.',
     filter: (p: P) => p.addedSugar === false,
     sort: (a: P, b: P) => (b.caffeineMg ?? -1) - (a.caffeineMg ?? -1),
@@ -118,6 +153,7 @@ export const bestPages = [
     slug: 'dairy-free',
     short: 'Dairy-free',
     title: 'Dairy-free canned lattes',
+    countTitle: (n: number) => `${n} Dairy-Free Canned Lattes, Compared`,
     intro: 'Oat and almond milk lattes, sorted by caffeine.',
     filter: (p: P) => p.dairyFree,
     sort: (a: P, b: P) => (b.caffeineMg ?? -1) - (a.caffeineMg ?? -1),

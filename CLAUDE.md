@@ -38,6 +38,25 @@ exist any more, and `Product` schema only with a real rating.
 - **Generalizations carry their denominator.** "Stronger than 70% of them" needs the
   count it was computed from; "every can we track" narrows to "every can with a
   published figure" the moment one lacks it.
+
+- **Reporting a figure and crowning one are different claims.** *Reporting* is
+  stating a product's own figure beside its own name — `Bones Cannoli: 200 mg
+  Caffeine`, `A vs B: 230 vs 255 mg`. An unverified figure is allowed, but only on a
+  page that discloses its sourcing: the disclosure is what earns the right, so a page
+  that reports figures without marking the brand-sourced ones may not report them in
+  its title either. *Crowning* is a superlative resting on one record's figure —
+  "Strongest", `Up to 255 mg`, `From 0 g`. Gate 1 bars an unverified figure from
+  carrying one, so the title falls back to a count of the list, which is a fact about
+  our own database and can be neither unverified nor in conflict with the table.
+  Never reach past an unverified leader to the best verified figure instead: a title
+  reading `Up to 230 mg` above a table whose top row shows 255 mg breaks Gate 3.
+  See `bestHeadline` in `src/lib/titles.ts`; the fallback reverses itself on its own
+  the day that record is checked against a label.
+
+- **Every number in a title is computed, never typed.** Titles live in `<head>`,
+  where no amount of looking at the page reveals a stale one. Templates live in
+  `src/lib/titles.ts`, and the `titles` group in `check-claims.mjs` re-derives each
+  number from the same table the page renders.
 - **Never publish pages faster than they can pass Gate 1.**
 
 ## How the gates are enforced
@@ -47,8 +66,11 @@ Three checkers run around the build; all three must pass before a deploy.
 - `npm run check:data` (prebuild) — images, sources on verified records, and the
   `brandCaffeineGuides` registry against the pages behind it.
 - `npm run check:claims` (postbuild) — re-reads `dist/` and cross-checks numeric
-  prose against the table rendered on the same page. Every group declares a minimum
-  it expects to inspect: **a checker that parses zero claims must fail.**
+  prose, and every `<title>`, against the table rendered on the same page. It also
+  holds the compare pages to their sourcing disclosure. Every group declares a
+  minimum it expects to inspect: **a checker that parses zero claims must fail.**
+  Set that minimum near what the group actually inspects, not to 1 — a floor of 1
+  let the compare group fall from 45 claims to 6 and still report a pass.
 - `npm run check:urls` (postbuild) — canonical, `og:url` and sitemap agreement.
 
 When you add a page shape that carries numbers, add a group to `check-claims.mjs`
