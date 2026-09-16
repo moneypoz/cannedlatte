@@ -1,6 +1,21 @@
+# Old product URLs. Each source carries three spellings: bare, trailing slash, and
+# .html — crawlers learned the .html form while build.format:'file' was emitting it
+# (see the header of scripts/check-urls.mjs), so the extension survives in their
+# memory long after no page is served at it.
 /latte/death-wish-classic-cold-brew-latte  /latte/death-wish-original-latte  301
 /latte/death-wish-classic-cold-brew-latte/  /latte/death-wish-original-latte  301
+/latte/death-wish-classic-cold-brew-latte.html  /latte/death-wish-original-latte  301
 /latte/quokka-brew-vanilla-dream-oat-milk-latte  /best/oat-milk  301
 /latte/quokka-brew-vanilla-dream-oat-milk-latte/  /best/oat-milk  301
+/latte/quokka-brew-vanilla-dream-oat-milk-latte.html  /best/oat-milk  301
 /caffeine/quokka-brew-vanilla-dream-oat-milk-latte  /best/most-caffeine  301
 /caffeine/quokka-brew-vanilla-dream-oat-milk-latte/  /best/most-caffeine  301
+/caffeine/quokka-brew-vanilla-dream-oat-milk-latte.html  /best/most-caffeine  301
+
+# Never one of ours: Starbucks Doubleshot Energy is off-category (energy line, not a
+# canned latte), so no page ever existed and no .html spelling was ever emitted.
+# Crawlers have the URLs from elsewhere; send them to the brand hub, not a 404.
+/latte/starbucks-doubleshot-energy-mocha  /brands/starbucks  301
+/latte/starbucks-doubleshot-energy-mocha/  /brands/starbucks  301
+/caffeine/starbucks-doubleshot-energy-mocha  /brands/starbucks  301
+/caffeine/starbucks-doubleshot-energy-mocha/  /brands/starbucks  301
