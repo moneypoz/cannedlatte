@@ -46,6 +46,8 @@ Create `src/content/products/<brand>-<product>.json`. The filename becomes the U
   "flavor": "Original",
   "sizeOz": 7,
   "caffeineMg": 180,
+  "caffeineMinMg": null,
+  "caffeineMaxMg": null,
   "sugarG": 7,
   "addedSugar": true,
   "proteinG": 2,
@@ -71,6 +73,12 @@ Create `src/content/products/<brand>-<product>.json`. The filename becomes the U
 Rules that keep the data honest:
 
 - Use `null` for any number you haven't confirmed. Pages show "—" and rankings push nulls to the bottom. Never guess.
+- **If the source publishes a range rather than a figure**, set `caffeineMinMg` and
+  `caffeineMaxMg` to both ends and leave `caffeineMg` as the midpoint. The midpoint is
+  what rankings, per-ounce maths and comparisons sort on; the range is what the page,
+  its meta description and its `<title>` state, because "75 mg per can" claims a
+  precision the brand never offered. Populate both ends or neither — a `caffeineNote`
+  that describes a range while the fields are empty fails the build.
 - Flip `verified` to `true` only after you've checked the specs against a physical label. Until then the product shows an "unverified" pill.
 - Bump `updated` every time you touch a spec. It's shown on the page and matters for trust and for Google.
 - `type` is `latte` (default), `black`, `nitro`, or `energy`. Black cold brews live in the same database and show up when a visitor switches the Type filter; they're excluded from latte-only rankings automatically.

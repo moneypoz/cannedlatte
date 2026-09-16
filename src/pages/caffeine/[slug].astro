@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { allProducts, caffeineGuideFor, fullName, shortName, fmt, caffeineTitle, caffeineQuestionTitle } from '../../lib/products';
+import { allProducts, caffeineGuideFor, fullName, shortName, fmt, caffeineTitle, caffeineQuestionTitle, rangeOf } from '../../lib/products';
 
 // One-question pages: "how much caffeine in X". Only built for products with a known
 // figure. Everything below the direct answer is computed from the database, so all
@@ -13,6 +13,18 @@ export async function getStaticPaths() {
 const { product, all } = Astro.props;
 const p = product.data;
 const mg = p.caffeineMg!;
+// Both ends where the source published a range; null where it published a figure.
+const range = rangeOf(p);
+// Once the lede states the range and attributes it, a note that only says "Brand
+// states 40–50 mg" repeats the sentence before it. Show the note only where it
+// carries something the range does not — Groundwork's adds the serving size and
+// where the flavor sits in its own lineup, Happy's adds nothing.
+const noteAddsDetail =
+  !!p.caffeineNote &&
+  p.caffeineNote
+    .replace(/(\d+(?:\.\d+)?)\s*[–—-]\s*(\d+(?:\.\d+)?)\s*mg/g, '')
+    .replace(/brand states|label:?/gi, '')
+    .replace(/[\s.,;:]/g, '') !== '';
 const name = fullName(p);
 const short = shortName(p);
 // "an 8 oz can", "an 11 oz can", but "a 12 oz can".
@@ -68,7 +80,7 @@ const lotAnswer =
       : `It is middle of the road. At ${mg} mg it sits stronger than ${strongerThan}% of the canned lattes we track, roughly ${dripPct}% of a 12 oz drip coffee.`;
 
 const faqs = [
-  { q: `How much caffeine is in ${name}?`, a: `${name} has about ${mg} mg of caffeine per can${p.sizeOz ? `, ${sizeArticle} ${p.sizeOz} oz can` : ''}${perOz ? `, which works out to ${perOz} mg per ounce` : ''}.` },
+  { q: `How much caffeine is in ${name}?`, a: `${name} has ${range ? `${range.min}–${range.max}` : `about ${mg}`} mg of caffeine per can${p.sizeOz ? `, ${sizeArticle} ${p.sizeOz} oz can` : ''}${perOz ? `, which works out to ${perOz} mg per ounce${range ? ' at the midpoint' : ''}` : ''}.` },
   { q: `Does ${short} have a lot of caffeine?`, a: lotAnswer },
 ];
 const jsonLd = {
@@ -79,21 +91,31 @@ const jsonLd = {
 ---
 <Base
   title={p.caffeineMg != null ? caffeineTitle(p, mg) : caffeineQuestionTitle(p)}
-  description={`${name} has about ${mg} mg of caffeine per can${perOz ? ` (${perOz} mg per oz)` : ''} — #${rank} of ${all.length} canned lattes we track.`}
+  description={`${name} has ${range ? `${range.min}–${range.max}` : `about ${mg}`} mg of caffeine per can${perOz ? ` (${perOz} mg per oz)` : ''} — #${rank} of ${all.length} canned lattes we track.`}
   jsonLd={jsonLd}>
   <p class="eyebrow"><a href="/">Canned Latte</a> · Caffeine</p>
   <h1>How much caffeine is in {name}?</h1>
 
-  <p class="lede"><strong>{name} has about {mg} mg of caffeine per can.</strong>{p.caffeineNote && ` ${p.caffeineNote}.`}</p>
+  {/* The range leads wherever the source published one, with the midpoint named as
+      the derived figure it is. The <title> restates this line rather than the
+      reverse: a page that shows 250–260 must not be titled "255 mg per Can". */}
+  <p class="lede">
+    <strong>{name} has {range ? `${range.min}–${range.max}` : `about ${mg}`} mg of caffeine per can.</strong>
+    {range && ` That is the range its source publishes; we rank it on the ${mg} mg midpoint.`}
+    {(!range || noteAddsDetail) && p.caffeineNote && ` ${p.caffeineNote}.`}
+  </p>
 
   <div class="stats">
-    <div class="stat-card"><div class="n">{mg} mg</div><div class="l">per can</div></div>
-    {perOz && <div class="stat-card"><div class="n">{perOz}</div><div class="l">mg per ounce</div></div>}
+    <div class="stat-card">
+      <div class="n">{range ? `${range.min}–${range.max}` : mg} mg</div>
+      <div class="l">per can{range ? ` (${mg} mg midpoint)` : ''}</div>
+    </div>
+    {perOz && <div class="stat-card"><div class="n">{perOz}</div><div class="l">mg per ounce{range ? ', from the midpoint' : ''}</div></div>}
     <div class="stat-card"><div class="n">#{rank}</div><div class="l">of {all.length} cans by caffeine</div></div>
     <div class="stat-card"><div class="n">{dailyPct}%</div><div class="l">of the FDA's 400 mg daily guideline</div></div>
   </div>
 
-  <h2>What {mg} mg actually means</h2>
+  <h2>What {range ? `the ${mg} mg midpoint` : `${mg} mg`} actually means</h2>
   <p>That's about {plural(shots, 'espresso shot', 'espresso shots')} (65–75 mg each), roughly {dripPct}% of a 12 oz drip coffee (140–200 mg), or {plural(cokes, 'can', 'cans')} of Coke (34 mg).</p>
 
   {ozBand && (

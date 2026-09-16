@@ -57,6 +57,21 @@ exist any more, and `Product` schema only with a real rating.
   where no amount of looking at the page reveals a stale one. Templates live in
   `src/lib/titles.ts`, and the `titles` group in `check-claims.mjs` re-derives each
   number from the same table the page renders.
+
+- **A published range is reported as a range.** Where a source says "70–80 mg",
+  `caffeineMinMg` and `caffeineMaxMg` hold both ends and `caffeineMg` stays the
+  midpoint. The midpoint is for machinery — ranking, sorting, per-ounce maths,
+  head-to-head deltas — and never for a title: a `<title>` is read in a results page
+  stripped of the note that qualifies it, so "75 mg per Can" there asserts a
+  precision the brand never offered. Pages lead with the range and name the midpoint
+  as the derived figure it is. Populate both ends or neither; a `caffeineNote` that
+  describes a range while the fields are empty fails `check-data.mjs`, because that
+  is exactly the state that renders a midpoint as though it were printed.
+
+- **Qualifiers have to travel.** A figure whose note carries a hedge — a range, "up
+  to", "contents may vary", a marketing badge rather than a panel — is not the same
+  claim as a printed number, and the hedge has to survive into any context that
+  quotes the figure without the note beside it.
 - **Never publish pages faster than they can pass Gate 1.**
 
 ## How the gates are enforced

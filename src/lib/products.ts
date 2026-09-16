@@ -4,7 +4,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 export { fullName, shortName, dedupeWords, fitName, clipName } from './names';
 export {
   TITLE_BUDGET, caffeineTitle, caffeineQuestionTitle, productTitle,
-  brandTitle, compareTitle, tableTitle, bestHeadline,
+  brandTitle, compareTitle, tableTitle, bestHeadline, rangeOf,
 } from './titles';
 
 export type Product = CollectionEntry<'products'>;

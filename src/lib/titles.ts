@@ -37,18 +37,44 @@ const NAME_FLOOR = 20;
 const fitAround = (p: Named, fixed: string) =>
   fitName(p, Math.max(NAME_FLOOR, TITLE_BUDGET - fixed.length));
 
+/* ---- ranges ---------------------------------------------------------------
+ * Some sources publish a range, not a figure: "Brand states 70–80 mg". The record
+ * keeps caffeineMg as the midpoint, because rankings, per-ounce maths and
+ * comparisons need one number per can. A title is the opposite case — it is read
+ * without the note that qualifies it, so "75 mg per Can" in a search result
+ * asserts a precision the brand never offered. Where both ends are stored, the
+ * title states the range and the midpoint stays out of it. */
+type Range = { caffeineMinMg: number | null; caffeineMaxMg: number | null };
+
+export const rangeOf = (p: Range) =>
+  p.caffeineMinMg != null && p.caffeineMaxMg != null
+    ? { min: p.caffeineMinMg, max: p.caffeineMaxMg }
+    : null;
+
+/** An en dash, matching the notes the ranges were read out of. */
+const showRange = (r: { min: number; max: number }) => `${r.min}–${r.max}`;
+
 /* ---- /caffeine/<product> ------------------------------------------------- */
 
-/** "Bones Holy Cannoli Caffeine: 255 mg per Can". Reporting. */
-export const caffeineTitle = (p: Named, mg: number) => {
-  const fixed = ` Caffeine: ${mg} mg per Can`;
+/** "Bones Holy Cannoli Caffeine: 250–260 mg per Can", or a lone figure where the
+ *  source published one. Reporting. */
+export const caffeineTitle = (p: Named & Range, mg: number) => {
+  const r = rangeOf(p);
+  const fixed = ` Caffeine: ${r ? showRange(r) : mg} mg per Can`;
   return fitAround(p, fixed) + fixed;
 };
 
-/** The pre-numbers title, kept for a product with no published figure. The page
- *  only builds for products that have one, so this is unreachable today — it
- *  exists so that relaxing that filter cannot silently produce "null mg". */
+/** The pre-numbers title. Two ways to reach it, one benign and one not:
+ *  a product with no published figure at all (this route does not build those),
+ *  and a product whose note describes a range but which never had the structured
+ *  fields populated. The second must not persist quietly, so check-data.mjs fails
+ *  the build on it — this fallback only keeps a half-populated record from
+ *  asserting a midpoint as though it were printed. */
 export const caffeineQuestionTitle = (p: Named) => `How much caffeine is in ${fullName(p)}?`;
+
+/** True when the note talks about a range but the fields to render it are absent.
+ *  Shared with check-data.mjs's rule so both agree on what counts as a range. */
+export const NOTE_STATES_RANGE = /(\d+(?:\.\d+)?)\s*[–—-]\s*(\d+(?:\.\d+)?)\s*mg/;
 
 /* ---- /latte/<product> ---------------------------------------------------- */
 
@@ -56,10 +82,13 @@ type Spec = { caffeineMg: number | null; sugarG: number | null };
 
 /** "Wandering Bear Double Latte: 140 mg Caffeine, 5 g Sugar". Reporting. Carries
  *  only the figures the record actually publishes, and degrades to the bare name
- *  when it publishes neither. */
-export const productTitle = (p: Named & Spec) => {
+ *  when it publishes neither. Range-sourced cans state the range here too — the
+ *  leak this closes is a title read without its note, and that is just as true of
+ *  a product page's title as of a caffeine page's. */
+export const productTitle = (p: Named & Spec & Range) => {
+  const r = rangeOf(p);
   const bits = [
-    p.caffeineMg != null ? `${p.caffeineMg} mg Caffeine` : null,
+    r ? `${showRange(r)} mg Caffeine` : p.caffeineMg != null ? `${p.caffeineMg} mg Caffeine` : null,
     p.sugarG != null ? `${p.sugarG} g Sugar` : null,
   ].filter(Boolean);
   if (!bits.length) return fitName(p, TITLE_BUDGET);

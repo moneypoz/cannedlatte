@@ -83,12 +83,14 @@ if (existsSync('dist/caffeine')) {
     if (h.includes(GUIDE_MARK)) { guideFiles.push('dist/caffeine/' + f); continue; }
     const body = text(h.slice(h.indexOf('<main'), h.indexOf('</main>')));
     caffeinePages++;
-    // "<name> has about N mg of caffeine" — the direct answer, first sentence.
-    const claim = body.match(/has about (\d+) mg of caffeine/);
-    const stat = h.match(/<div class="n"[^>]*>(\d+) mg<\/div>/);
+    // The direct answer, first sentence: "<name> has about N mg of caffeine", or
+    // "<name> has N–M mg of caffeine" where the source published a range. Either
+    // way it must match the headline stat card beside it.
+    const claim = body.match(/has (?:about )?(\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?) mg of caffeine/);
+    const stat = h.match(/<div class="n"[^>]*>(\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?) mg<\/div>/);
     if (claim && stat) {
       caffeineClaims++;
-      if (parseInt(claim[1], 10) !== parseInt(stat[1], 10)) {
+      if (claim[1] !== stat[1]) {
         failures.push(`${f}: answer says ${claim[1]} mg, stat card shows ${stat[1]} mg`);
       }
     }
@@ -275,6 +277,16 @@ const BEST_CONFIG = (() => {
   return out;
 })();
 
+/** Records whose source published a range rather than a figure, by product id.
+ *  Read from the JSONs so the rule is anchored to the data, not to whatever the
+ *  page happened to render: a title may state the range and never the midpoint
+ *  alone, on the product page and the caffeine page alike. */
+const RANGES = Object.fromEntries(
+  Object.entries(PRODUCTS)
+    .filter(([, d]) => d.caffeineMinMg != null && d.caffeineMaxMg != null)
+    .map(([id, d]) => [id, { min: d.caffeineMinMg, max: d.caffeineMaxMg, mid: d.caffeineMg }]),
+);
+
 const rawCells = (row) => [...row.matchAll(/<t[hd][^>]*>([\s\S]*?)<\/t[hd]>/g)].map((m) => m[1]);
 const bodyRows = (h) => {
   const tb = h.match(/<tbody[^>]*>([\s\S]*?)<\/tbody>/);
@@ -349,14 +361,19 @@ const statCards = (h) =>
 let titleClaims = 0;
 const titlePages = { caffeine: 0, latte: 0, brands: 0, best: 0, compare: 0, table: 0 };
 
-// (a) /caffeine/<product> — "<name> Caffeine: N mg per Can"
+// (a) /caffeine/<product> — "<name> Caffeine: N mg per Can", or the published
+// range where the record carries one. RANGES[id] holds both ends; a record that
+// has them may not be titled with its midpoint alone, which is the whole point of
+// storing them.
 for (const f of existsSync('dist/caffeine') ? readdirSync('dist/caffeine') : []) {
   const h = readFileSync('dist/caffeine/' + f, 'utf8');
   if (h.includes(GUIDE_MARK)) continue;
   const t = titleOf(h);
   if (t == null) { failures.push(`caffeine/${f}: no <title>`); continue; }
   titlePages.caffeine++;
-  const statMg = h.match(/<div class="n"[^>]*>(\d+(?:\.\d+)?) mg<\/div>/);
+  const id = f.replace(/\.html$/, '');
+  const want = RANGES[id];
+  const statMg = h.match(/<div class="n"[^>]*>(\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?) mg<\/div>/);
   titleClaims++;
   if (/^How much caffeine is in /.test(t)) {
     // The pre-numbers fallback. Legitimate only for a page with no figure at all,
@@ -364,10 +381,22 @@ for (const f of existsSync('dist/caffeine') ? readdirSync('dist/caffeine') : [])
     if (statMg) failures.push(`caffeine/${f}: title fell back to the question form though the page states ${statMg[1]} mg`);
     continue;
   }
-  const m = t.match(/ Caffeine: (\d+(?:\.\d+)?) mg per Can$/);
+  const m = t.match(/ Caffeine: (\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?) mg per Can$/);
   if (!m) { failures.push(`caffeine/${f}: title "${t}" is not in the "<name> Caffeine: N mg per Can" form`); continue; }
+  if (want) {
+    titleClaims++;
+    const range = `${want.min}–${want.max}`;
+    if (m[1] !== range) {
+      failures.push(
+        `caffeine/${f}: source publishes ${range} mg, but the title states "${m[1]} mg per Can"` +
+        `${m[1] === String(want.mid) ? ' — the midpoint alone, asserting a precision the source never gave' : ''}`,
+      );
+    }
+  } else if (/–/.test(m[1])) {
+    failures.push(`caffeine/${f}: title states a ${m[1]} mg range, but the record carries no caffeineMinMg/caffeineMaxMg`);
+  }
   if (!statMg) failures.push(`caffeine/${f}: title states ${m[1]} mg but the page has no mg stat card to check it against`);
-  else if (parseFloat(m[1]) !== parseFloat(statMg[1])) failures.push(`caffeine/${f}: title says ${m[1]} mg, stat card shows ${statMg[1]} mg`);
+  else if (m[1] !== statMg[1]) failures.push(`caffeine/${f}: title says ${m[1]} mg, stat card shows ${statMg[1]} mg`);
 }
 
 // (b) /latte/<product> — "<name>: N mg Caffeine, N g Sugar", each part present
@@ -380,10 +409,31 @@ for (const f of existsSync('dist/latte') ? readdirSync('dist/latte') : []) {
   titlePages.latte++;
   const cards = statCards(h);
   const card = (name) => cards.find((c) => c.l === name || c.l.startsWith(name + ' '));
+
+  // Range-sourced cans state the range here too. The midpoint alone in a title is
+  // the false precision these fields exist to prevent, wherever the title renders.
+  const want = RANGES[f.replace(/\.html$/, '')];
+  if (want) {
+    titleClaims++;
+    const range = `${want.min}–${want.max}`;
+    const stated = t.match(/(\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?) mg Caffeine/);
+    if (!stated) {
+      failures.push(`latte/${f}: source publishes ${range} mg but the title states no caffeine figure`);
+    } else if (stated[1] !== range) {
+      failures.push(
+        `latte/${f}: source publishes ${range} mg, but the title states "${stated[1]} mg Caffeine"` +
+        `${stated[1] === String(want.mid) ? ' — the midpoint alone' : ''}`,
+      );
+    }
+  }
+
   for (const [re, label, unit] of [
     [/(\d+(?:\.\d+)?) mg Caffeine/, 'caffeine', 'mg'],
     [/(\d+(?:\.\d+)?) g Sugar/, 'sugar', 'g'],
   ]) {
+    // The caffeine half is checked against the range above for range-sourced cans;
+    // its stat card still shows the midpoint, so skip the equality test here.
+    if (want && label === 'caffeine') continue;
     const inTitle = t.match(re);
     const c = card(label);
     const shown = c ? parseFloat(c.v) : NaN;

@@ -93,6 +93,50 @@ for (const { id, data } of products) {
   }
 }
 
+// (c1) published ranges.
+//
+// A source that publishes "70–80 mg" gives no single figure. The record stores the
+// midpoint in caffeineMg, because rankings and per-ounce maths need one number per
+// can, and stores both ends so the page and its <title> can state what was actually
+// published. The failure this guards against is the half-populated state: a note
+// that describes a range while the structured fields are absent renders a title
+// asserting the midpoint as though it were printed — the false precision that
+// prompted these fields. That must stop a build rather than sit unnoticed.
+const RANGE_IN_NOTE = /(\d+(?:\.\d+)?)\s*[–—-]\s*(\d+(?:\.\d+)?)\s*mg/;
+let rangeRecords = 0;
+for (const { id, data } of products) {
+  const lo = data.caffeineMinMg ?? null;
+  const hi = data.caffeineMaxMg ?? null;
+  const noted = data.caffeineNote ? RANGE_IN_NOTE.exec(data.caffeineNote) : null;
+
+  if ((lo == null) !== (hi == null)) {
+    failures.push(`half a range: ${id} has ${lo == null ? 'caffeineMaxMg' : 'caffeineMinMg'} only — populate both or neither`);
+    continue;
+  }
+  if (lo == null) {
+    // The loud failure: the note talks about a range, the fields to render it are missing.
+    if (noted) {
+      failures.push(
+        `${id}: caffeineNote states a ${noted[1]}–${noted[2]} mg range but caffeineMinMg/caffeineMaxMg are unset, ` +
+        `so its title would assert the ${data.caffeineMg} mg midpoint as a published figure`,
+      );
+    }
+    continue;
+  }
+
+  rangeRecords++;
+  if (!(lo < hi)) failures.push(`${id}: caffeineMinMg ${lo} is not below caffeineMaxMg ${hi}`);
+  if (data.caffeineMg == null) {
+    failures.push(`${id}: has a ${lo}–${hi} mg range but no caffeineMg midpoint for rankings to sort on`);
+  } else if (!(lo <= data.caffeineMg && data.caffeineMg <= hi)) {
+    failures.push(`${id}: caffeineMg ${data.caffeineMg} sits outside its own ${lo}–${hi} mg range`);
+  }
+  // The range has to be the one the note cites, or one of the two is out of date.
+  if (noted && (parseFloat(noted[1]) !== lo || parseFloat(noted[2]) !== hi)) {
+    failures.push(`${id}: fields say ${lo}–${hi} mg, caffeineNote says ${noted[1]}–${noted[2]} mg`);
+  }
+}
+
 // (c2) every brand caffeine guide declared in src/lib/products.ts must have a page.
 // The map is read out of the TypeScript by regex because this script is plain node
 // and cannot import it. An entry with no src/pages/caffeine/<slug>.astro behind it
@@ -122,6 +166,7 @@ const coverage = [
   ['photos referenced by a product', referenced.size],
   ['images on disk in public/', publicFiles.length],
   ['images on disk in src/assets/', assetFiles.length],
+  ['range-sourced records inspected', rangeRecords],
 ];
 for (const [what, n] of coverage) {
   if (n === 0) failures.push(`checked nothing: 0 ${what} — the check itself is broken, not the data`);
@@ -137,5 +182,6 @@ if (failures.length) {
 console.log(
   `  Data integrity OK — ${products.length} products, ${referenced.size} photos referenced, ` +
   `${publicFiles.length} on disk in each location, ` +
-  `${EDITION_IMAGES.size} allowed edition/news image(s).`
+  `${EDITION_IMAGES.size} allowed edition/news image(s), ` +
+  `${rangeRecords} range-sourced record(s) with min <= midpoint <= max.`
 );
