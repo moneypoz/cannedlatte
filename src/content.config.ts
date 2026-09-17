@@ -13,13 +13,23 @@ const products = defineCollection({
     flavor: z.string().optional(),
     sizeOz: z.number().nullable(),
     caffeineMg: z.number().nullable(),
-    // Where a source publishes a range rather than a figure, both ends are stored
-    // and caffeineMg stays the midpoint. The midpoint is what rankings, per-ounce
-    // maths and comparisons run on — one number per can, as they have since the
-    // audit — while the range is what the page and its <title> state, because
-    // "75 mg per can" is a precision the source never offered. Populated together
-    // or not at all; check-data.mjs enforces min <= caffeineMg <= max, and a note
-    // that describes a range without these fields is a build failure.
+    // caffeineMg above is always the one number the machinery runs on: ranking,
+    // sorting, per-ounce maths, head-to-head deltas. caffeineBasis says what that
+    // number is, and therefore how it may be written down.
+    //
+    //   'exact'   — the source published this figure. "230 mg".
+    //   'range'   — the source published a span; caffeineMg is its midpoint and
+    //               caffeineMinMg/caffeineMaxMg hold the ends. "40–50 mg".
+    //   'ceiling' — the source published a bound, not a figure; caffeineMg is that
+    //               bound. "up to 120 mg", which is Death Wish's own label wording.
+    //
+    // A basis other than 'exact' is a *qualified* figure. It may be reported freely,
+    // because every place the site prints it prints the qualifier with it — but it
+    // may never be crowned, since a superlative strips the qualifier off. See
+    // caffeineFigure and isQualified in src/lib/titles.ts, and the rules in
+    // check-data.mjs (the fields each basis requires) and check-claims.mjs (that no
+    // rendered figure ever loses its qualifier, and no crown ever rests on one).
+    caffeineBasis: z.enum(['exact', 'range', 'ceiling']).default('exact'),
     caffeineMinMg: z.number().nullable().default(null),
     caffeineMaxMg: z.number().nullable().default(null),
     caffeineNote: z.string().optional(),       // e.g. "brand lists 100–150 mg"

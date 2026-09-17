@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { allProducts, fullName, fmt } from '../lib/products';
+import { allProducts, fullName, fmt, caffeineFigure } from '../lib/products';
 import { newsByDate } from '../lib/news';
 
 // News thumbnails are the same transparent cutouts the homepage uses at card size.
@@ -19,7 +19,7 @@ const news = newsByDate();
     <table>
       <thead><tr><th>Launched</th><th>Product</th><th>Caffeine</th><th>Sugar</th><th>Per can</th></tr></thead>
       <tbody>{products.map((p) => (
-        <tr><td class="num">{fmt.ym(p.data.launched)}</td><td><a href={`/latte/${p.id}`}>{fullName(p.data)}</a></td><td class="num">{fmt.mg(p.data.caffeineMg)}</td><td class="num">{fmt.g(p.data.sugarG)}</td><td class="num">{fmt.usd(p.data.pricePerCan)}</td></tr>
+        <tr><td class="num">{fmt.ym(p.data.launched)}</td><td><a href={`/latte/${p.id}`}>{fullName(p.data)}</a></td><td class="num">{caffeineFigure(p.data)}</td><td class="num">{fmt.g(p.data.sugarG)}</td><td class="num">{fmt.usd(p.data.pricePerCan)}</td></tr>
       ))}</tbody>
     </table>
   </div>

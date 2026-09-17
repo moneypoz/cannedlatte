@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { allProducts, caffeineGuideFor, fullName, shortName, fmt, caffeineTitle, caffeineQuestionTitle, rangeOf } from '../../lib/products';
+import { allProducts, caffeineGuideFor, fullName, shortName, fmt, caffeineTitle, caffeineQuestionTitle, rangeOf, caffeineFigure, caffeineValue, basisOf } from '../../lib/products';
 
 // One-question pages: "how much caffeine in X". Only built for products with a known
 // figure. Everything below the direct answer is computed from the database, so all
@@ -13,17 +13,31 @@ export async function getStaticPaths() {
 const { product, all } = Astro.props;
 const p = product.data;
 const mg = p.caffeineMg!;
-// Both ends where the source published a range; null where it published a figure.
+// What shape the published figure is, and how it reads. caffeineFigure is the one
+// place any of the three turns into text; everything here states the same string.
+const basis = basisOf(p);
+const figure = caffeineFigure(p);          // "230 mg" | "40–50 mg" | "up to 120 mg"
 const range = rangeOf(p);
-// Once the lede states the range and attributes it, a note that only says "Brand
-// states 40–50 mg" repeats the sentence before it. Show the note only where it
-// carries something the range does not — Groundwork's adds the serving size and
-// where the flavor sits in its own lineup, Happy's adds nothing.
+// A qualified figure is derived from or bounded by something, so the equivalences,
+// the per-ounce column and the daily-guideline share all run on caffeineMg and say
+// which number they ran on.
+const derivedFrom =
+  basis === 'range' ? `the ${mg} mg midpoint`
+  : basis === 'ceiling' ? `the ${mg} mg ceiling`
+  : `${mg} mg`;
+const sourceSays =
+  basis === 'range' ? `That is the range its source publishes; we rank it on the ${mg} mg midpoint.`
+  : basis === 'ceiling' ? `That is the bound its label states, not a measured figure; we rank it at ${mg} mg.`
+  : null;
+// Once the lede states the figure and attributes it, a note that only repeats it
+// says the sentence twice. Show the note where it carries something the figure does
+// not — Groundwork's adds the serving size and the flavor's place in its lineup.
 const noteAddsDetail =
   !!p.caffeineNote &&
   p.caffeineNote
     .replace(/(\d+(?:\.\d+)?)\s*[–—-]\s*(\d+(?:\.\d+)?)\s*mg/g, '')
-    .replace(/brand states|label:?/gi, '')
+    .replace(/up to \d+(?:\.\d+)? mg/gi, '')
+    .replace(/brand says|brand states|label:?|per can/gi, '')
     .replace(/[\s.,;:]/g, '') !== '';
 const name = fullName(p);
 const short = shortName(p);
@@ -80,7 +94,7 @@ const lotAnswer =
       : `It is middle of the road. At ${mg} mg it sits stronger than ${strongerThan}% of the canned lattes we track, roughly ${dripPct}% of a 12 oz drip coffee.`;
 
 const faqs = [
-  { q: `How much caffeine is in ${name}?`, a: `${name} has ${range ? `${range.min}–${range.max}` : `about ${mg}`} mg of caffeine per can${p.sizeOz ? `, ${sizeArticle} ${p.sizeOz} oz can` : ''}${perOz ? `, which works out to ${perOz} mg per ounce${range ? ' at the midpoint' : ''}` : ''}.` },
+  { q: `How much caffeine is in ${name}?`, a: `${name} has ${basis === 'exact' ? 'about ' : ''}${figure} of caffeine per can${p.sizeOz ? `, ${sizeArticle} ${p.sizeOz} oz can` : ''}${perOz ? `, which works out to ${perOz} mg per ounce${basis === 'range' ? ' at the midpoint' : basis === 'ceiling' ? ' at the ceiling' : ''}` : ''}.` },
   { q: `Does ${short} have a lot of caffeine?`, a: lotAnswer },
 ];
 const jsonLd = {
@@ -91,31 +105,32 @@ const jsonLd = {
 ---
 <Base
   title={p.caffeineMg != null ? caffeineTitle(p, mg) : caffeineQuestionTitle(p)}
-  description={`${name} has ${range ? `${range.min}–${range.max}` : `about ${mg}`} mg of caffeine per can${perOz ? ` (${perOz} mg per oz)` : ''} — #${rank} of ${all.length} canned lattes we track.`}
+  description={`${name} has ${basis === 'exact' ? 'about ' : ''}${figure} of caffeine per can${perOz ? ` (${perOz} mg per oz)` : ''} — #${rank} of ${all.length} canned lattes we track.`}
   jsonLd={jsonLd}>
   <p class="eyebrow"><a href="/">Canned Latte</a> · Caffeine</p>
   <h1>How much caffeine is in {name}?</h1>
 
-  {/* The range leads wherever the source published one, with the midpoint named as
-      the derived figure it is. The <title> restates this line rather than the
-      reverse: a page that shows 250–260 must not be titled "255 mg per Can". */}
+  {/* The published figure leads in whatever shape the source gave it, with the
+      number we rank on named as the derived thing it is. The <title> restates this
+      line rather than the reverse: a page showing "up to 120 mg" must never be
+      titled "120 mg per Can". */}
   <p class="lede">
-    <strong>{name} has {range ? `${range.min}–${range.max}` : `about ${mg}`} mg of caffeine per can.</strong>
-    {range && ` That is the range its source publishes; we rank it on the ${mg} mg midpoint.`}
-    {(!range || noteAddsDetail) && p.caffeineNote && ` ${p.caffeineNote}.`}
+    <strong>{name} has {basis === 'exact' ? 'about ' : ''}{figure} of caffeine per can.</strong>
+    {sourceSays && ` ${sourceSays}`}
+    {(basis === 'exact' || noteAddsDetail) && p.caffeineNote && ` ${p.caffeineNote}.`}
   </p>
 
   <div class="stats">
     <div class="stat-card">
-      <div class="n">{range ? `${range.min}–${range.max}` : mg} mg</div>
-      <div class="l">per can{range ? ` (${mg} mg midpoint)` : ''}</div>
+      <div class="n">{figure}</div>
+      <div class="l">per can{basis === 'range' ? ` (${mg} mg midpoint)` : basis === 'ceiling' ? ' (stated as a maximum)' : ''}</div>
     </div>
-    {perOz && <div class="stat-card"><div class="n">{perOz}</div><div class="l">mg per ounce{range ? ', from the midpoint' : ''}</div></div>}
+    {perOz && <div class="stat-card"><div class="n">{perOz}</div><div class="l">mg per ounce{basis === 'range' ? ', from the midpoint' : basis === 'ceiling' ? ', at the ceiling' : ''}</div></div>}
     <div class="stat-card"><div class="n">#{rank}</div><div class="l">of {all.length} cans by caffeine</div></div>
     <div class="stat-card"><div class="n">{dailyPct}%</div><div class="l">of the FDA's 400 mg daily guideline</div></div>
   </div>
 
-  <h2>What {range ? `the ${mg} mg midpoint` : `${mg} mg`} actually means</h2>
+  <h2>What {derivedFrom} actually means</h2>
   <p>That's about {plural(shots, 'espresso shot', 'espresso shots')} (65–75 mg each), roughly {dripPct}% of a 12 oz drip coffee (140–200 mg), or {plural(cokes, 'can', 'cans')} of Coke (34 mg).</p>
 
   {ozBand && (
@@ -140,7 +155,7 @@ const jsonLd = {
             {siblings.map((s) => (
               <tr>
                 <th><a href={`/caffeine/${s.id}`}>{s.data.name}</a></th>
-                <td class="num">{s.data.caffeineMg} mg</td>
+                <td class="num">{caffeineFigure(s.data)}</td>
                 <td class="num">{ozOf(s) ?? '—'}</td>
               </tr>
             ))}
@@ -159,7 +174,7 @@ const jsonLd = {
       <h2>Same strength, different can</h2>
       <p>
         Closest on caffeine from other brands: {nearest.map((n, i) => (
-          <>{i > 0 && ', '}<a href={`/caffeine/${n.id}`}>{fullName(n.data)}</a> at {n.data.caffeineMg} mg</>
+          <>{i > 0 && ', '}<a href={`/caffeine/${n.id}`}>{fullName(n.data)}</a> at {caffeineFigure(n.data)}</>
         ))}.
       </p>
     </>

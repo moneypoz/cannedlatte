@@ -2,6 +2,7 @@
   "type": "latte",
   "sizeOz": 11,
   "caffeineMg": 120,
+  "caffeineBasis": "ceiling",
   "sugarG": 16,
   "addedSugar": true,
   "addedSugarG": null,

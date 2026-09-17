@@ -37,30 +37,74 @@ const NAME_FLOOR = 20;
 const fitAround = (p: Named, fixed: string) =>
   fitName(p, Math.max(NAME_FLOOR, TITLE_BUDGET - fixed.length));
 
-/* ---- ranges ---------------------------------------------------------------
- * Some sources publish a range, not a figure: "Brand states 70–80 mg". The record
- * keeps caffeineMg as the midpoint, because rankings, per-ounce maths and
- * comparisons need one number per can. A title is the opposite case — it is read
- * without the note that qualifies it, so "75 mg per Can" in a search result
- * asserts a precision the brand never offered. Where both ends are stored, the
- * title states the range and the midpoint stays out of it. */
-type Range = { caffeineMinMg: number | null; caffeineMaxMg: number | null };
+/* ---- how a caffeine figure is written down ---------------------------------
+ * Three shapes of published figure, declared per record by caffeineBasis:
+ *
+ *   exact    the source published this number             "230 mg"
+ *   range    the source published a span, caffeineMg is    "40–50 mg"
+ *            its midpoint
+ *   ceiling  the source published a bound, caffeineMg is   "up to 120 mg"
+ *            that bound
+ *
+ * caffeineMg is the same thing in all three cases: the one number the machinery
+ * sorts, ranks and subtracts. What changes is how it may be written, and the rule
+ * is that a qualified figure is never written bare. A table cell or a <title> is
+ * read without the note that qualifies it, so "120 mg" in a results page asserts
+ * something the brand did not — Death Wish prints "up to 120 mg" on the can.
+ *
+ * Everything that renders a product's own caffeine figure goes through
+ * caffeineFigure, so there is one place the qualifier could be dropped, and
+ * check-claims.mjs watches that place from the rendered HTML. */
+export type CaffeineBasis = 'exact' | 'range' | 'ceiling';
+type Caffeine = {
+  caffeineMg: number | null;
+  caffeineBasis?: CaffeineBasis;
+  caffeineMinMg: number | null;
+  caffeineMaxMg: number | null;
+};
 
-export const rangeOf = (p: Range) =>
-  p.caffeineMinMg != null && p.caffeineMaxMg != null
+export const basisOf = (p: Caffeine): CaffeineBasis => p.caffeineBasis ?? 'exact';
+
+/** A qualified figure may be reported anywhere, and crowned nowhere. */
+export const isQualified = (p: Caffeine) => basisOf(p) !== 'exact';
+
+/** The figure without its unit: "230", "40–50", "up to 120". */
+export const caffeineValue = (p: Caffeine): string | null => {
+  if (p.caffeineMg == null) return null;
+  const basis = basisOf(p);
+  if (basis === 'range' && p.caffeineMinMg != null && p.caffeineMaxMg != null) {
+    return `${p.caffeineMinMg}–${p.caffeineMaxMg}`;
+  }
+  if (basis === 'ceiling') return `up to ${p.caffeineMg}`;
+  return String(p.caffeineMg);
+};
+
+/** The figure as it is printed anywhere on the site: "230 mg", "40–50 mg",
+ *  "up to 120 mg", or the em dash for a can that publishes nothing. */
+export const caffeineFigure = (p: Caffeine): string => {
+  const v = caffeineValue(p);
+  return v == null ? '—' : `${v} mg`;
+};
+
+/** Sentence- or title-initial form: "Up to 120 mg". */
+export const caffeineFigureCap = (p: Caffeine): string => {
+  const s = caffeineFigure(p);
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
+
+/** Kept for the pages that ask "does this record carry a span". */
+export const rangeOf = (p: Caffeine) =>
+  basisOf(p) === 'range' && p.caffeineMinMg != null && p.caffeineMaxMg != null
     ? { min: p.caffeineMinMg, max: p.caffeineMaxMg }
     : null;
 
-/** An en dash, matching the notes the ranges were read out of. */
-const showRange = (r: { min: number; max: number }) => `${r.min}–${r.max}`;
-
 /* ---- /caffeine/<product> ------------------------------------------------- */
 
-/** "Bones Holy Cannoli Caffeine: 250–260 mg per Can", or a lone figure where the
- *  source published one. Reporting. */
-export const caffeineTitle = (p: Named & Range, mg: number) => {
-  const r = rangeOf(p);
-  const fixed = ` Caffeine: ${r ? showRange(r) : mg} mg per Can`;
+/** "La Colombe Triple Draft Latte Caffeine: 230 mg per Can",
+ *  "Bones Holy Cannoli Caffeine: 250–260 mg per Can",
+ *  "Death Wish Mocha Caffeine: Up to 120 mg per Can". Reporting. */
+export const caffeineTitle = (p: Named & Caffeine, _mg: number) => {
+  const fixed = ` Caffeine: ${caffeineFigureCap(p)} per Can`;
   return fitAround(p, fixed) + fixed;
 };
 
@@ -85,10 +129,9 @@ type Spec = { caffeineMg: number | null; sugarG: number | null };
  *  when it publishes neither. Range-sourced cans state the range here too — the
  *  leak this closes is a title read without its note, and that is just as true of
  *  a product page's title as of a caffeine page's. */
-export const productTitle = (p: Named & Spec & Range) => {
-  const r = rangeOf(p);
+export const productTitle = (p: Named & Spec & Caffeine) => {
   const bits = [
-    r ? `${showRange(r)} mg Caffeine` : p.caffeineMg != null ? `${p.caffeineMg} mg Caffeine` : null,
+    p.caffeineMg != null ? `${caffeineFigureCap(p)} Caffeine` : null,
     p.sugarG != null ? `${p.sugarG} g Sugar` : null,
   ].filter(Boolean);
   if (!bits.length) return fitName(p, TITLE_BUDGET);
@@ -110,12 +153,13 @@ export const brandTitle = (brand: string, count: number) =>
  *  unverified figure is allowed — the spec table on these pages marks every
  *  brand-sourced figure, which is what earns the title the right to restate it.
  *  Falls back to "… Compared" when either can publishes no caffeine figure. */
-export const compareTitle = (
-  A: Named & { caffeineMg: number | null },
-  B: Named & { caffeineMg: number | null },
-) => {
-  const both = A.caffeineMg != null && B.caffeineMg != null;
-  const fixed = both ? `: ${A.caffeineMg} vs ${B.caffeineMg} mg` : ' Compared';
+export const compareTitle = (A: Named & Caffeine, B: Named & Caffeine) => {
+  // Each side brings its own shape, so a qualified can keeps its qualifier here as
+  // everywhere else: "200 vs 250–260 mg", "155 vs up to 120 mg". The alternative —
+  // printing the bare midpoint or bound because two numbers share a line — is the
+  // one thing caffeineValue exists to prevent.
+  const va = caffeineValue(A), vb = caffeineValue(B);
+  const fixed = va && vb ? `: ${va} vs ${vb} mg` : ' Compared';
   // Two names share one budget. Each starts on half of what the fixed part leaves,
   // and whichever needs less hands the remainder to the other, so a short name
   // beside a long one does not waste its half.
@@ -146,16 +190,32 @@ export const tableTitle = (count: number) =>
  *  row shows 255 mg would contradict the page it sits on. The caller falls back to
  *  a count instead, and the sharper form switches itself on the day that record is
  *  checked against a label. */
-export const bestHeadline = <T extends { verified: boolean }>(
+export type Crowned<T> =
+  | { kind: 'crown'; value: number; holder: T }
+  /** Leader is brand-sourced. Gate 1: fall back to a count. */
+  | { kind: 'unverified'; holder: T }
+  /** Leader publishes a qualified figure — a range or a ceiling — and would
+   *  otherwise be crowned. A superlative strips the qualifier off, so there is no
+   *  honest automatic answer here: check-claims.mjs stops the build and asks for a
+   *  hand decision rather than quietly printing "Up to 255 mg" for a midpoint. */
+  | { kind: 'qualified'; holder: T }
+  | null;
+
+export const bestHeadline = <T extends { verified: boolean } & Partial<Caffeine>>(
   list: T[],
   field: keyof T,
   lowerWins: boolean,
-): { value: number; holder: T } | null => {
+): Crowned<T> => {
   const withValue = list.filter((p) => p[field] != null);
   if (!withValue.length) return null;
   const holder = withValue.reduce((a, b) => {
     const x = a[field] as number, y = b[field] as number;
     return (lowerWins ? y < x : y > x) ? b : a;
   });
-  return holder.verified ? { value: holder[field] as number, holder } : null;
+  // The qualifier lives on the caffeine figure, so it only bears on a list crowned
+  // on caffeine. A sugar or price crown is unaffected by how caffeine was published.
+  const qualified = field === 'caffeineMg' && isQualified(holder as Caffeine);
+  if (!holder.verified) return { kind: 'unverified', holder };
+  if (qualified) return { kind: 'qualified', holder };
+  return { kind: 'crown', value: holder[field] as number, holder };
 };

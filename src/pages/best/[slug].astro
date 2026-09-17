@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Disclosure from '../../components/Disclosure.astro';
-import { allProducts, bestPages, fullName, fmt, milkLabel, bestHeadline } from '../../lib/products';
+import { allProducts, bestPages, fullName, fmt, milkLabel, bestHeadline, caffeineFigure } from '../../lib/products';
 import { listContent } from '../../lib/listContent';
 
 export async function getStaticPaths() {
@@ -26,14 +26,20 @@ if (content?.faqs.length) {
   });
 }
 // The headline stat this ranking is allowed to crown. A /best title is a
-// superlative resting on one record's figure, so Gate 1 lets it quote only a
-// figure read off a label; when the leader is brand-sourced, bestHeadline returns
-// null and the title falls back to the count of the list — a fact about our own
-// database, which cannot be unverified and cannot contradict the table below it.
-// The sharper form switches itself on the day that record is checked.
-const crown = page.headline
+// superlative resting on one record's figure, and two things can bar it:
+//
+//   'unverified' — Gate 1. The leader is brand-sourced, so the title falls back to
+//     the count of the list, a fact about our own database that can be neither
+//     unverified nor in conflict with the table below it. Reverses itself the day
+//     that record is checked against a label.
+//   'qualified' — the leader publishes a range or a ceiling, not a figure. A
+//     superlative strips the qualifier off, so there is no honest automatic title
+//     here at all: the page falls back to the count and check-claims.mjs stops the
+//     build, because which number to crown is a decision for a person.
+const headline = page.headline
   ? bestHeadline(list.map((p) => p.data), page.headline.field, page.headline.lowerWins)
   : null;
+const crown = headline?.kind === 'crown' ? headline : null;
 const seoTitle = crown ? page.headline!.crown(crown.value) : page.countTitle(list.length);
 // page.metric is the same formatter the table cell uses, so the description states
 // the leader exactly as the page renders it.
@@ -68,7 +74,7 @@ for (const sentence of page.intro.match(/[^.]+\./g) ?? []) {
           <tr>
             <td><a href={`/latte/${p.id}`}>{fullName(p.data)}</a>{!p.data.verified && <> <span class="tag warn">unverified</span></>}</td>
             <td class="num"><strong style="color:var(--primary)">{page.metric(p.data)}</strong></td>
-            <td class="num">{fmt.mg(p.data.caffeineMg)}</td>
+            <td class="num">{caffeineFigure(p.data)}</td>
             <td class="num">{fmt.g(p.data.sugarG)}</td>
             <td class="num">{fmt.g(p.data.proteinG)}</td>
             <td>{milkLabel[p.data.milk]}</td>

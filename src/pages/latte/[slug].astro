@@ -4,7 +4,7 @@ import BuyLinks from '../../components/BuyLinks.astro';
 import Disclosure from '../../components/Disclosure.astro';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { allProducts, caffeineGuideFor, comparisonsFor, fmt, milkLabel, typeLabel, fullName, productTitle } from '../../lib/products';
+import { allProducts, caffeineGuideFor, comparisonsFor, fmt, milkLabel, typeLabel, fullName, productTitle, caffeineFigure } from '../../lib/products';
 import { editionsFor } from '../../lib/editions';
 
 // Originals stay in public/ (used for the absolute JSON-LD URL); these copies under
@@ -36,7 +36,7 @@ const similar = all
   .slice(0, 4);
 
 const descCore = [
-  `${name}: ${p.caffeineMg != null ? `${p.caffeineMg} mg caffeine` : 'caffeine TBD'}`,
+  `${name}: ${p.caffeineMg != null ? `${caffeineFigure(p)} caffeine` : 'caffeine TBD'}`,
   p.sugarG != null ? `${p.sugarG} g sugar` : null,
   p.proteinG != null ? `${p.proteinG} g protein` : null,
   `${milkLabel[p.milk].toLowerCase()} milk`,
@@ -48,7 +48,7 @@ const descTail = ' Full specs and where to buy.';
 const desc = descCore.length + descTail.length <= 155 ? descCore + descTail : descCore;
 
 const faqs = [
-  p.caffeineMg != null && { q: `How much caffeine is in ${name}?`, a: `${name} has about ${p.caffeineMg} mg of caffeine per ${p.sizeOz ? `${p.sizeOz} oz ` : ''}can${p.caffeineNote ? ` (${p.caffeineNote.toLowerCase()})` : ''}. A 12 oz drip coffee is typically 140–200 mg.` },
+  p.caffeineMg != null && { q: `How much caffeine is in ${name}?`, a: `${name} has ${p.caffeineBasis === 'exact' ? 'about ' : ''}${caffeineFigure(p)} of caffeine per ${p.sizeOz ? `${p.sizeOz} oz ` : ''}can${p.caffeineNote ? ` (${p.caffeineNote.toLowerCase()})` : ''}. A 12 oz drip coffee is typically 140–200 mg.` },
   p.sugarG != null && { q: `How much sugar is in ${name}?`, a: `${p.sugarG} g of sugar per can${p.addedSugar === false ? ', with no added sugar' : p.addedSugar ? ', including added sugar' : ''}.` },
   { q: `Is ${name} dairy-free?`, a: p.dairyFree ? `Yes. It's made with ${milkLabel[p.milk].toLowerCase()} milk.` : `No. It's made with ${milkLabel[p.milk].toLowerCase()} milk.` },
   p.refrigerated && { q: `Does ${name} need to be refrigerated?`, a: `Yes. It has no shelf-stable processing and ships cold.` },
@@ -102,7 +102,7 @@ jsonLd.push({
       ))}
 
       <div class="stats">
-        <div class="stat-card"><div class="n">{fmt.mg(p.caffeineMg)}</div><div class="l">caffeine</div></div>
+        <div class="stat-card"><div class="n">{caffeineFigure(p)}</div><div class="l">caffeine</div></div>
         <div class="stat-card"><div class="n">{fmt.g(p.sugarG)}</div><div class="l">sugar{p.addedSugarG != null && p.addedSugarG > 0 ? ` (${p.addedSugarG}g added)` : p.addedSugar === false ? " (none added)" : ""}</div></div>
         <div class="stat-card"><div class="n">{fmt.g(p.proteinG)}</div><div class="l">protein</div></div>
         <div class="stat-card"><div class="n">{fmt.oz(p.sizeOz)}</div><div class="l">can size</div></div>
@@ -159,7 +159,7 @@ jsonLd.push({
   {similar.length > 0 && (
     <>
       <h2>Similar cans</h2>
-      <ul>{similar.map((s) => <li><a href={`/latte/${s.id}`}>{fullName(s.data)}</a> — {fmt.mg(s.data.caffeineMg)}, {fmt.g(s.data.sugarG)} sugar</li>)}</ul>
+      <ul>{similar.map((s) => <li><a href={`/latte/${s.id}`}>{fullName(s.data)}</a> — {caffeineFigure(s.data)}, {fmt.g(s.data.sugarG)} sugar</li>)}</ul>
     </>
   )}
 

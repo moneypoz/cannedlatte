@@ -58,20 +58,34 @@ exist any more, and `Product` schema only with a real rating.
   `src/lib/titles.ts`, and the `titles` group in `check-claims.mjs` re-derives each
   number from the same table the page renders.
 
-- **A published range is reported as a range.** Where a source says "70–80 mg",
-  `caffeineMinMg` and `caffeineMaxMg` hold both ends and `caffeineMg` stays the
-  midpoint. The midpoint is for machinery — ranking, sorting, per-ounce maths,
-  head-to-head deltas — and never for a title: a `<title>` is read in a results page
-  stripped of the note that qualifies it, so "75 mg per Can" there asserts a
-  precision the brand never offered. Pages lead with the range and name the midpoint
-  as the derived figure it is. Populate both ends or neither; a `caffeineNote` that
-  describes a range while the fields are empty fails `check-data.mjs`, because that
-  is exactly the state that renders a midpoint as though it were printed.
+- **A figure is written in the shape its source published.** `caffeineBasis`
+  declares which of three that is, and `caffeineMg` is the same thing in all three:
+  the one number the machinery ranks, sorts and subtracts.
 
-- **Qualifiers have to travel.** A figure whose note carries a hedge — a range, "up
-  to", "contents may vary", a marketing badge rather than a panel — is not the same
-  claim as a printed number, and the hedge has to survive into any context that
-  quotes the figure without the note beside it.
+  | basis | source published | stored | printed |
+  | --- | --- | --- | --- |
+  | `exact` | a figure | `caffeineMg` | `230 mg` |
+  | `range` | a span | midpoint + `caffeineMinMg`/`caffeineMaxMg` | `40–50 mg` |
+  | `ceiling` | a bound | the bound | `up to 120 mg` |
+
+  A basis other than `exact` is a **qualified** figure, and the rule is that a
+  qualified figure is never printed bare — not in a table cell, not in a `<title>`,
+  not in a meta description. A cell or a title is read without the note that
+  qualifies it, so "120 mg" where the label says "up to 120 mg" is a claim the brand
+  never made. Everything that prints a caffeine figure goes through `caffeineFigure`
+  in `src/lib/titles.ts`, so there is one place the qualifier could be dropped, and
+  `check-claims.mjs` sweeps every rendered Caffeine cell on the site against the
+  records to make sure it wasn't.
+
+- **Report a qualified figure freely; never crown one.** Reporting states a can's own
+  figure beside its own name, and the qualifier travels with it. Crowning is a
+  superlative, and a superlative has nowhere to put the qualifier — "Up to 255 mg" of
+  a midpoint reads as a measurement. So if a range or ceiling record is ever the
+  leader a `/best` title would crown, the build **stops** and a person decides what
+  the title should claim; it is not silently downgraded to a count and not quietly
+  crowned. Today `/best/most-caffeine` is led by a range record that is unverified,
+  so it runs on a count and the stop is armed rather than firing.
+
 - **Never publish pages faster than they can pass Gate 1.**
 
 ## How the gates are enforced

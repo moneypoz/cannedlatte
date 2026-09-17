@@ -2,6 +2,7 @@
   "type": "latte",
   "sizeOz": 8,
   "caffeineMg": 74,
+  "caffeineBasis": "range",
   "caffeineMinMg": 70,
   "caffeineMaxMg": 78,
   "sugarG": 5,

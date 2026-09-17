@@ -27,6 +27,73 @@ const rowVal = (html, label) => {
   return null;
 };
 
+/* ======================================================================
+ * Shared source of truth for the two groups below.
+ *
+ * Both re-derive what a page *should* say from the product JSONs and from
+ * src/lib/products.ts, never from the rendered page alone. A check that read only
+ * dist/ would pass the moment a template stopped emitting the thing being checked,
+ * which is the failure mode this whole file exists to prevent.
+ * ==================================================================== */
+const SRC = existsSync('src/lib/products.ts') ? readFileSync('src/lib/products.ts', 'utf8') : '';
+
+const PRODUCTS = existsSync('src/content/products')
+  ? Object.fromEntries(
+      readdirSync('src/content/products')
+        .filter((f) => f.endsWith('.json'))
+        .map((f) => [f.replace(/\.json$/, ''), JSON.parse(readFileSync(`src/content/products/${f}`, 'utf8'))]),
+    )
+  : {};
+
+const COMPARE_PAIRS = [
+  ...((SRC.match(/comparePairs[^=]*=\s*\[([\s\S]*?)\n\];/) || [])[1] ?? '').matchAll(/\['([^']+)',\s*'([^']+)'\]/g),
+].map((m) => [m[1], m[2]]);
+
+/** Each ranking's headline config, or null where the list crowns no single figure
+ *  (dairy-free, oat milk). Read from source because whether a /best title is
+ *  allowed to carry a superlative is a decision made there, and the rendered page
+ *  does not reveal it. */
+const BEST_CONFIG = (() => {
+  const arr = (SRC.match(/export const bestPages: BestPage\[\] = \[([\s\S]*?)\n\];/) || [])[1] ?? '';
+  const out = {};
+  for (const m of arr.matchAll(/slug:\s*'([^']+)',([\s\S]*?)metricLabel:/g)) {
+    const h = m[2].match(/headline:\s*\{\s*field:\s*'(\w+)',\s*lowerWins:\s*(true|false)/);
+    out[m[1]] = h ? { field: h[1], lowerWins: h[2] === 'true' } : null;
+  }
+  return out;
+})();
+
+/* ---- how a caffeine figure must be written --------------------------------
+ * A deliberate second implementation of caffeineFigure() from src/lib/titles.ts,
+ * derived from the product JSONs rather than imported. If the site's own helper
+ * were reused, a bug inside it would render wrong and verify wrong at once. The
+ * rule it enforces: a qualified figure — a range midpoint or a published ceiling —
+ * is never printed bare, anywhere on the site. "120 mg" where the label says
+ * "up to 120 mg" is a claim the brand never made. */
+const basisOf = (d) => d.caffeineBasis ?? 'exact';
+const isQualified = (d) => basisOf(d) !== 'exact';
+
+/** "230" | "40–50" | "up to 120" | null */
+const valueFor = (id) => {
+  const d = PRODUCTS[id];
+  if (!d || d.caffeineMg == null) return null;
+  const b = basisOf(d);
+  if (b === 'range') {
+    if (d.caffeineMinMg == null || d.caffeineMaxMg == null) return null;
+    return `${d.caffeineMinMg}–${d.caffeineMaxMg}`;
+  }
+  if (b === 'ceiling') return `up to ${d.caffeineMg}`;
+  return String(d.caffeineMg);
+};
+/** "230 mg" | "40–50 mg" | "up to 120 mg" | "—" */
+const figureFor = (id) => {
+  const v = valueFor(id);
+  return v == null ? '—' : `${v} mg`;
+};
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+/** Every id whose figure carries a qualifier, for the "never bare" sweep. */
+const QUALIFIED = Object.keys(PRODUCTS).filter((id) => PRODUCTS[id].caffeineMg != null && isQualified(PRODUCTS[id]));
+
 // ---- compare pages: every delta in the opener must match its own spec table ----
 const COMPARE_TESTS = [
   [/(\d+) mg more/g, 'Caffeine'],
@@ -41,11 +108,18 @@ if (existsSync('dist/compare')) {
     const lede = text((h.match(/<p class="lede"[^>]*>([\s\S]*?)<\/p>/) || [])[1] || '');
     if (!lede) continue;
     comparePages++;
+    // The opener's deltas are arithmetic on caffeineMg, which for a qualified can is
+    // its midpoint or ceiling — while the Caffeine cell beside it now prints the
+    // published shape ("250–260 mg"). So the caffeine delta is checked against the
+    // records, not the cell; every other row still reads straight off the table.
+    const pair = COMPARE_PAIRS.find(([a, b]) => `${a}-vs-${b}.html` === f);
     for (const [re, label] of COMPARE_TESTS) {
       const r = rowVal(h, label);
       if (!r) continue;
-      const x = num(r[0]), y = num(r[1]);
-      if (Number.isNaN(x) || Number.isNaN(y)) continue;
+      const qualified = label === 'Caffeine' && pair && pair.some((id) => PRODUCTS[id] && isQualified(PRODUCTS[id]));
+      const x = qualified ? PRODUCTS[pair[0]].caffeineMg : num(r[0]);
+      const y = qualified ? PRODUCTS[pair[1]].caffeineMg : num(r[1]);
+      if (x == null || y == null || Number.isNaN(x) || Number.isNaN(y)) continue;
       for (const m of lede.matchAll(re)) {
         const claimed = parseFloat(m[1] || m[2]);
         compareClaims++;
@@ -83,11 +157,13 @@ if (existsSync('dist/caffeine')) {
     if (h.includes(GUIDE_MARK)) { guideFiles.push('dist/caffeine/' + f); continue; }
     const body = text(h.slice(h.indexOf('<main'), h.indexOf('</main>')));
     caffeinePages++;
-    // The direct answer, first sentence: "<name> has about N mg of caffeine", or
-    // "<name> has N–M mg of caffeine" where the source published a range. Either
-    // way it must match the headline stat card beside it.
-    const claim = body.match(/has (?:about )?(\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?) mg of caffeine/);
-    const stat = h.match(/<div class="n"[^>]*>(\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?) mg<\/div>/);
+    // The direct answer, first sentence, in whichever shape the source published:
+    // "has about 230 mg", "has 40–50 mg", "has up to 120 mg". It must match the
+    // headline stat card beside it. The alternation has to cover all three — when
+    // the ceiling form was added and this pattern did not, three pages silently
+    // stopped being counted here and the group still reported a pass.
+    const claim = body.match(/has (?:about )?((?:up to )?\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?) mg of caffeine/);
+    const stat = h.match(/<div class="n"[^>]*>((?:up to )?\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?) mg<\/div>/);
     if (claim && stat) {
       caffeineClaims++;
       if (claim[1] !== stat[1]) {
@@ -241,52 +317,6 @@ for (const slug of EXPECTED_GUIDES) {
   }
 }
 
-/* ======================================================================
- * Shared source of truth for the two groups below.
- *
- * Both re-derive what a page *should* say from the product JSONs and from
- * src/lib/products.ts, never from the rendered page alone. A check that read only
- * dist/ would pass the moment a template stopped emitting the thing being checked,
- * which is the failure mode this whole file exists to prevent.
- * ==================================================================== */
-const SRC = existsSync('src/lib/products.ts') ? readFileSync('src/lib/products.ts', 'utf8') : '';
-
-const PRODUCTS = existsSync('src/content/products')
-  ? Object.fromEntries(
-      readdirSync('src/content/products')
-        .filter((f) => f.endsWith('.json'))
-        .map((f) => [f.replace(/\.json$/, ''), JSON.parse(readFileSync(`src/content/products/${f}`, 'utf8'))]),
-    )
-  : {};
-
-const COMPARE_PAIRS = [
-  ...((SRC.match(/comparePairs[^=]*=\s*\[([\s\S]*?)\n\];/) || [])[1] ?? '').matchAll(/\['([^']+)',\s*'([^']+)'\]/g),
-].map((m) => [m[1], m[2]]);
-
-/** Each ranking's headline config, or null where the list crowns no single figure
- *  (dairy-free, oat milk). Read from source because whether a /best title is
- *  allowed to carry a superlative is a decision made there, and the rendered page
- *  does not reveal it. */
-const BEST_CONFIG = (() => {
-  const arr = (SRC.match(/export const bestPages: BestPage\[\] = \[([\s\S]*?)\n\];/) || [])[1] ?? '';
-  const out = {};
-  for (const m of arr.matchAll(/slug:\s*'([^']+)',([\s\S]*?)metricLabel:/g)) {
-    const h = m[2].match(/headline:\s*\{\s*field:\s*'(\w+)',\s*lowerWins:\s*(true|false)/);
-    out[m[1]] = h ? { field: h[1], lowerWins: h[2] === 'true' } : null;
-  }
-  return out;
-})();
-
-/** Records whose source published a range rather than a figure, by product id.
- *  Read from the JSONs so the rule is anchored to the data, not to whatever the
- *  page happened to render: a title may state the range and never the midpoint
- *  alone, on the product page and the caffeine page alike. */
-const RANGES = Object.fromEntries(
-  Object.entries(PRODUCTS)
-    .filter(([, d]) => d.caffeineMinMg != null && d.caffeineMaxMg != null)
-    .map(([id, d]) => [id, { min: d.caffeineMinMg, max: d.caffeineMaxMg, mid: d.caffeineMg }]),
-);
-
 const rawCells = (row) => [...row.matchAll(/<t[hd][^>]*>([\s\S]*?)<\/t[hd]>/g)].map((m) => m[1]);
 const bodyRows = (h) => {
   const tb = h.match(/<tbody[^>]*>([\s\S]*?)<\/tbody>/);
@@ -372,31 +402,28 @@ for (const f of existsSync('dist/caffeine') ? readdirSync('dist/caffeine') : [])
   if (t == null) { failures.push(`caffeine/${f}: no <title>`); continue; }
   titlePages.caffeine++;
   const id = f.replace(/\.html$/, '');
-  const want = RANGES[id];
-  const statMg = h.match(/<div class="n"[^>]*>(\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?) mg<\/div>/);
+  const want = figureFor(id);
+  const statCard = h.match(/<div class="n"[^>]*>([^<]*? mg)<\/div>/);
   titleClaims++;
   if (/^How much caffeine is in /.test(t)) {
     // The pre-numbers fallback. Legitimate only for a page with no figure at all,
     // and this route builds only pages that have one, so it should never fire.
-    if (statMg) failures.push(`caffeine/${f}: title fell back to the question form though the page states ${statMg[1]} mg`);
+    if (statCard) failures.push(`caffeine/${f}: title fell back to the question form though the page states ${statCard[1]}`);
     continue;
   }
-  const m = t.match(/ Caffeine: (\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?) mg per Can$/);
-  if (!m) { failures.push(`caffeine/${f}: title "${t}" is not in the "<name> Caffeine: N mg per Can" form`); continue; }
-  if (want) {
-    titleClaims++;
-    const range = `${want.min}–${want.max}`;
-    if (m[1] !== range) {
-      failures.push(
-        `caffeine/${f}: source publishes ${range} mg, but the title states "${m[1]} mg per Can"` +
-        `${m[1] === String(want.mid) ? ' — the midpoint alone, asserting a precision the source never gave' : ''}`,
-      );
-    }
-  } else if (/–/.test(m[1])) {
-    failures.push(`caffeine/${f}: title states a ${m[1]} mg range, but the record carries no caffeineMinMg/caffeineMaxMg`);
+  const m = t.match(/ Caffeine: (.+) per Can$/);
+  if (!m) { failures.push(`caffeine/${f}: title "${t}" is not in the "<name> Caffeine: <figure> per Can" form`); continue; }
+  const d = PRODUCTS[id] ?? {};
+  if (m[1] !== cap(want)) {
+    failures.push(
+      `caffeine/${f}: the record publishes "${want}", but the title states "${m[1]} per Can"` +
+      (isQualified(d) && m[1] === `${d.caffeineMg} mg`
+        ? ` — the bare ${basisOf(d) === 'range' ? 'midpoint' : 'ceiling value'}, dropping the qualifier its source attached`
+        : ''),
+    );
   }
-  if (!statMg) failures.push(`caffeine/${f}: title states ${m[1]} mg but the page has no mg stat card to check it against`);
-  else if (m[1] !== statMg[1]) failures.push(`caffeine/${f}: title says ${m[1]} mg, stat card shows ${statMg[1]} mg`);
+  if (!statCard) failures.push(`caffeine/${f}: title states ${m[1]} but the page has no mg stat card to check it against`);
+  else if (statCard[1] !== want) failures.push(`caffeine/${f}: stat card shows ${statCard[1]}, the record publishes ${want}`);
 }
 
 // (b) /latte/<product> — "<name>: N mg Caffeine, N g Sugar", each part present
@@ -410,30 +437,30 @@ for (const f of existsSync('dist/latte') ? readdirSync('dist/latte') : []) {
   const cards = statCards(h);
   const card = (name) => cards.find((c) => c.l === name || c.l.startsWith(name + ' '));
 
-  // Range-sourced cans state the range here too. The midpoint alone in a title is
-  // the false precision these fields exist to prevent, wherever the title renders.
-  const want = RANGES[f.replace(/\.html$/, '')];
-  if (want) {
+  // The caffeine half of a product title is checked against the figure the record
+  // publishes, in whatever shape that is — so a qualified can cannot be titled with
+  // its bare midpoint or ceiling here any more than on its caffeine page.
+  const id = f.replace(/\.html$/, '');
+  const rec = PRODUCTS[id] ?? {};
+  if (rec.caffeineMg != null) {
     titleClaims++;
-    const range = `${want.min}–${want.max}`;
-    const stated = t.match(/(\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?) mg Caffeine/);
+    const want = figureFor(id);
+    const stated = t.match(/((?:[Uu]p to )?\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?) mg Caffeine/);
     if (!stated) {
-      failures.push(`latte/${f}: source publishes ${range} mg but the title states no caffeine figure`);
-    } else if (stated[1] !== range) {
+      failures.push(`latte/${f}: the record publishes ${want} but the title states no caffeine figure`);
+    } else if (`${stated[1]} mg`.toLowerCase() !== want.toLowerCase()) {
       failures.push(
-        `latte/${f}: source publishes ${range} mg, but the title states "${stated[1]} mg Caffeine"` +
-        `${stated[1] === String(want.mid) ? ' — the midpoint alone' : ''}`,
+        `latte/${f}: the record publishes "${want}", but the title states "${stated[1]} mg Caffeine"` +
+        (isQualified(rec) && stated[1] === String(rec.caffeineMg)
+          ? ` — the bare ${basisOf(rec) === 'range' ? 'midpoint' : 'ceiling value'}`
+          : ''),
       );
     }
   }
 
   for (const [re, label, unit] of [
-    [/(\d+(?:\.\d+)?) mg Caffeine/, 'caffeine', 'mg'],
     [/(\d+(?:\.\d+)?) g Sugar/, 'sugar', 'g'],
   ]) {
-    // The caffeine half is checked against the range above for range-sourced cans;
-    // its stat card still shows the midpoint, so skip the equality test here.
-    if (want && label === 'caffeine') continue;
     const inTitle = t.match(re);
     const c = card(label);
     const shown = c ? parseFloat(c.v) : NaN;
@@ -483,7 +510,11 @@ for (const f of existsSync('dist/best') ? readdirSync('dist/best') : []) {
 
   const rows = bodyRows(h).map((r) => {
     const c = rawCells(r);
-    return { unverified: /tag warn/.test(c[0] ?? ''), metric: num(text(c[1] ?? '')) };
+    return {
+      unverified: /tag warn/.test(c[0] ?? ''),
+      metric: num(text(c[1] ?? '')),
+      id: (/href="\/latte\/([^"]+)"/.exec(c[0] ?? '') || [])[1] ?? null,
+    };
   });
   if (!rows.length) { failures.push(`best/${slug}: parsed 0 rows`); continue; }
 
@@ -494,8 +525,25 @@ for (const f of existsSync('dist/best') ? readdirSync('dist/best') : []) {
     // The same leader the page's own sort puts first: the first row at the extreme.
     const extreme = vals.reduce((x, y) => ((cfg.lowerWins ? y.metric < x.metric : y.metric > x.metric) ? y : x)).metric;
     const holder = vals.find((r) => r.metric === extreme);
-    if (holder.unverified) { expect = rows.length; why = `the row count, because the ${extreme} leader is unverified and Gate 1 bars crowning it`; }
-    else { expect = extreme; why = `the crowned leader, which is label-verified`; }
+    if (holder.unverified) {
+      expect = rows.length;
+      why = `the row count, because the ${extreme} leader is unverified and Gate 1 bars crowning it`;
+    } else if (cfg.field === 'caffeineMg' && holder.id && PRODUCTS[holder.id] && isQualified(PRODUCTS[holder.id])) {
+      // A qualified leader that is otherwise crownable. There is no honest automatic
+      // title here: a superlative drops the qualifier, and reaching past the leader
+      // to the next can would crown something that is not the leader. Stop, and let
+      // a person decide which number the list should claim.
+      failures.push(
+        `best/${slug}: "${holder.id}" leads on ${cfg.field} with a ${basisOf(PRODUCTS[holder.id])} figure ` +
+        `(${figureFor(holder.id)}) and is label-verified, so it would be crowned — but a superlative cannot carry ` +
+        `a qualifier. Decide by hand what this title should claim.`,
+      );
+      expect = rows.length;
+      why = 'the row count, pending a hand decision about the qualified leader';
+    } else {
+      expect = extreme;
+      why = `the crowned leader, which is label-verified`;
+    }
   } else {
     expect = rows.length; why = 'the row count, since this list crowns no single figure';
   }
@@ -515,22 +563,95 @@ for (const f of existsSync('dist/compare') ? readdirSync('dist/compare') : []) {
   const t = titleOf(h);
   if (t == null) { failures.push(`compare/${f}: no <title>`); continue; }
   titlePages.compare++;
-  const r = rowVal(h, 'Caffeine');
-  if (!r) { failures.push(`compare/${f}: no Caffeine row to check the title against`); continue; }
-  const x = num(r[0]), y = num(r[1]);
-  const m = t.match(/: (\d+(?:\.\d+)?) vs (\d+(?:\.\d+)?) mg$/);
+  const pair = COMPARE_PAIRS.find(([a, b]) => `${a}-vs-${b}.html` === f);
+  if (!pair) { failures.push(`compare/${f}: built from no pair in comparePairs, so its title went unchecked`); continue; }
+  const [va, vb] = pair.map(valueFor);
   titleClaims++;
+  const m = t.match(/: (.+) vs (.+) mg$/);
   if (m) {
-    if (parseFloat(m[1]) !== x || parseFloat(m[2]) !== y) {
-      failures.push(`compare/${f}: title says ${m[1]} vs ${m[2]} mg, the table shows ${r[0]} / ${r[1]}`);
+    if (m[1] !== va || m[2] !== vb) {
+      failures.push(`compare/${f}: title says "${m[1]} vs ${m[2]} mg", the records publish "${va} vs ${vb} mg"`);
     }
   } else if (/ Compared$/.test(t)) {
     // The numberless form is only right when one of the cans publishes no figure.
-    if (!Number.isNaN(x) && !Number.isNaN(y)) {
-      failures.push(`compare/${f}: title omits the figures though both cans publish one (${r[0]} / ${r[1]})`);
+    if (va != null && vb != null) {
+      failures.push(`compare/${f}: title omits the figures though both cans publish one (${va} / ${vb})`);
     }
   } else {
     failures.push(`compare/${f}: title "${t}" matches neither compare form`);
+  }
+}
+
+/* ---- the qualifier never comes off, anywhere -------------------------------
+ * The rules above cover the slots that were designed to carry a figure. This is
+ * the sweep that covers the rest: every table on the site that has a Caffeine
+ * column, every row in it resolved back to a product, and the cell compared to the
+ * figure that product publishes. A bare "120 mg" for a can whose label says "up to
+ * 120 mg" fails here no matter which page grew it — the home table, a brand hub,
+ * /table, /new, a ranking, a sibling table on a caffeine page.
+ *
+ * It runs over every product, not only the qualified ones, so the sweep also
+ * catches a cell that has drifted from its record for any other reason. */
+let sweepCells = 0, sweepTables = 0;
+const headerIndex = (tableHtml, label) => {
+  const head = tableHtml.match(/<thead[^>]*>([\s\S]*?)<\/thead>/);
+  if (!head) return -1;
+  const ths = [...head[1].matchAll(/<th[^>]*>([\s\S]*?)<\/th>/g)].map((m) => text(m[1]));
+  return ths.findIndex((x) => x === label);
+};
+const walkHtml = (dir, acc = []) => {
+  for (const e of readdirSync(dir, { withFileTypes: true })) {
+    const full = `${dir}/${e.name}`;
+    if (e.isDirectory()) walkHtml(full, acc);
+    else if (e.name.endsWith('.html')) acc.push(full);
+  }
+  return acc;
+};
+for (const file of existsSync('dist') ? walkHtml('dist') : []) {
+  const h = readFileSync(file, 'utf8');
+  for (const tm of h.matchAll(/<table[^>]*>([\s\S]*?)<\/table>/g)) {
+    const idx = headerIndex(tm[1], 'Caffeine');
+    if (idx < 0) continue;
+    const tb = tm[1].match(/<tbody[^>]*>([\s\S]*?)<\/tbody>/);
+    if (!tb) continue;
+    sweepTables++;
+    for (const rm of tb[1].matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)) {
+      const c = rawCells(rm[1]);
+      if (c.length <= idx) continue;
+      // Which product this row is about: product tables link to /latte/<id>, the
+      // sibling table on a caffeine page links to /caffeine/<id>.
+      const id = (/href="\/(?:latte|caffeine)\/([^"#]+)"/.exec(rm[1]) || [])[1];
+      if (!id || !PRODUCTS[id] || PRODUCTS[id].caffeineMg == null) continue;
+      sweepCells++;
+      const shown = text(c[idx]).replace(/\*$/, '').trim();
+      const want = figureFor(id);
+      if (shown !== want) {
+        const d = PRODUCTS[id];
+        failures.push(
+          `${file.replace(/^dist\//, '')}: the Caffeine cell for ${id} reads "${shown}", the record publishes "${want}"` +
+          (isQualified(d) && shown === `${d.caffeineMg} mg`
+            ? ` — the bare ${basisOf(d) === 'range' ? 'midpoint' : 'ceiling value'}, with the qualifier dropped`
+            : ''),
+        );
+      }
+    }
+  }
+}
+
+/* ---- and in the compare spec table, whose rows carry no product link --------- */
+for (const [a, b] of COMPARE_PAIRS) {
+  const path = `dist/compare/${a}-vs-${b}.html`;
+  if (!existsSync(path)) continue;
+  const r = rowVal(readFileSync(path, 'utf8'), 'Caffeine');
+  if (!r) { failures.push(`compare/${a}-vs-${b}: no Caffeine row to sweep`); continue; }
+  for (const [cell, id] of [[r[0], a], [r[1], b]]) {
+    if (PRODUCTS[id]?.caffeineMg == null) continue;
+    sweepCells++;
+    const shown = cell.replace(/\*$/, '').trim();
+    const want = figureFor(id);
+    if (shown !== want) {
+      failures.push(`compare/${a}-vs-${b}: the Caffeine cell for ${id} reads "${shown}", the record publishes "${want}"`);
+    }
   }
 }
 
@@ -546,7 +667,7 @@ if (existsSync('dist/table.html')) {
   else if (parseInt(m[1], 10) !== n) failures.push(`table.html: title counts ${m[1]} cans, the table lists ${n}`);
 }
 
-totalClaims = compareClaims + caffeineClaims + guideClaims + discloseClaims + titleClaims;
+totalClaims = compareClaims + caffeineClaims + guideClaims + discloseClaims + titleClaims + sweepCells;
 
 // ---- the zero-coverage guard ----
 // The guide row counts declared guides, not discovered ones, so "no guide pages
@@ -560,10 +681,13 @@ totalClaims = compareClaims + caffeineClaims + guideClaims + discloseClaims + ti
 // content it covers shrinks.
 const groups = [
   ['compare pages', comparePages, 'compare claims', compareClaims, 40],
-  ['caffeine pages', caffeinePages, 'caffeine claims', caffeineClaims, 60],
+  // One claim per page, every page — so the floor is the page count itself rather
+  // than a constant that drifts out of date as the database grows.
+  ['caffeine pages', caffeinePages, 'caffeine claims', caffeineClaims, caffeinePages],
   ['brand caffeine guides', Math.max(guidePages, EXPECTED_GUIDES.length), 'brand guide claims', guideClaims, 6],
   ['compare pages', disclosePages, 'sourcing-disclosure checks', discloseClaims, 150],
   ['titled pages', Object.values(titlePages).reduce((a, b) => a + b, 0), 'title claims', titleClaims, 190],
+  ['tables with a Caffeine column', sweepTables, 'swept caffeine cells', sweepCells, 200],
 ];
 for (const [pageWhat, pageN, claimWhat, claimN, min] of groups) {
   if (pageN > 0 && claimN < min) {
@@ -588,5 +712,6 @@ console.log(
   `${guideClaims} across ${guidePages} brand caffeine guide${guidePages === 1 ? '' : 's'}, ` +
   `${discloseClaims} sourcing-disclosure checks across ${disclosePages} compare pages, ` +
   `${titleClaims} title claims across ${titled.reduce((a, [, n]) => a + n, 0)} pages ` +
-  `[${titled.map(([k, n]) => `${k} ${n}`).join(', ')}]).`
+  `[${titled.map(([k, n]) => `${k} ${n}`).join(', ')}], ` +
+  `${sweepCells} caffeine cells swept across ${sweepTables} tables for a dropped qualifier).`
 );

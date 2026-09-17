@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Disclosure from '../../components/Disclosure.astro';
 import BuyLinks from '../../components/BuyLinks.astro';
-import { allProducts, comparePairs, fullName, fmt, milkLabel, metricSpread, rankedDiffs, compareTitle } from '../../lib/products';
+import { allProducts, comparePairs, fullName, fmt, milkLabel, metricSpread, rankedDiffs, compareTitle, caffeineFigure, caffeineValue } from '../../lib/products';
 
 export async function getStaticPaths() {
   const products = await allProducts();
@@ -22,7 +22,7 @@ const aOz = perOz(A), bOz = perOz(B);
 const sizesDiffer = A.sizeOz != null && B.sizeOz != null && A.sizeOz !== B.sizeOz;
 
 const rows: [string, string, string][] = [
-  ['Caffeine', fmt.mg(A.caffeineMg), fmt.mg(B.caffeineMg)],
+  ['Caffeine', caffeineFigure(A), caffeineFigure(B)],
   ['Caffeine per oz', aOz != null ? `${aOz} mg` : '—', bOz != null ? `${bOz} mg` : '—'],
   ['Sugar', fmt.g(A.sugarG), fmt.g(B.sugarG)],
   ['Added sugar', A.addedSugarG != null ? `${A.addedSugarG} g` : '—', B.addedSugarG != null ? `${B.addedSugarG} g` : '—'],
@@ -140,7 +140,7 @@ if (faqs.length) {
 // repeated a winner's full name and pushed pages to 209.
 const bothMg = A.caffeineMg != null && B.caffeineMg != null;
 const descBase = bothMg
-  ? `${na} (${A.caffeineMg} mg) vs ${nb} (${B.caffeineMg} mg): caffeine, sugar, protein and price compared.`
+  ? `${na} (${caffeineValue(A)} mg) vs ${nb} (${caffeineValue(B)} mg): caffeine, sugar, protein and price compared.`
   : `${na} vs ${nb}: caffeine, sugar, protein and price compared.`;
 const descGap = diffs[0] ? ` ${diffs[0].display} ${diffs[0].label} gap.` : '';
 const desc = descBase.length + descGap.length <= 155 ? descBase + descGap : descBase;

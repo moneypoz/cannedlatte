@@ -1,10 +1,12 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { caffeineFigure } from './titles';
 
 // Re-exported so pages keep importing every helper from one place.
 export { fullName, shortName, dedupeWords, fitName, clipName } from './names';
 export {
   TITLE_BUDGET, caffeineTitle, caffeineQuestionTitle, productTitle,
   brandTitle, compareTitle, tableTitle, bestHeadline, rangeOf,
+  caffeineFigure, caffeineFigureCap, caffeineValue, isQualified, basisOf,
 } from './titles';
 
 export type Product = CollectionEntry<'products'>;
@@ -100,7 +102,7 @@ export const bestPages: BestPage[] = [
     intro: 'Sorted by milligrams of caffeine per can, highest first. For reference, a 12 oz drip coffee is roughly 140–200 mg.',
     filter: (p: P) => p.type === 'latte',
     sort: (a: P, b: P) => (b.caffeineMg ?? -1) - (a.caffeineMg ?? -1),
-    metric: (p: P) => fmt.mg(p.caffeineMg),
+    metric: (p: P) => caffeineFigure(p),
     metricLabel: 'Caffeine',
   },
   {
@@ -111,7 +113,7 @@ export const bestPages: BestPage[] = [
     intro: 'Every dairy-free latte in a can made with oat milk, sorted by caffeine.',
     filter: (p: P) => p.milk === 'oat',
     sort: (a: P, b: P) => (b.caffeineMg ?? -1) - (a.caffeineMg ?? -1),
-    metric: (p: P) => fmt.mg(p.caffeineMg),
+    metric: (p: P) => caffeineFigure(p),
     metricLabel: 'Caffeine',
   },
   {

@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import ProductTable from '../../components/ProductTable.astro';
 import Disclosure from '../../components/Disclosure.astro';
-import { allProducts, caffeineGuideFor, fmt, milkLabel, brandTitle } from '../../lib/products';
+import { allProducts, caffeineGuideFor, fmt, milkLabel, brandTitle, caffeineFigure } from '../../lib/products';
 
 export async function getStaticPaths() {
   const products = await allProducts();
@@ -109,7 +109,7 @@ const desc = `${name} canned lattes compared side by side: caffeine content, sug
         {oneCan ? (
           <p>{name}'s one tracked can, <a href={`/caffeine/${strongest.id}`}>{strongest.data.name}</a>, carries {maxMg} mg of caffeine. To see where it sits against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
         ) : (
-          <p>{flatMg ? `${everyCan} lands at the same ${maxMg} mg of caffeine per can.` : `${theCans} range from ${minMg} to ${maxMg} mg of caffeine per can.`} Strongest first, that's {withCaffeine.map((p, i) => (<>{listSep(i, withCaffeine.length)}<a href={`/caffeine/${p.id}`}>{p.data.name}</a> at {p.data.caffeineMg} mg</>))}. To see where they sit against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
+          <p>{flatMg ? `${everyCan} lands at the same ${maxMg} mg of caffeine per can.` : `${theCans} range from ${minMg} to ${maxMg} mg of caffeine per can.`} Strongest first, that's {withCaffeine.map((p, i) => (<>{listSep(i, withCaffeine.length)}<a href={`/caffeine/${p.id}`}>{p.data.name}</a> at {caffeineFigure(p.data)}</>))}. To see where they sit against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
         )}
         {guide && <p><a href={`/caffeine/${guide.slug}`}>{guide.linkText}</a> — every flavor in one table, with can size and milligrams per ounce.</p>}
       </>

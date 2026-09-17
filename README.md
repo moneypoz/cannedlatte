@@ -46,6 +46,7 @@ Create `src/content/products/<brand>-<product>.json`. The filename becomes the U
   "flavor": "Original",
   "sizeOz": 7,
   "caffeineMg": 180,
+  "caffeineBasis": "exact",
   "caffeineMinMg": null,
   "caffeineMaxMg": null,
   "sugarG": 7,
@@ -73,12 +74,15 @@ Create `src/content/products/<brand>-<product>.json`. The filename becomes the U
 Rules that keep the data honest:
 
 - Use `null` for any number you haven't confirmed. Pages show "—" and rankings push nulls to the bottom. Never guess.
-- **If the source publishes a range rather than a figure**, set `caffeineMinMg` and
-  `caffeineMaxMg` to both ends and leave `caffeineMg` as the midpoint. The midpoint is
-  what rankings, per-ounce maths and comparisons sort on; the range is what the page,
-  its meta description and its `<title>` state, because "75 mg per can" claims a
-  precision the brand never offered. Populate both ends or neither — a `caffeineNote`
-  that describes a range while the fields are empty fails the build.
+- **Set `caffeineBasis` to the shape the source actually published.** `exact` (the
+  default) means it printed this number. `range` means it printed a span: put both ends
+  in `caffeineMinMg`/`caffeineMaxMg` and leave `caffeineMg` as the midpoint. `ceiling`
+  means it printed a bound, like Death Wish's "up to 120 mg": leave `caffeineMg` as that
+  bound and the two range fields null. `caffeineMg` is always the number rankings,
+  per-ounce maths and comparisons sort on; the basis decides how it is written —
+  `230 mg`, `40–50 mg`, `up to 120 mg`. Anything but `exact` is never printed bare, and
+  the build fails if it is. A `caffeineNote` that describes a range while the fields are
+  empty also fails the build.
 - Flip `verified` to `true` only after you've checked the specs against a physical label. Until then the product shows an "unverified" pill.
 - Bump `updated` every time you touch a spec. It's shown on the page and matters for trust and for Google.
 - `type` is `latte` (default), `black`, `nitro`, or `energy`. Black cold brews live in the same database and show up when a visitor switches the Type filter; they're excluded from latte-only rankings automatically.
