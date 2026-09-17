@@ -37,6 +37,11 @@ export type NewsItem = {
 export const news: NewsItem[] = [
   {
     date: '2026-09-17',
+    text: 'Bones’ Cookies & Cream Latte is label-verified from a can in hand: 200 mg of caffeine, 16 g of sugar with only 5 g of it added, and 7 g of protein — the same panel their Cannoli, French Toast and Sea Salt Caramel Mocha cans carry. It is a different drink from their Cookies N’ Dreams Latte, which is 210 calories and 33 g of sugar on the cold brew line.',
+    link: { href: '/latte/bones-cookies-cream-latte', label: 'Cookies & Cream Latte' },
+  },
+  {
+    date: '2026-09-17',
     text: 'New brand in the database: Great Lakes Coffee Roasting Company, a Bloomfield Hills, Michigan roaster whose Cold Brew Mocha Latte prints 180 mg of caffeine on an 11 oz oatmilk can. Their Lavender Latte is in alongside it, unverified from the brand’s own published panel; a third flavour, Vanilla, is named only inside their variety pack and has no page or figures anywhere on their site.',
     link: { href: '/brands/great-lakes-coffee', label: 'Great Lakes Coffee' },
   },

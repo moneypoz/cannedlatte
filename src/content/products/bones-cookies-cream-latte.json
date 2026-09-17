@@ -1,17 +1,21 @@
 {
   "type": "latte",
   "sizeOz": 11,
-  "caffeineMg": null,
-  "sugarG": null,
-  "addedSugar": null,
-  "addedSugarG": null,
-  "proteinG": null,
-  "calories": null,
+  "caffeineMg": 200,
+  "caffeineBasis": "exact",
+  "caffeineMinMg": null,
+  "caffeineMaxMg": null,
+  "sugarG": 16,
+  "addedSugar": true,
+  "addedSugarG": 5,
+  "proteinG": 7,
+  "calories": 140,
   "refrigerated": false,
   "pricePerCan": 3.08,
   "packPrice": 36.99,
   "packSize": 12,
   "retailers": [
+    "Grocery",
     "Bones (direct)"
   ],
   "buyLinks": [
@@ -21,18 +25,20 @@
       "affiliate": false
     }
   ],
-  "verified": false,
-  "updated": "2026-09-10",
+  "verified": true,
+  "updated": "2026-09-17",
   "sources": [
     "https://www.bonescoffee.com/",
-    "https://www.bonescoffee.com/products/cookies-cream-latte"
+    "https://www.bonescoffee.com/products/cookies-cream-latte",
+    "https://cdn.shopify.com/s/files/1/1475/5488/files/Cookies_Cream_NFP_4.jpg"
   ],
   "brand": "Bones Coffee Company",
   "brandSlug": "bones-coffee",
   "name": "Cookies & Cream Latte",
   "flavor": "Cookies & Cream",
-  "caffeineNote": "No figure published for this can; the three linemates we have checked print 200 mg on the label",
+  "caffeineNote": "Label: 200 mg, as a front badge and a \"contains 200 mg caffeine\" statement; caffeine is also listed as an ingredient",
   "milk": "dairy",
   "dairyFree": false,
-  "summary": "Cookies-and-cream latte sold in Bones' flavored-latte line alongside their Cannoli, French Toast and S'mores cans, at the same 11 oz and $36.99 for twelve. The brand publishes no nutrition panel for this one, so its figures stay blank here until we check a can. Their Cookies N' Dreams Latte is a separate, sweeter can from the cold brew line."
+  "image": "/images/products/bones-cookies-cream-latte.jpg",
+  "summary": "Cookies-and-cream latte from Bones’ flavored-latte line, read off the can at 200 mg of caffeine per 11 fl oz — 16 g of sugar but only 5 g of it added, the rest lactose from the reduced-fat milk, with sucralose doing the remaining sweetening, alongside 7 g of protein at 140 calories. That panel is the line’s shared base: the Cannoli, French Toast and Sea Salt Caramel Mocha cans read identically. Their Cookies N’ Dreams Latte is a separate, sweeter can from the cold brew line at 210 calories and 33 g of sugar."
 }
