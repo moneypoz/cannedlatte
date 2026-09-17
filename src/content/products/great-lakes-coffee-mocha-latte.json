@@ -1,0 +1,43 @@
+{
+  "type": "latte",
+  "sizeOz": 11,
+  "caffeineMg": 180,
+  "caffeineBasis": "exact",
+  "caffeineMinMg": null,
+  "caffeineMaxMg": null,
+  "sugarG": 16,
+  "addedSugar": true,
+  "addedSugarG": 16,
+  "proteinG": 2,
+  "calories": 150,
+  "refrigerated": false,
+  "pricePerCan": 3.33,
+  "packPrice": 39.99,
+  "packSize": 12,
+  "retailers": [
+    "Grocery",
+    "Great Lakes Coffee (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "Great Lakes Coffee",
+      "url": "https://greatlakescoffee.com/products/mocha-latte-2025-website",
+      "affiliate": false
+    }
+  ],
+  "upc": "804818201037",
+  "verified": true,
+  "updated": "2026-09-17",
+  "sources": [
+    "https://greatlakescoffee.com/products/mocha-latte-2025-website",
+    "https://cdn.shopify.com/s/files/1/1052/2476/files/Mocha-Nutritional.jpg"
+  ],
+  "brand": "Great Lakes Coffee Roasting Company",
+  "brandSlug": "great-lakes-coffee",
+  "name": "Cold Brew Mocha Latte",
+  "flavor": "Mocha",
+  "caffeineNote": "Label: 180 mg per can, printed on the front",
+  "milk": "oat",
+  "dairyFree": true,
+  "summary": "Cold brew mocha built on oatmilk rather than dairy, at a label-printed 180 mg of caffeine per 11 fl oz can and 150 calories. All 16 g of its sugar is added, and the ingredient list runs to cane sugar, cocoa powder and olive oil — an unusual fat for a canned latte — for 2 g of protein and 7 g of fat. Great Lakes cans a Lavender Latte on the same base, and names a Vanilla in their variety pack that has no page of its own."
+}

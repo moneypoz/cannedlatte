@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import ProductTable from '../../components/ProductTable.astro';
 import Disclosure from '../../components/Disclosure.astro';
-import { allProducts, caffeineGuideFor, fmt, milkLabel, brandTitle, caffeineFigure } from '../../lib/products';
+import { allProducts, caffeineGuideFor, fmt, milkLabel, brandTitle, caffeineFigure, isQualified } from '../../lib/products';
 
 export async function getStaticPaths() {
   const products = await allProducts();
@@ -34,6 +34,23 @@ const flatMg = !oneCan && minMg === maxMg;
 const allKnown = withCaffeine.length === items.length;
 const everyCan = allKnown ? `Every ${name} can we track` : `Every ${name} can with a published figure`;
 const theCans = allKnown ? `${name}'s cans` : `The ${name} cans with a published figure`;
+// Same narrowing for a lineup where exactly one can publishes a figure: "its one
+// tracked can" is a claim about how many we track, not how many print a number.
+const theOneCan = allKnown ? `${name}'s one tracked can` : `The one ${name} can with a published figure`;
+
+// The lineup summary quotes one span for the whole line, which only holds when
+// every can publishes a single figure. Where any of them publishes a range or a
+// ceiling there is no honest span to quote — flattening to midpoints would have
+// this sentence contradict the per-can list in its own second half, which is
+// exactly what it used to do: "range from 55 to 96 mg" above "at 91–101 mg". The
+// list carries every figure in its published shape, so the summary is dropped
+// rather than flattened.
+const anyQualified = withCaffeine.some((p) => isQualified(p.data));
+const lineupSummary = anyQualified
+  ? null
+  : flatMg
+    ? `${everyCan} lands at the same ${maxMg} mg of caffeine per can.`
+    : `${theCans} range from ${minMg} to ${maxMg} mg of caffeine per can.`;
 
 // Spread of the rest of the lineup, for the second supporting paragraph.
 const milks = [...new Set(items.map((p) => milkLabel[p.data.milk]))].map((m) => m.toLowerCase());
@@ -107,9 +124,9 @@ const desc = `${name} canned lattes compared side by side: caffeine content, sug
       <>
         <h2>How much caffeine is in {name} canned coffee?</h2>
         {oneCan ? (
-          <p>{name}'s one tracked can, <a href={`/caffeine/${strongest.id}`}>{strongest.data.name}</a>, carries {maxMg} mg of caffeine. To see where it sits against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
+          <p>{theOneCan}, <a href={`/caffeine/${strongest.id}`}>{strongest.data.name}</a>, carries {caffeineFigure(strongest.data)} of caffeine. To see where it sits against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
         ) : (
-          <p>{flatMg ? `${everyCan} lands at the same ${maxMg} mg of caffeine per can.` : `${theCans} range from ${minMg} to ${maxMg} mg of caffeine per can.`} Strongest first, that's {withCaffeine.map((p, i) => (<>{listSep(i, withCaffeine.length)}<a href={`/caffeine/${p.id}`}>{p.data.name}</a> at {caffeineFigure(p.data)}</>))}. To see where they sit against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
+          <p>{lineupSummary ? `${lineupSummary} Strongest first, that's ` : `${theCans}, strongest first: `}{withCaffeine.map((p, i) => (<>{listSep(i, withCaffeine.length)}<a href={`/caffeine/${p.id}`}>{p.data.name}</a> at {caffeineFigure(p.data)}</>))}. To see where they sit against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
         )}
         {guide && <p><a href={`/caffeine/${guide.slug}`}>{guide.linkText}</a> — every flavor in one table, with can size and milligrams per ounce.</p>}
       </>

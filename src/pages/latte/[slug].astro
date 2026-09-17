@@ -123,6 +123,7 @@ jsonLd.push({
         {p.flavor && <tr><th>Flavor</th><td>{p.flavor}</td></tr>}
         {p.caffeineNote && <tr><th>Caffeine note</th><td>{p.caffeineNote}</td></tr>}
         {p.calories != null && <tr><th>Calories</th><td>{p.calories}</td></tr>}
+        {p.upc && <tr><th>UPC</th><td class="mono">{p.upc}</td></tr>}
         <tr><th>Storage</th><td>{p.refrigerated ? 'Refrigerated' : 'Shelf-stable'}</td></tr>
         {p.launched && <tr><th>Launched</th><td>{fmt.ym(p.launched)}</td></tr>}
         <tr><th>Specs updated</th><td>{fmt.mdy(p.updated)}{p.verified ? ' · checked against a label' : ' · from brand site / press'}</td></tr>

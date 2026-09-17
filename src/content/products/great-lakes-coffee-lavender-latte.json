@@ -1,0 +1,42 @@
+{
+  "type": "latte",
+  "sizeOz": 11,
+  "caffeineMg": null,
+  "caffeineBasis": "exact",
+  "caffeineMinMg": null,
+  "caffeineMaxMg": null,
+  "sugarG": 15,
+  "addedSugar": true,
+  "addedSugarG": 15,
+  "proteinG": 1,
+  "calories": 140,
+  "refrigerated": false,
+  "pricePerCan": 3.33,
+  "packPrice": 39.99,
+  "packSize": 12,
+  "retailers": [
+    "Great Lakes Coffee (direct)"
+  ],
+  "buyLinks": [
+    {
+      "label": "Great Lakes Coffee",
+      "url": "https://greatlakescoffee.com/products/lavender-latte-2025-website",
+      "affiliate": false
+    }
+  ],
+  "upc": null,
+  "verified": false,
+  "updated": "2026-09-17",
+  "sources": [
+    "https://greatlakescoffee.com/products/lavender-latte-2025-website",
+    "https://cdn.shopify.com/s/files/1/1052/2476/files/Lavender-Nutritional.jpg"
+  ],
+  "brand": "Great Lakes Coffee Roasting Company",
+  "brandSlug": "great-lakes-coffee",
+  "name": "Lavender Latte",
+  "flavor": "Lavender",
+  "caffeineNote": "No caffeine figure published for this flavor; the Mocha on the same base prints 180 mg on its label",
+  "milk": "oat",
+  "dairyFree": true,
+  "summary": "Lavender latte on the same oatmilk cold brew base as Great Lakes' Mocha, at 140 calories with 15 g of sugar — all of it added — and 1 g of protein per 11 fl oz can. Figures are from the panel the brand publishes rather than a can we have held, and no caffeine figure is published for this flavor, so that column stays blank until we check one."
+}

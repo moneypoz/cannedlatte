@@ -36,6 +36,11 @@ export type NewsItem = {
 
 export const news: NewsItem[] = [
   {
+    date: '2026-09-17',
+    text: 'New brand in the database: Great Lakes Coffee Roasting Company, a Bloomfield Hills, Michigan roaster whose Cold Brew Mocha Latte prints 180 mg of caffeine on an 11 oz oatmilk can. Their Lavender Latte is in alongside it, unverified from the brand’s own published panel; a third flavour, Vanilla, is named only inside their variety pack and has no page or figures anywhere on their site.',
+    link: { href: '/brands/great-lakes-coffee', label: 'Great Lakes Coffee' },
+  },
+  {
     date: '2026-09-14',
     text: 'Two La Colombe cans we were not tracking are listed on the brand’s own site: an Oatmilk Everyday Draft Latte badged at 120 mg, and a fall-seasonal Salted Caramel Apple Draft Latte badged at 135 mg and already out of stock. Both are 9 oz, both are in the database unverified.',
     link: { href: '/brands/la-colombe', label: 'La Colombe' },

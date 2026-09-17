@@ -141,11 +141,17 @@ export const productTitle = (p: Named & Spec & Caffeine) => {
 
 /* ---- /brands/<brand> ----------------------------------------------------- */
 
-/** A count of our own records — always computable, never unverifiable. */
-export const brandTitle = (brand: string, count: number) =>
-  count === 1
-    ? `${brand} Canned Latte: Full Specs`
-    : `${brand} Canned Lattes: All ${count} Compared`;
+/** A count of our own records — always computable, never unverifiable.
+ *
+ *  The brand name gets the same budget treatment as a product name. It was the one
+ *  template that skipped it, because a brand name is usually short — until "Great
+ *  Lakes Coffee Roasting Company" pushed the title to 65 characters. There is no
+ *  shortName for a brand, so this clips, and the floor keeps a clipped name
+ *  recognisable even when the fixed half is long. */
+export const brandTitle = (brand: string, count: number) => {
+  const fixed = count === 1 ? ' Canned Latte: Full Specs' : ` Canned Lattes: All ${count} Compared`;
+  return clipName(brand, Math.max(NAME_FLOOR, TITLE_BUDGET - fixed.length)) + fixed;
+};
 
 /* ---- /compare/<a>-vs-<b> ------------------------------------------------- */
 

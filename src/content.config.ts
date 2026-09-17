@@ -56,6 +56,11 @@ const products = defineCollection({
       url: z.string().url(),
       affiliate: z.boolean().default(false),
     })).default([]),
+    // The barcode off the can, where we have had one in hand. Optional, and read by
+    // nobody at build time — it exists because "same nutrition panel and same UPC
+    // means the same product" is the rule that decides whether alternate artwork is
+    // an edition or a second record, and until now that rule had no field behind it.
+    upc: z.string().nullable().default(null),
     image: z.string().optional(),               // /images/products/<slug>.jpg once photographed
     summary: z.string(),
     tastingNotes: z.string().optional(),        // your own words, written after you drink it
