@@ -96,10 +96,18 @@ Three checkers run around the build; all three must pass before a deploy.
   `brandCaffeineGuides` registry against the pages behind it.
 - `npm run check:claims` (postbuild) — re-reads `dist/` and cross-checks numeric
   prose, and every `<title>`, against the table rendered on the same page. It also
-  holds the compare pages to their sourcing disclosure. Every group declares a
-  minimum it expects to inspect: **a checker that parses zero claims must fail.**
-  Set that minimum near what the group actually inspects, not to 1 — a floor of 1
-  let the compare group fall from 45 claims to 6 and still report a pass.
+  holds the compare pages to their sourcing disclosure, sweeps every Caffeine
+  column on the site for a dropped qualifier, and reads sentences as well as
+  tables: a figure stated after a link belongs to the can that link names, and a
+  qualified can's own pages (and its brand hub) may not state its bare figure
+  except where they name it as a midpoint or a ceiling. That last group exists
+  because the brand hubs summarised a lineup as "range from 55 to 96 mg" directly
+  above a list reading "at 91–101 mg" — bare midpoints in the first half of a
+  sentence whose second half was right, and nothing was watching prose.
+  Every group declares a minimum it expects to inspect: **a checker that parses
+  zero claims must fail.** Set that minimum near what the group actually inspects,
+  not to 1 — a floor of 1 let the compare group fall from 45 claims to 6 and still
+  report a pass.
 - `npm run check:urls` (postbuild) — canonical, `og:url` and sitemap agreement.
 
 When you add a page shape that carries numbers, add a group to `check-claims.mjs`

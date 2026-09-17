@@ -86,12 +86,19 @@ const q1 = q(0.25), q3 = q(0.75);
 const ozBand = perOz == null ? null : perOz >= q3 ? 'high' : perOz <= q1 ? 'low' : null;
 
 // --- FAQ 2, phrased the way people actually ask it ---
+// The percentile is computed from caffeineMg, so a qualified can names that number
+// as the midpoint or ceiling it is rather than stating it bare — "At 45 mg" for a
+// can whose label says 40–50 mg is the same dropped qualifier the tables guard.
+const atFigure =
+  basis === 'range' ? `its ${mg} mg midpoint`
+  : basis === 'ceiling' ? `its ${mg} mg ceiling`
+  : `${mg} mg`;
 const lotAnswer =
   strongerThan >= 75
-    ? `Yes. At ${mg} mg it is stronger than ${strongerThan}% of the canned lattes we track, and above a 12 oz drip coffee at the low end of its usual 140–200 mg range.`
+    ? `Yes. At ${atFigure} it is stronger than ${strongerThan}% of the canned lattes we track, and above a 12 oz drip coffee at the low end of its usual 140–200 mg range.`
     : strongerThan <= 25
-      ? `Not especially. At ${mg} mg it is milder than ${100 - strongerThan}% of the canned lattes we track — closer to a single espresso shot than to a mug of drip coffee.`
-      : `It is middle of the road. At ${mg} mg it sits stronger than ${strongerThan}% of the canned lattes we track, roughly ${dripPct}% of a 12 oz drip coffee.`;
+      ? `Not especially. At ${atFigure} it is milder than ${100 - strongerThan}% of the canned lattes we track — closer to a single espresso shot than to a mug of drip coffee.`
+      : `It is middle of the road. At ${atFigure} it sits stronger than ${strongerThan}% of the canned lattes we track, roughly ${dripPct}% of a 12 oz drip coffee.`;
 
 const faqs = [
   { q: `How much caffeine is in ${name}?`, a: `${name} has ${basis === 'exact' ? 'about ' : ''}${figure} of caffeine per can${p.sizeOz ? `, ${sizeArticle} ${p.sizeOz} oz can` : ''}${perOz ? `, which works out to ${perOz} mg per ounce${basis === 'range' ? ' at the midpoint' : basis === 'ceiling' ? ' at the ceiling' : ''}` : ''}.` },

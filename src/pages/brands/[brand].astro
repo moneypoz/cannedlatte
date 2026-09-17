@@ -76,10 +76,15 @@ const caffeineAnswer = !mgs.length
     ? `${name} does not print a caffeine figure on the cans we have checked, so we list it as unknown rather than estimate it.`
     : `No caffeine figure is published for ${name}'s cans and we have not checked one against a label yet, so we list it as unknown rather than estimate it.`
   : oneCan
-    ? `${strongest.data.name} is the only ${name} can we track with a published figure, at ${maxMg} mg of caffeine.`
+    ? `${strongest.data.name} is the only ${name} can we track with a published figure, at ${caffeineFigure(strongest.data)} of caffeine.`
     : flatMg
-      ? `${everyCan} carries about ${maxMg} mg of caffeine, ${strongest.data.name} included.`
-      : `${theCans} run from ${minMg} to ${maxMg} mg of caffeine. The strongest is ${strongest.data.name} at ${maxMg} mg.`;
+      ? `${everyCan} carries ${anyQualified ? '' : 'about '}${caffeineFigure(strongest.data)} of caffeine, ${strongest.data.name} included.`
+      // Same reason the paragraph above drops its lineup summary: there is no honest
+      // single span across published ranges, and flattening to midpoints would put a
+      // bare "96 mg" in an answer whose own next clause says "91–101 mg".
+      : anyQualified
+        ? `${theCans} carry ${prose(withCaffeine.map((p) => `${p.data.name} at ${caffeineFigure(p.data)}`))}.`
+        : `${theCans} run from ${minMg} to ${maxMg} mg of caffeine. The strongest is ${strongest.data.name} at ${caffeineFigure(strongest.data)}.`;
 
 const buyAnswer = [
   directLink ? `You can order ${name} direct from ${directLink.label}.` : null,

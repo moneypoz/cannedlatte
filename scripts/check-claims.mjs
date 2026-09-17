@@ -655,6 +655,126 @@ for (const [a, b] of COMPARE_PAIRS) {
   }
 }
 
+/* ---- prose: a figure stated beside the can it belongs to --------------------
+ * The sweep above walks tables. This walks sentences, and exists because a real
+ * bug lived here undetected: the brand hubs summarised a lineup as "range from 55
+ * to 96 mg" directly above a list reading "at 91–101 mg" — bare midpoints in the
+ * first half of a sentence whose second half was correct. Nothing checked prose,
+ * so only reading it found that.
+ *
+ * Two rules, both anchored on unambiguous attribution rather than on guessing
+ * which can a loose number belongs to:
+ *
+ *   A. Wherever prose links to a product and then states a caffeine figure before
+ *      the next link, that figure must be the one the record publishes. This is
+ *      the shape every generated list uses — "<a>Organic Mocha</a> at 91–101 mg" —
+ *      and it covers hand-written copy in listContent.ts on the same terms.
+ *
+ *   B. On a qualified can's own pages, its bare caffeineMg must not appear at all,
+ *      except in the few phrasings that deliberately name the derived number —
+ *      "we rank it on the 255 mg midpoint". Those are listed per product rather
+ *      than pattern-matched, so a new bare mention cannot hide behind a loose rule.
+ */
+let proseClaims = 0, proseBlocks = 0;
+
+// <p>, <li>, <h2>, <h3>. Table cells are the sweep's job, not this one.
+const PROSE_BLOCK = /<(p|li|h2|h3)\b[^>]*>([\s\S]*?)<\/\1>/g;
+const PRODUCT_LINK = /<a[^>]*href="\/(?:latte|caffeine)\/([^"#]+)"[^>]*>[\s\S]*?<\/a>/g;
+// A figure, not a fragment of a wider range: the lookbehind keeps "34–255 mg" from
+// reading as "255 mg", and "23.2 mg" from reading as "2 mg".
+const PROSE_FIGURE = /(?<![\d.–-])((?:up to )?\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?) mg/i;
+
+for (const file of existsSync('dist') ? walkHtml('dist') : []) {
+  const h = readFileSync(file, 'utf8');
+  const where = file.replace(/^dist\//, '');
+
+  // ---- A. a figure stated after a link to the can it belongs to ----
+  for (const bm of h.matchAll(PROSE_BLOCK)) {
+    const inner = bm[2];
+    const links = [...inner.matchAll(PRODUCT_LINK)];
+    if (!links.length) continue;
+    proseBlocks++;
+    for (let i = 0; i < links.length; i++) {
+      const id = links[i][1];
+      if (!PRODUCTS[id]) continue;
+      // Everything said about this can before the next can is named.
+      const from = links[i].index + links[i][0].length;
+      const to = i + 1 < links.length ? links[i + 1].index : inner.length;
+      const said = text(inner.slice(from, to));
+      const m = said.match(PROSE_FIGURE);
+      if (!m) continue;
+      proseClaims++;
+      const want = figureFor(id);
+      if (m[1].toLowerCase() !== want.replace(/ mg$/, '').toLowerCase()) {
+        const d = PRODUCTS[id];
+        failures.push(
+          `${where}: prose says "${m[1]} mg" straight after linking ${id}, which publishes "${want}"` +
+          (isQualified(d) && m[1] === String(d.caffeineMg)
+            ? ` — the bare ${basisOf(d) === 'range' ? 'midpoint' : 'ceiling value'}`
+            : ''),
+        );
+      }
+    }
+  }
+
+  // ---- B. the page's own voice, where it is not quoting a linked can ----
+  // Rule A only sees what follows a link. The bug that prompted this group sat in
+  // front of one — "Groundwork Coffee's cans range from 55 to 96 mg" opening a
+  // sentence whose linked second half was correct — so this rule reads whatever
+  // the page says unattributed, and holds it to the cans the page is *about*:
+  // its own can on a product or caffeine page, the whole lineup on a brand hub.
+  const subjects =
+    /^(?:latte|caffeine)\/(.+)\.html$/.test(where)
+      ? [/^(?:latte|caffeine)\/(.+)\.html$/.exec(where)[1]]
+      : /^brands\/(.+)\.html$/.test(where)
+        ? Object.keys(PRODUCTS).filter((k) => PRODUCTS[k].brandSlug === /^brands\/(.+)\.html$/.exec(where)[1])
+        : [];
+  const qualifiedSubjects = subjects.filter((k) => PRODUCTS[k]?.caffeineMg != null && isQualified(PRODUCTS[k]));
+  if (!qualifiedSubjects.length) continue;
+
+  for (const bm of h.matchAll(PROSE_BLOCK)) {
+    // Whatever follows a link belongs to the can that link names — rule A's job.
+    // On a ceiling page the "closest on caffeine" list is the case that matters: a
+    // rival publishing a genuine 120 mg sits in the prose of a can whose ceiling is
+    // also 120. Blank those spans and read only the page's unattributed voice.
+    let inner = bm[2];
+    const spans = [...inner.matchAll(PRODUCT_LINK)];
+    for (let i = spans.length - 1; i >= 0; i--) {
+      const from = spans[i].index;
+      const to = i + 1 < spans.length ? spans[i + 1].index : inner.length;
+      inner = inner.slice(0, from) + ' '.repeat(to - from) + inner.slice(to);
+    }
+    const base = text(inner);
+    if (!base) continue;
+
+    for (const id of qualifiedSubjects) {
+      const d = PRODUCTS[id];
+      // The deliberate mentions of the derived number, spelled out rather than
+      // matched loosely. Adding a new phrasing is an edit here, which is the point.
+      const deliberate = [
+        figureFor(id),
+        `${d.caffeineMg} mg midpoint`,
+        `${d.caffeineMg} mg ceiling`,
+        `we rank it at ${d.caffeineMg} mg`,
+        `we rank it on the ${d.caffeineMg} mg`,
+      ];
+      let said = base;
+      for (const ok of deliberate) said = said.split(ok).join(' ');
+      proseClaims++;
+      // The lookbehind keeps "34–255 mg" and "23.2 mg" from reading as a bare figure.
+      // Character class written without backslash escapes on purpose: inside a
+      // template literal `\d` collapses to a literal "d", which quietly turned this
+      // lookbehind into a no-op and made "34–255 mg" read as a bare "55 mg".
+      if (new RegExp(`(?<![0-9.–-])${d.caffeineMg} mg`).test(said)) {
+        failures.push(
+          `${where}: states a bare "${d.caffeineMg} mg" in its own voice — ${id} publishes "${figureFor(id)}", ` +
+          `and the only bare mentions allowed are the ones naming it as a ${basisOf(d) === 'range' ? 'midpoint' : 'ceiling'}`,
+        );
+      }
+    }
+  }
+}
+
 // (f) /table — "N Cans, One Table"
 if (existsSync('dist/table.html')) {
   const h = readFileSync('dist/table.html', 'utf8');
@@ -667,7 +787,7 @@ if (existsSync('dist/table.html')) {
   else if (parseInt(m[1], 10) !== n) failures.push(`table.html: title counts ${m[1]} cans, the table lists ${n}`);
 }
 
-totalClaims = compareClaims + caffeineClaims + guideClaims + discloseClaims + titleClaims + sweepCells;
+totalClaims = compareClaims + caffeineClaims + guideClaims + discloseClaims + titleClaims + sweepCells + proseClaims;
 
 // ---- the zero-coverage guard ----
 // The guide row counts declared guides, not discovered ones, so "no guide pages
@@ -688,6 +808,7 @@ const groups = [
   ['compare pages', disclosePages, 'sourcing-disclosure checks', discloseClaims, 150],
   ['titled pages', Object.values(titlePages).reduce((a, b) => a + b, 0), 'title claims', titleClaims, 190],
   ['tables with a Caffeine column', sweepTables, 'swept caffeine cells', sweepCells, 200],
+  ['prose blocks naming a can', proseBlocks, 'prose figure checks', proseClaims, 150],
 ];
 for (const [pageWhat, pageN, claimWhat, claimN, min] of groups) {
   if (pageN > 0 && claimN < min) {
@@ -713,5 +834,6 @@ console.log(
   `${discloseClaims} sourcing-disclosure checks across ${disclosePages} compare pages, ` +
   `${titleClaims} title claims across ${titled.reduce((a, [, n]) => a + n, 0)} pages ` +
   `[${titled.map(([k, n]) => `${k} ${n}`).join(', ')}], ` +
-  `${sweepCells} caffeine cells swept across ${sweepTables} tables for a dropped qualifier).`
+  `${sweepCells} caffeine cells swept across ${sweepTables} tables for a dropped qualifier, ` +
+  `${proseClaims} prose figure checks across ${proseBlocks} blocks naming a can).`
 );
