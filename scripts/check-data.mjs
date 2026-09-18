@@ -42,10 +42,16 @@ const publicFiles = jpgs(PUBLIC_IMG);
 const assetFiles = jpgs(ASSET_IMG);
 const referenced = new Map(); // basename -> [product ids]
 
+// Both photo fields count as references. `image` is the catalogue shot; `tastingPhoto`
+// is our own can on the day we drank it, rendered beside the tasting notes. Leaving the
+// second field out would have the orphan rule below report every tasting photo as dead
+// weight, which is exactly the wrong way round.
 for (const { id, data } of products) {
-  if (!data.image) continue;
-  const base = data.image.split('/').pop();
-  referenced.set(base, [...(referenced.get(base) ?? []), id]);
+  for (const field of ['image', 'tastingPhoto']) {
+    if (!data[field]) continue;
+    const base = data[field].split('/').pop();
+    referenced.set(base, [...(referenced.get(base) ?? []), id]);
+  }
 }
 
 // (a) every referenced image must exist in both places: public/ backs the absolute

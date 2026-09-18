@@ -80,6 +80,10 @@ const fullTitle = title === 'Canned Latte' ? 'Canned Latte: every canned latte, 
     --muted:#f6f3ef; --muted-foreground:#67625d; --border:#e6e0da;
     --primary:#e57255; --primary-foreground:#fff; --primary-soft:#fbe9e3;
     --live:#009f31; --warn:#b26a0b;
+    /* Rating stars carry their own colours. They started on --warn, but that
+       token already means "do not trust this" on the specs-unverified badge,
+       and the two render together on a rated can we have not label-checked. */
+    --star:#b26a0b; --star-empty:#a49a90;
     --radius:.875rem;
     --sans:"DM Sans","DM Sans Fallback",system-ui,-apple-system,"Segoe UI",sans-serif;
     --mono:"Geist Mono","Geist Mono Fallback",ui-monospace,Menlo,Consolas,monospace;
@@ -198,6 +202,18 @@ const fullTitle = title === 'Canned Latte' ? 'Canned Latte: every canned latte, 
   figure.edition img{width:200px;height:auto;flex:0 0 auto;border-radius:var(--radius);background:var(--muted)}
   figure.edition figcaption{font-size:13px;color:var(--muted-foreground);line-height:1.45}
   @media (max-width:520px){figure.edition{flex-direction:column;align-items:flex-start}figure.edition img{width:100%;max-width:280px}}
+  /* The can as we drank it. Caption sits under the photo rather than beside it,
+     because these are phone photos in portrait and a side-by-side layout crops
+     to a sliver on a narrow screen. */
+  figure.tasting{margin:0 0 18px;max-width:62ch}
+  figure.tasting img{width:280px;height:auto;border-radius:var(--radius);background:var(--muted)}
+  figure.tasting figcaption{font-size:13px;color:var(--muted-foreground);line-height:1.45;margin-top:6px}
+  @media (max-width:520px){figure.tasting img{width:100%;max-width:320px}}
+  /* Rating stars: two identical rows of five, the filled one clipped to the score's
+     width. A half star costs no extra glyph and no image, and the printed number
+     next to it stays the thing anyone reads the rating off. */
+  .stars{position:relative;display:inline-block;color:var(--star-empty);letter-spacing:1px;white-space:nowrap}
+  .stars span{position:absolute;top:0;left:0;height:100%;overflow:hidden;color:var(--star)}
   @media (max-width:480px){
     header.site{gap:12px;padding:14px 16px}
     .brand{font-size:20px}

@@ -20,6 +20,12 @@ const p = product.data;
 const heroImage = p.image
   ? productImages[`../../assets/products/${p.image.split('/').pop()}`]?.default
   : undefined;
+// Our own can on the day it was drunk, shown with the tasting notes. Separate from
+// the hero on purpose: the hero is the clean catalogue shot every layout is built
+// around, and this one is evidence that a person bought the can and drank it.
+const tastingImage = p.tastingPhoto
+  ? productImages[`../../assets/products/${p.tastingPhoto.split('/').pop()}`]?.default
+  : undefined;
 const name = fullName(p);
 // Alternate artwork for this same can — same panel, same UPC, no record of its own.
 const editions = editionsFor(product.id)
@@ -131,7 +137,32 @@ jsonLd.push({
     </table>
   </div>
 
-  {p.tastingNotes && (<><h2>Tasting notes</h2>{p.rating != null && <p class="meta"><b>Our rating: {p.rating}/5</b></p>}<p>{p.tastingNotes}</p></>)}
+  {p.tastingNotes && (
+    <>
+      <h2>Tasting notes</h2>
+      {(p.rating != null || p.tastedOn) && (
+        <p class="meta">
+          {p.rating != null && (
+            <>
+              <span class="stars" aria-hidden="true">
+                ★★★★★<span style={`width:${Math.round((p.rating / 5) * 1000) / 10}%`}>★★★★★</span>
+              </span>{' '}
+              <b>Our rating: {p.rating}/5</b>
+            </>
+          )}
+          {p.rating != null && p.tastedOn ? ' · ' : ''}
+          {p.tastedOn && <>Tasted {fmt.mdy(p.tastedOn)}</>}
+        </p>
+      )}
+      {tastingImage && (
+        <figure class="tasting">
+          <Image src={tastingImage} alt={`Our own can of ${name}, photographed on the day we tasted it`} width={280} densities={[1, 2]} format="webp" loading="lazy" />
+          <figcaption>Our can, photographed on the day we tasted it.</figcaption>
+        </figure>
+      )}
+      <p>{p.tastingNotes}</p>
+    </>
+  )}
 
   {faqs.length > 0 && (
     <>

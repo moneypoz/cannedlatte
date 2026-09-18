@@ -64,7 +64,16 @@ const products = defineCollection({
     image: z.string().optional(),               // /images/products/<slug>.jpg once photographed
     summary: z.string(),
     tastingNotes: z.string().optional(),        // your own words, written after you drink it
-    rating: z.number().min(1).max(5).nullable().default(null),   // our 1–5 rating; set with tastingNotes after tasting
+    // multipleOf(0.5) pins the value to the half-star grid the stars actually draw:
+    // the clip is a percentage, so a 4.3 would render a ragged part-star with nothing
+    // to catch it. Half steps are the finest the row can show.
+    rating: z.number().min(1).max(5).multipleOf(0.5).nullable().default(null),   // our 1–5 rating; set with tastingNotes after tasting
+    tastedOn: z.string().optional(),            // YYYY-MM-DD, the day the can was actually drunk
+    // The can as it was drunk, not the catalogue shot: our hand, our kitchen, the
+    // day of the tasting. `image` stays the clean product photo the rest of the site
+    // lays out against, so this is a second file rather than a replacement — and
+    // check-data.mjs counts it as referenced, or the orphan rule would delete-flag it.
+    tastingPhoto: z.string().optional(),        // /images/products/<slug>-tasting.jpg
     launched: z.string().optional(),            // YYYY-MM for the /new tracker
     verified: z.boolean().default(false),       // true once specs come from a label you photographed
     updated: z.string(),                        // YYYY-MM-DD, shown on page (date-stamp every spec)
