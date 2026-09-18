@@ -31,7 +31,8 @@
   "verified": true,
   "updated": "2026-09-18",
   "sources": [
-    "https://www.lacolombe.com/collections/lattes"
+    "https://www.lacolombe.com/collections/lattes",
+    "/images/products/la-colombe-pumpkin-spice-draft-latte.jpg"
   ],
   "brand": "La Colombe",
   "brandSlug": "la-colombe",
@@ -43,6 +44,8 @@
   "launched": "2026-08",
   "image": "/images/products/la-colombe-pumpkin-spice-draft-latte.jpg",
   "summary": "Seasonal pumpkin spice Draft Latte and the sweetest in the line at 18 g of sugar, with 190 mg of caffeine and 7 g of protein per 11 oz can at 170 calories.",
-  "tastingNotes": "Tasted from a cold can on September 17, 2026. The texture is the standout: thick and creamy, closer to real cream than most cans this size. The pumpkin reads as baked goods rather than syrup, and the first reaction at our table was that it tastes like eating pumpkin bread. The coffee itself is bright but mild, so the spice and the milk lead while the espresso sits underneath. It is sweet without being cloying, and it leaves a faint aftertaste that lingers a few seconds. That sweetness is all cane sugar: there is no stevia, sucralose or monk fruit on the ingredient list, and half the 18 g of sugar comes from the milk and the pumpkin puree rather than from the sugar jar. Buy it for the fall flavor up front. Skip it if you want the coffee to lead.",
-  "rating": 4
+  "tastingNotes": "Tasted from a cold can. The texture is the standout: thick and creamy, closer to real cream than most cans this size. The pumpkin reads as baked goods rather than syrup, and the first reaction at our table was that it tastes like eating pumpkin bread. The coffee itself is bright but mild, so the spice and the milk lead while the espresso sits underneath. It is sweet without being cloying, and it leaves a faint aftertaste that lingers a few seconds. That sweetness is all cane sugar: there is no stevia, sucralose or monk fruit on the ingredient list, and half the 18 g of sugar comes from the milk and the pumpkin puree rather than from the sugar jar. Buy it for the fall flavor up front. Skip it if you want the coffee to lead.",
+  "rating": 4,
+  "tastedOn": "2026-09-17",
+  "tastingPhoto": "/images/products/la-colombe-pumpkin-spice-draft-latte-tasting.jpg"
 }
