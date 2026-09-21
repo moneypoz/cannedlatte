@@ -19,6 +19,12 @@ export async function allProducts(): Promise<Product[]> {
 
 export const lattesOnly = (items: Product[]) => items.filter((p) => p.data.type === 'latte');
 
+/** Who tasted the cans. One person buys them, drinks them and writes the notes, and
+ *  /about says so in the first person — so the byline on a review and the author in
+ *  its Review schema are the same human, named here once rather than typed into each.
+ *  An Organization author would be a website claiming to have a palate. */
+export const REVIEWER = { name: 'Sarah', url: 'https://cannedlatte.com/about' } as const;
+
 export const fmt = {
   mg: (v: number | null) => (v == null ? '—' : `${v} mg`),
   g: (v: number | null) => (v == null ? '—' : `${v} g`),

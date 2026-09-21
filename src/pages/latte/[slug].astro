@@ -4,7 +4,7 @@ import BuyLinks from '../../components/BuyLinks.astro';
 import Disclosure from '../../components/Disclosure.astro';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { allProducts, caffeineGuideFor, comparisonsFor, fmt, milkLabel, typeLabel, fullName, productTitle, caffeineFigure } from '../../lib/products';
+import { allProducts, caffeineGuideFor, comparisonsFor, fmt, milkLabel, typeLabel, fullName, productTitle, caffeineFigure, REVIEWER } from '../../lib/products';
 import { editionsFor } from '../../lib/editions';
 
 // Originals stay in public/ (used for the absolute JSON-LD URL); these copies under
@@ -27,6 +27,12 @@ const tastingImage = p.tastingPhoto
   ? productImages[`../../assets/products/${p.tastingPhoto.split('/').pop()}`]?.default
   : undefined;
 const name = fullName(p);
+// A rating and its notes render together or not at all. The visible section and the
+// Product schema are gated on this one expression, so the markup can never claim a
+// review the page does not show, and an unrated can renders nothing at all — no
+// empty stars, no "not yet rated". The schema also refuses either field without the
+// other, so this is a second lock on the same door rather than the only one.
+const rated = p.rating != null && !!p.tastingNotes?.trim();
 // Alternate artwork for this same can — same panel, same UPC, no record of its own.
 const editions = editionsFor(product.id)
   .map((e) => ({ ...e, src: productImages[`../../assets/products/${e.image}`]?.default }))
@@ -61,7 +67,7 @@ const faqs = [
 ].filter(Boolean) as { q: string; a: string }[];
 
 const jsonLd = [
-  (p.rating != null && p.tastingNotes) && {
+  rated && {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name,
@@ -75,7 +81,15 @@ const jsonLd = [
       p.proteinG != null && { '@type': 'PropertyValue', name: 'Protein', value: p.proteinG, unitText: 'g' },
       p.pricePerCan != null && { '@type': 'PropertyValue', name: 'Typical price per can', value: p.pricePerCan.toFixed(2), unitText: 'USD' },
     ].filter(Boolean),
-    review: { '@type': 'Review', reviewRating: { '@type': 'Rating', ratingValue: p.rating, bestRating: 5 }, author: { '@type': 'Organization', name: 'Canned Latte' }, reviewBody: p.tastingNotes },
+    review: {
+      '@type': 'Review',
+      reviewRating: { '@type': 'Rating', ratingValue: p.rating, bestRating: 5 },
+      // A person, not the site: one human drank this can and wrote the notes, and the
+      // visible byline under the rating names the same person this does.
+      author: { '@type': 'Person', name: REVIEWER.name, url: REVIEWER.url },
+      ...(p.tastedOn ? { datePublished: p.tastedOn } : {}),
+      reviewBody: p.tastingNotes,
+    },
   },
   faqs.length && {
     '@context': 'https://schema.org',
@@ -138,7 +152,7 @@ jsonLd.push({
     </table>
   </div>
 
-  {p.tastingNotes && (
+  {rated && (
     <>
       <h2>Tasting notes</h2>
       {(p.rating != null || p.tastedOn) && (
@@ -148,20 +162,30 @@ jsonLd.push({
               <span class="stars" aria-hidden="true">
                 ★★★★★<span style={`width:${Math.round((p.rating / 5) * 1000) / 10}%`}>★★★★★</span>
               </span>{' '}
-              <b>Our rating: {p.rating}/5</b>
+              <b>My rating: {p.rating}/5</b>
             </>
           )}
           {p.rating != null && p.tastedOn ? ' · ' : ''}
           {p.tastedOn && <>Tasted {fmt.mdy(p.tastedOn)}</>}
+          {' · '}<a href="/about">by {REVIEWER.name}</a>
         </p>
       )}
       {tastingImage && (
         <figure class="tasting">
-          <Image src={tastingImage} alt={`Our own can of ${name}, photographed on the day we tasted it`} width={280} densities={[1, 2]} format="webp" loading="lazy" />
-          <figcaption>Our can, photographed on the day we tasted it.</figcaption>
+          <Image src={tastingImage} alt={`My can of ${name}, photographed the day I drank it`} width={280} densities={[1, 2]} format="webp" loading="lazy" />
+          <figcaption>My can, photographed the day I drank it.</figcaption>
         </figure>
       )}
       <p>{p.tastingNotes}</p>
+      {/* Wherever a score renders, so does this. The rankings sort on sugar,
+          caffeine, protein and price and have no access to `rating` at all — but a
+          reader cannot see that from here, and a site that scores things owes them
+          the sentence rather than the benefit of the doubt. */}
+      {p.rating != null && (
+        <p class="meta" data-claims="rating-disclosure">
+          Ratings are my personal taste and don't affect the data rankings.
+        </p>
+      )}
     </>
   )}
 

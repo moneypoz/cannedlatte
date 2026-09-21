@@ -63,11 +63,24 @@ const products = defineCollection({
     upc: z.string().nullable().default(null),
     image: z.string().optional(),               // /images/products/<slug>.jpg once photographed
     summary: z.string(),
-    tastingNotes: z.string().optional(),        // your own words, written after you drink it
-    // multipleOf(0.5) pins the value to the half-star grid the stars actually draw:
-    // the clip is a percentage, so a 4.3 would render a ragged part-star with nothing
-    // to catch it. Half steps are the finest the row can show.
-    rating: z.number().min(1).max(5).multipleOf(0.5).nullable().default(null),   // our 1–5 rating; set with tastingNotes after tasting
+    // My own words, written after I drink the can. First person, and short — the
+    // house style is one to three sentences. That length is not enforced here: the
+    // notes already on the site run longer where the can earned it, and a schema
+    // that counted full stops would fail the build on writing that is simply good.
+    tastingNotes: z.string().optional(),
+    // My 1–5 rating, to at most one decimal place. The star row clips to a
+    // percentage of its width, so it draws any tenth cleanly; the printed number
+    // beside it stays the thing anyone actually reads the rating off.
+    //
+    // A rating and its notes are one act — drinking the can and writing it up — so
+    // the refinement below refuses either one without the other. A bare number is an
+    // opinion with no reasoning attached, and bare notes leave the Product schema
+    // gate (see the product page) in a state nothing can render.
+    rating: z.number().min(1).max(5)
+      .refine((v) => Math.abs(v * 10 - Math.round(v * 10)) < 1e-9, {
+        message: 'rating takes at most one decimal place (1.0–5.0), e.g. 4 or 4.5 or 4.3',
+      })
+      .nullable().default(null),
     tastedOn: z.string().optional(),            // YYYY-MM-DD, the day the can was actually drunk
     // The can as it was drunk, not the catalogue shot: our hand, our kitchen, the
     // day of the tasting. `image` stays the clean product photo the rest of the site
@@ -78,6 +91,20 @@ const products = defineCollection({
     verified: z.boolean().default(false),       // true once specs come from a label you photographed
     updated: z.string(),                        // YYYY-MM-DD, shown on page (date-stamp every spec)
     sources: z.array(z.string()).default([]),
+  }).superRefine((d, ctx) => {
+    // Both or neither. Enforced here rather than in a checker because this one is a
+    // fact about a single record, and catching it at content-load names the file
+    // and the field instead of reporting a missing <script> in a built page.
+    const rated = d.rating != null;
+    const noted = d.tastingNotes != null && d.tastingNotes.trim() !== '';
+    if (rated && !noted) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['tastingNotes'],
+        message: `rating ${d.rating} with no tastingNotes — a score with no reasoning behind it. Write the notes or drop the rating.` });
+    }
+    if (noted && !rated) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['rating'],
+        message: 'tastingNotes with no rating — the Product schema gate needs both, so the notes would publish with no review behind them.' });
+    }
   }),
 });
 

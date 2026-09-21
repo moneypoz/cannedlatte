@@ -86,6 +86,18 @@ exist any more, and `Product` schema only with a real rating.
   crowned. Today `/best/most-caffeine` is led by a range record that is unverified,
   so it runs on a count and the stop is armed rather than firing.
 
+- **A rating is opinion; every other number is data.** `rating` and `tastingNotes`
+  are both-or-neither — a score with no reasoning behind it, or notes with no score,
+  is refused at content-load in `src/content.config.ts`. The scale is 1.0–5.0 to at
+  most one decimal. An unrated can renders nothing: no empty stars, no "not yet
+  rated". `Product` schema with a review renders only where both fields exist, the
+  reviewer is the `Person` named by `REVIEWER`, and there is never an `offers`
+  block. Ratings never touch a ranking — every `bestPages` sort runs on sugar,
+  caffeine, protein or price — and the page says so on every rated can, because a
+  reader cannot see a sort function. The `ratings` group in `check-claims.mjs` holds
+  all of it, from both directions: schema without the fields fails, and the fields
+  without schema fail too.
+
 - **Never publish pages faster than they can pass Gate 1.**
 
 ## How the gates are enforced

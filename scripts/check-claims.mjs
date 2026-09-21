@@ -675,6 +675,141 @@ for (const [a, b] of COMPARE_PAIRS) {
  *      "we rank it on the 255 mg midpoint". Those are listed per product rather
  *      than pattern-matched, so a new bare mention cannot hide behind a loose rule.
  */
+/* ======================================================================
+ * Ratings and the Product schema gate.
+ *
+ * A rating is the one number on this site that is not data. Everything else is
+ * measured off a label; this is one person's opinion of a drink, and it buys
+ * review stars in a search result. That asymmetry is the whole reason for this
+ * group: Google renders Product/review markup as a star rating next to the
+ * result, so markup claiming a review the page cannot show is a rich-result
+ * fabrication, not a template bug.
+ *
+ * The gate has always been "Product schema only with a real rating" (CLAUDE.md).
+ * Until now nothing read the built JSON-LD to check it held. This group does,
+ * from both directions:
+ *
+ *   a. A page rendering Product schema with a review or an aggregateRating must
+ *      have BOTH rating and tastingNotes in its record.
+ *   b. A record with both must actually render it — otherwise the gate has
+ *      silently stopped emitting and nobody would notice, because a missing
+ *      <script> looks exactly like a page that was never rated.
+ *   c. The rating itself: 1.0-5.0, at most one decimal, and the same number in
+ *      the record, in the JSON-LD and in the visible "My rating: N/5".
+ *   d. The reviewer is the Person named in src/lib/products.ts, never an
+ *      Organization and never an invented name. A website does not have a palate.
+ *   e. No offers block, ever. We compare, we do not sell.
+ *   f. The disclosure renders wherever a rating does.
+ * ==================================================================== */
+let ratingClaims = 0, ratingPages = 0, ratedPages = 0;
+
+// The reviewer the page is allowed to name, read from source rather than typed
+// here — the byline and the schema author are supposed to be the same human, and
+// this check is worthless if it carries its own copy of the answer.
+const REVIEWER_NAME = (SRC.match(/REVIEWER\s*=\s*\{\s*name:\s*'([^']+)'/) || [])[1] ?? null;
+if (SRC && !REVIEWER_NAME) {
+  failures.push('could not read REVIEWER out of src/lib/products.ts — this check is broken, not the data');
+}
+
+const jsonLdBlocks = (h) =>
+  [...h.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)]
+    .flatMap((m) => {
+      try {
+        const v = JSON.parse(m[1]);
+        return Array.isArray(v) ? v : [v];
+      } catch {
+        failures.push('unparseable JSON-LD block in a built page');
+        return [];
+      }
+    });
+
+/** One decimal at most, and inside the scale. Kept as its own function because the
+ *  record and the rendered ratingValue are both put through it. */
+const badRating = (v) => {
+  if (typeof v !== 'number' || Number.isNaN(v)) return 'is not a number';
+  if (v < 1 || v > 5) return `is ${v}, outside the 1.0-5.0 scale`;
+  if (Math.abs(v * 10 - Math.round(v * 10)) >= 1e-9) return `is ${v}, which has more than one decimal place`;
+  return null;
+};
+
+for (const f of existsSync('dist/latte') ? readdirSync('dist/latte') : []) {
+  const h = readFileSync('dist/latte/' + f, 'utf8');
+  const id = f.replace(/\.html$/, '');
+  const rec = PRODUCTS[id];
+  if (!rec) continue;
+  ratingPages++;
+
+  const recRated = rec.rating != null;
+  const recNoted = typeof rec.tastingNotes === 'string' && rec.tastingNotes.trim() !== '';
+  const product = jsonLdBlocks(h).find((b) => b && b['@type'] === 'Product');
+  const carriesReview = !!(product && (product.review || product.aggregateRating));
+
+  // (a) + (b): the gate, both directions.
+  ratingClaims++;
+  if (carriesReview && !(recRated && recNoted)) {
+    failures.push(
+      `latte/${f}: renders Product schema with a review, but the record has ` +
+      `${recRated ? 'a rating and no tastingNotes' : recNoted ? 'tastingNotes and no rating' : 'neither a rating nor tastingNotes'} ` +
+      `— that is a star rating in search results with nothing behind it`,
+    );
+  }
+  if (!carriesReview && recRated && recNoted) {
+    failures.push(`latte/${f}: record has rating ${rec.rating} and tastingNotes, but the page renders no Product review schema — the gate has stopped emitting`);
+  }
+
+  if (!(recRated && recNoted)) {
+    // (unrated) nothing may show: no stars, no empty state.
+    ratingClaims++;
+    if (/My rating:/.test(h)) failures.push(`latte/${f}: unrated record, but the page prints a rating`);
+    continue;
+  }
+
+  ratedPages++;
+
+  // (c) the number, in all three places it appears.
+  const bad = badRating(rec.rating);
+  if (bad) failures.push(`latte/${f}: record rating ${bad}`);
+  ratingClaims++;
+
+  if (product) {
+    const rv = product.review?.reviewRating?.ratingValue ?? product.aggregateRating?.ratingValue;
+    ratingClaims++;
+    const badRendered = badRating(rv);
+    if (badRendered) failures.push(`latte/${f}: JSON-LD ratingValue ${badRendered}`);
+    else if (rv !== rec.rating) failures.push(`latte/${f}: JSON-LD ratingValue is ${rv}, the record says ${rec.rating}`);
+
+    // (d) the reviewer.
+    ratingClaims++;
+    const author = product.review?.author;
+    if (!author) failures.push(`latte/${f}: Product review has no author`);
+    else if (author['@type'] !== 'Person') failures.push(`latte/${f}: review author is a ${author['@type']}, not a Person — a website does not have a palate`);
+    else if (REVIEWER_NAME && author.name !== REVIEWER_NAME) failures.push(`latte/${f}: review author is "${author.name}", but src/lib/products.ts names the reviewer "${REVIEWER_NAME}"`);
+
+    // (e) no offers.
+    ratingClaims++;
+    if (product.offers) failures.push(`latte/${f}: Product schema carries an offers block — we compare, we do not sell`);
+
+    // The review body has to be the notes, not the summary or some other field.
+    ratingClaims++;
+    const body = product.review?.reviewBody;
+    if (body && body.trim() !== rec.tastingNotes.trim()) {
+      failures.push(`latte/${f}: reviewBody is not the record's tastingNotes`);
+    }
+  }
+
+  // (c continued) the visible number must agree with the record.
+  ratingClaims++;
+  const shown = h.match(/My rating:\s*([\d.]+)\s*\/\s*5/);
+  if (!shown) failures.push(`latte/${f}: record is rated ${rec.rating} but the page shows no "My rating: N/5"`);
+  else if (parseFloat(shown[1]) !== rec.rating) failures.push(`latte/${f}: page shows "My rating: ${shown[1]}/5", the record says ${rec.rating}`);
+
+  // (f) the disclosure.
+  ratingClaims++;
+  if (!h.includes('data-claims="rating-disclosure"')) {
+    failures.push(`latte/${f}: shows a rating with no line saying ratings do not affect the rankings`);
+  }
+}
+
 let proseClaims = 0, proseBlocks = 0;
 
 // <p>, <li>, <h2>, <h3>. Table cells are the sweep's job, not this one.
@@ -787,7 +922,7 @@ if (existsSync('dist/table.html')) {
   else if (parseInt(m[1], 10) !== n) failures.push(`table.html: title counts ${m[1]} cans, the table lists ${n}`);
 }
 
-totalClaims = compareClaims + caffeineClaims + guideClaims + discloseClaims + titleClaims + sweepCells + proseClaims;
+totalClaims = compareClaims + caffeineClaims + guideClaims + discloseClaims + titleClaims + sweepCells + proseClaims + ratingClaims;
 
 // ---- the zero-coverage guard ----
 // The guide row counts declared guides, not discovered ones, so "no guide pages
@@ -809,6 +944,11 @@ const groups = [
   ['titled pages', Object.values(titlePages).reduce((a, b) => a + b, 0), 'title claims', titleClaims, 190],
   ['tables with a Caffeine column', sweepTables, 'swept caffeine cells', sweepCells, 200],
   ['prose blocks naming a can', proseBlocks, 'prose figure checks', proseClaims, 150],
+  // Two checks land on every product page whether or not it is rated (the gate, in
+  // both directions, and "an unrated page prints nothing"), so the floor is the
+  // page count and does not move when the number of ratings does. A site with no
+  // ratings at all still has to prove no page is claiming one.
+  ['product pages', ratingPages, 'rating and schema-gate checks', ratingClaims, ratingPages],
 ];
 for (const [pageWhat, pageN, claimWhat, claimN, min] of groups) {
   if (pageN > 0 && claimN < min) {
@@ -835,5 +975,7 @@ console.log(
   `${titleClaims} title claims across ${titled.reduce((a, [, n]) => a + n, 0)} pages ` +
   `[${titled.map(([k, n]) => `${k} ${n}`).join(', ')}], ` +
   `${sweepCells} caffeine cells swept across ${sweepTables} tables for a dropped qualifier, ` +
-  `${proseClaims} prose figure checks across ${proseBlocks} blocks naming a can).`
+  `${proseClaims} prose figure checks across ${proseBlocks} blocks naming a can, ` +
+  `${ratingClaims} rating and schema-gate checks across ${ratingPages} product pages, ` +
+  `${ratedPages} of them rated).`
 );
