@@ -11,7 +11,7 @@ const newsImage = (file?: string) => (file ? cardImages[`../assets/products/card
 const products = (await allProducts()).filter((p) => p.data.launched).sort((a, b) => b.data.launched!.localeCompare(a.data.launched!));
 const news = newsByDate();
 ---
-<Base title="New canned lattes" description="Every new latte in a can, newest first, with specs the day it hits shelves. Death Wish, Wandering Bear, La Colombe and more.">
+<Base title="New canned lattes" description="Every new latte in a can, newest first, with specs the day it hits shelves. Death Wish, Wandering Bear, La Colombe and more." ogType="article">
   <p class="eyebrow">Launch tracker</p>
   <h1>New canned lattes</h1>
   <p class="lede">Newest first. When a brand drops a can, it lands here with its specs. Subscribe to the monthly roundup below.</p>

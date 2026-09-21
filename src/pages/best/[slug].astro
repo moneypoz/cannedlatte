@@ -57,7 +57,7 @@ for (const sentence of page.intro.match(/[^.]+\./g) ?? []) {
   description = next;
 }
 ---
-<Base title={seoTitle} description={description} jsonLd={jsonLd}>
+<Base title={seoTitle} description={description} jsonLd={jsonLd} ogType="article">
   <div class="center">
     <span class="status"><span class="dot"></span><b>{list.length} cans</b> · from the database · updated {fmt.mdy(updated)}</span>
     <h1>{page.title}</h1>

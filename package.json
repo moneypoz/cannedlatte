@@ -12,7 +12,8 @@
     "check:claims": "node scripts/check-claims.mjs",
     "preview": "astro preview",
     "check": "astro check",
-    "check:urls": "node scripts/check-urls.mjs"
+    "check:urls": "node scripts/check-urls.mjs",
+    "og:image": "node scripts/make-og-image.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.4.0",

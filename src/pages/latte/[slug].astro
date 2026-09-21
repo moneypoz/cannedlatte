@@ -93,7 +93,8 @@ jsonLd.push({
   ],
 });
 ---
-<Base title={productTitle(p)} description={desc} jsonLd={jsonLd}>
+<Base title={productTitle(p)} description={desc} jsonLd={jsonLd} ogType="article"
+      image={p.image} imageAlt={p.image ? `${name} can` : undefined}>
   <div class="product-top">
     <div class="product-info">
       <p class="eyebrow"><a href={`/brands/${p.brandSlug}`}>{p.brand}</a> · <span class="tag">{typeLabel[p.type]}</span>{!p.verified && <> <span class="tag warn">specs unverified</span></>}</p>

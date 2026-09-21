@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The site-default social card: what every page that is not about one can hands to
+  Facebook, LinkedIn, Slack and X. 1200x630 is the 1.91:1 box all of them crop to.
+
+  This file is the source. scripts/make-og-image.mjs renders it to
+  public/og/default.png, which is the file the tags actually point at — a social
+  crawler will not run our SVG, and several of them do not accept SVG at all.
+  Edit here, then `npm run og:image`.
+
+  Colours are the tokens from Base.astro, typed out because an SVG rendered by
+  sharp has no stylesheet to read them from: cream (background) #fffdfa, ink
+  (foreground) #282624, coral (primary) #e57255, muted ink (muted-foreground) #67625d.
+
+  No number appears on this card on purpose. It is baked into a PNG that is cached
+  by every network that has ever scraped it, so any figure on it would be a claim we
+  could not correct — see the Gate 1 rules in CLAUDE.md. The columns are named
+  instead, which is a fact about the table and cannot go stale.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#fffdfa"/>
+
+  <!-- The can mark from the site header, same geometry, scaled 2.6x. -->
+  <g transform="translate(90 84) scale(2.6)">
+    <rect x="7" y="2" width="12" height="22" rx="3.5" fill="#e57255"/>
+    <rect x="7" y="2" width="12" height="5" rx="2.5" fill="#fffdfa" opacity=".85"/>
+    <rect x="9.5" y="11" width="7" height="8" rx="1.5" fill="#fffdfa" opacity=".9"/>
+  </g>
+  <text x="168" y="133" font-family="DM Sans, Segoe UI, Helvetica Neue, Arial, sans-serif"
+        font-size="46" font-weight="500" letter-spacing="-0.5" fill="#282624">canned<tspan
+        font-weight="800" fill="#e57255">latte</tspan></text>
+
+  <!-- The line itself. Two lines rather than one: at a size that fills the card,
+       29 characters do not fit across 1020px of content width. -->
+  <text font-family="DM Sans, Segoe UI, Helvetica Neue, Arial, sans-serif"
+        font-size="92" font-weight="700" letter-spacing="-2.5" fill="#282624">
+    <tspan x="90" y="330">Every canned latte,</tspan><tspan x="90" y="430">compared.</tspan>
+  </text>
+
+  <text x="90" y="512" font-family="Geist Mono, Consolas, Menlo, monospace"
+        font-size="25" letter-spacing="0.5" fill="#67625d">caffeine · sugar · protein · milk · price</text>
+
+  <rect x="0" y="618" width="1200" height="12" fill="#e57255"/>
+  <text x="1110" y="133" text-anchor="end" font-family="Geist Mono, Consolas, Menlo, monospace"
+        font-size="23" fill="#67625d">cannedlatte.com</text>
+</svg>

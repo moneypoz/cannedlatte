@@ -147,7 +147,7 @@ const desc = descBase.length + descGap.length <= 155 ? descBase + descGap : desc
 
 const title = compareTitle(A, B);
 ---
-<Base title={title} description={desc} jsonLd={jsonLd}>
+<Base title={title} description={desc} jsonLd={jsonLd} ogType="article">
   <p class="eyebrow"><a href="/">Canned Latte</a> · <a href="/compare">Compare</a></p>
   <h1>{na} vs {nb}</h1>
   {!noNumbers && (

@@ -113,7 +113,10 @@ const jsonLd = {
 <Base
   title={p.caffeineMg != null ? caffeineTitle(p, mg) : caffeineQuestionTitle(p)}
   description={`${name} has ${basis === 'exact' ? 'about ' : ''}${figure} of caffeine per can${perOz ? ` (${perOz} mg per oz)` : ''} — #${rank} of ${all.length} canned lattes we track.`}
-  jsonLd={jsonLd}>
+  jsonLd={jsonLd}
+  ogType="article"
+  image={p.image}
+  imageAlt={p.image ? `${name} can` : undefined}>
   <p class="eyebrow"><a href="/">Canned Latte</a> · Caffeine</p>
   <h1>How much caffeine is in {name}?</h1>
 
