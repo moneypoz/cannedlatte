@@ -36,6 +36,12 @@ export type NewsItem = {
 
 export const news: NewsItem[] = [
   {
+    date: '2026-09-23',
+    text: 'La Colombe has a limited-edition S’mores Draft Latte on shelves — spotted in store and label-verified from the can in hand: 190 mg of caffeine, 20 g of sugar with 11 g of it added, and 7 g of protein in an 11 oz can at 190 calories. It runs on the same 190 mg espresso base as their Caramel, Mocha, Vanilla and Pumpkin Spice cans.',
+    link: { href: '/latte/la-colombe-smores-draft-latte', label: 'S’mores Draft Latte' },
+    image: 'la-colombe-smores-draft-latte-card.png',
+  },
+  {
     date: '2026-09-17',
     text: 'Bones’ Cookies & Cream Latte is label-verified from a can in hand: 200 mg of caffeine, 16 g of sugar with only 5 g of it added, and 7 g of protein — the same panel their Cannoli, French Toast and Sea Salt Caramel Mocha cans carry. It is a different drink from their Cookies N’ Dreams Latte, which is 210 calories and 33 g of sugar on the cold brew line.',
     link: { href: '/latte/bones-cookies-cream-latte', label: 'Cookies & Cream Latte' },

@@ -90,6 +90,20 @@ Rules that keep the data honest:
 
 Photos go in `public/images/products/` as `<slug>.jpg`, ~1200px wide, same background and angle for every can.
 
+### Brand naming notes
+
+There is no brand record: a brand is whatever the `brand` / `brandSlug` fields on its
+product JSONs say it is, so a naming decision has to be written down somewhere or it
+gets re-litigated by whoever types the next file. This is that place.
+
+- **La Colombe.** Every can we have photographed — Caramel, Vanilla, Pumpkin Spice and
+  the 2026-09-23 S'mores limited edition — prints the wordmark as "La Colombe Coffee
+  Workshop" and carries a "©2026 LCT OPCO LLC" copyright line. We keep the brand as
+  **La Colombe**, because that is what people search and what the brand calls itself
+  online. Noted here so that if lacolombe.com ever switches its own identity to the
+  Coffee Workshop / LCT OPCO naming, it reads as a change we were already watching
+  rather than a surprise. Nothing on the site needs to move unless that happens.
+
 ## Adding rankings and comparisons
 
 - **"Best for" pages** are defined in `src/lib/products.ts` → `bestPages`. Each has a filter, a sort, and the metric column to show. Add an entry and it becomes `/best/<slug>` on the next build.

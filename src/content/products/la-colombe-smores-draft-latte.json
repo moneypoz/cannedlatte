@@ -1,0 +1,38 @@
+{
+  "type": "latte",
+  "sizeOz": 11,
+  "caffeineMg": 190,
+  "sugarG": 20,
+  "addedSugar": true,
+  "addedSugarG": 11,
+  "proteinG": 7,
+  "calories": 190,
+  "refrigerated": false,
+  "pricePerCan": 2.89,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Grocery"
+  ],
+  "buyLinks": [
+    {
+      "label": "La Colombe",
+      "url": "https://www.lacolombe.com/collections/lattes",
+      "affiliate": false
+    }
+  ],
+  "verified": true,
+  "updated": "2026-09-23",
+  "sources": [
+    "/images/products/la-colombe-smores-draft-latte.jpg"
+  ],
+  "brand": "La Colombe",
+  "brandSlug": "la-colombe",
+  "name": "S'mores Draft Latte",
+  "flavor": "S'mores",
+  "caffeineNote": "Label: 190 mg per can",
+  "milk": "dairy",
+  "dairyFree": false,
+  "image": "/images/products/la-colombe-smores-draft-latte.jpg",
+  "summary": "Limited-edition S'mores Draft Latte: espresso roast on whole milk with Dutch cocoa and cane sugar, nitrogen-frothed in the same 11 oz can as the Vanilla and Pumpkin Spice. 190 mg of caffeine and 7 g of protein, with 20 g of sugar (11 g of it added) at 190 calories. Lactase is in the ingredients, but unlike its siblings this can prints no lactose-free badge on the front."
+}
