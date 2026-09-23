@@ -53,6 +53,22 @@ exist any more, and `Product` schema only with a real rating.
   See `bestHeadline` in `src/lib/titles.ts`; the fallback reverses itself on its own
   the day that record is checked against a label.
 
+- **A hand-written superlative carries a written basis, or it does not ship.**
+  Computed prose cannot go stale — a brand hub's "the strongest is Triple Draft
+  Latte at 230 mg" is rebuilt from the table beside it every build. A typed one
+  goes stale in silence, and has twice: a product summary crowned itself "the
+  sweetest in the line at 18 g of sugar" and stayed that way until a 20 g can
+  landed next to it and somebody happened to read the file. So every definite
+  superlative — "the strongest", "The sweetest", a sentence-initial "Most" — in a
+  `summary`, `caffeineNote`, `tastingNotes`, in `src/lib/listContent.ts` or in
+  `src/lib/news.ts` has to appear in `SUPERLATIVE_CLAIMS` in `check-claims.mjs`
+  with what it was checked against and when. The checker cannot know whether a
+  claim is true; it enforces that a person decided it was and said why. Editing
+  the sentence breaks the match and sends the claim back for review, which is the
+  point. Bare quantifiers are not superlatives — "only 5 g of it added" is a fact
+  about one record — and an FAQ heading is a question, not a claim, so neither is
+  flagged: an allowlist nobody reads protects nothing.
+
 - **Every number in a title is computed, never typed.** Titles live in `<head>`,
   where no amount of looking at the page reveals a stale one. Templates live in
   `src/lib/titles.ts`, and the `titles` group in `check-claims.mjs` re-derives each
@@ -105,7 +121,10 @@ exist any more, and `Product` schema only with a real rating.
 Three checkers run around the build; all three must pass before a deploy.
 
 - `npm run check:data` (prebuild) — images, sources on verified records, and the
-  `brandCaffeineGuides` registry against the pages behind it.
+  `brandCaffeineGuides` registry against the pages behind it. A label photo cited
+  in a record's `sources` counts as referenced rather than orphaned, and has to be
+  on disk: a citation that 404s backs nothing. Those live in `public/` only, since
+  nothing lays them out.
 - `npm run check:claims` (postbuild) — re-reads `dist/` and cross-checks numeric
   prose, and every `<title>`, against the table rendered on the same page. It also
   holds the compare pages to their sourcing disclosure, sweeps every Caffeine
@@ -115,7 +134,10 @@ Three checkers run around the build; all three must pass before a deploy.
   except where they name it as a midpoint or a ceiling. That last group exists
   because the brand hubs summarised a lineup as "range from 55 to 96 mg" directly
   above a list reading "at 91–101 mg" — bare midpoints in the first half of a
-  sentence whose second half was right, and nothing was watching prose.
+  sentence whose second half was right, and nothing was watching prose. It also
+  reads the copy nothing recomputes — product summaries, the `/best` list text,
+  news entries — and holds every hand-written superlative in it to a reviewed
+  basis in `SUPERLATIVE_CLAIMS`.
   Every group declares a minimum it expects to inspect: **a checker that parses
   zero claims must fail.** Set that minimum near what the group actually inspects,
   not to 1 — a floor of 1 let the compare group fall from 45 claims to 6 and still

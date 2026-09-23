@@ -910,6 +910,270 @@ for (const file of existsSync('dist') ? walkHtml('dist') : []) {
   }
 }
 
+/* ---- hand-written superlatives must carry a reviewed basis ------------------
+ * Everything else in this file re-derives a claim from the records. This group
+ * covers the text nothing re-derives: the sentences a person typed into a
+ * product's `summary`, `caffeineNote` or `tastingNotes`, into the /best list copy
+ * in src/lib/listContent.ts, or into a news entry in src/lib/news.ts.
+ *
+ * A computed sentence cannot go stale — the brand hub's "the strongest is Triple
+ * Draft Latte at 230 mg" is rebuilt from the table beside it on every build, and
+ * the groups above cross-check it against that table. A typed one goes stale
+ * silently, and has now done so twice: the Pumpkin Spice summary crowned itself
+ * "the sweetest in the line at 18 g of sugar" and stayed that way until a 20 g
+ * can landed beside it and somebody happened to read the file. Nothing was
+ * watching, because nothing can recompute a sentence a person wrote.
+ *
+ * So the rule is not "this claim is true" — no checker can know that. It is "a
+ * person reviewed this claim and wrote down what it rests on". Each definite
+ * superlative in hand-written copy must appear in SUPERLATIVE_CLAIMS below with
+ * the basis it was checked against. Adding one is a deliberate act, the same way
+ * adding an EDITION_IMAGES entry in check-data.mjs is, and the basis is what the
+ * next person reads when the database moves underneath the sentence.
+ *
+ * What counts as a superlative here is deliberately narrow: a *definite* one —
+ * "the strongest", "The sweetest", a sentence-initial "Most". The bare words do
+ * not, because "16 g of sugar, only 5 g of it added" and "most are shelf-stable"
+ * are a quantifier about one record and a hedge, not a crown over the database.
+ * A rule that flagged those would bury the twenty claims that matter under forty
+ * that do not, which is how an allowlist stops being read. FAQ question headings
+ * are skipped for the same reason: "What is the strongest canned latte?" asks
+ * the question the answer beneath it has to get right, and that answer is
+ * scanned.
+ */
+const SUPERLATIVE_TERMS =
+  'sweetest|strongest|highest|lowest|biggest|richest|cheapest|widest|largest|smallest|fewest|best|worst|most|least|only|first';
+const DEFINITE_SUPERLATIVE = new RegExp(`\\bthe\\s+(?:${SUPERLATIVE_TERMS})\\b`, 'gi');
+// Capitalised and sentence-initial: "Most of La Colombe's Draft Lattes print …".
+const LEADING_SUPERLATIVE = new RegExp(`(?:^|[.!?]\\s+)(?:${SUPERLATIVE_TERMS})\\b`, 'g');
+
+/** Reviewed hand-written superlatives.
+ *
+ *  `where`  the field it lives in. Checked, not decorative: an entry naming a
+ *           place its claim is not in fails, so a sentence that moves file
+ *           cannot leave a basis behind pointing at the old one.
+ *  `claim`  the phrase as authored, verbatim. Editing the sentence breaks the
+ *           match and sends the claim back for review, which is the point.
+ *  `basis`  what it was checked against, and when. Written for the person who
+ *           reads it after the database has moved.
+ */
+const SUPERLATIVE_CLAIMS = [
+  // ---- product records -----------------------------------------------------
+  {
+    where: 'products/beekeeper-hot-honey-latte.json',
+    claim: 'the only deliberately spicy can we track',
+    basis: 'Checked 2026-09-23: no other record names chili, capsaicin or pepper. Recheck when a spicy can is added.',
+  },
+  {
+    where: 'products/bones-holy-cannoli-latte.json',
+    claim: 'the strongest can in our database',
+    basis: 'Checked 2026-09-23: 250-260 mg is the top caffeineMg, and /best/most-caffeine sorts it first. That ranking recomputes itself; this sentence does not.',
+  },
+  {
+    where: 'products/french-truck-lightly-sweetened-latte.json',
+    claim: 'the least sweet of the three',
+    basis: 'Checked 2026-09-23: French Truck has three records, at 15, 21 and 27 g of sugar. "Of the three" carries its own denominator, so a fourth flavour makes the sentence visibly wrong rather than quietly wrong.',
+  },
+  {
+    where: 'products/french-truck-mocha-latte.json',
+    claim: 'the richest of the three',
+    basis: 'Checked 2026-09-23: 27 g is the highest sugar and 210 the highest calories of the three French Truck records.',
+  },
+  {
+    where: 'products/groundwork-organic-coconut-cold-brew-latte.json',
+    claim: 'the only coconut-milk can we track',
+    basis: "Checked 2026-09-23: the only record with milk === 'coconut'.",
+  },
+  {
+    where: 'products/groundwork-organic-mocha-cold-brew-latte.json',
+    claim: 'the strongest can in their line',
+    basis: 'Checked 2026-09-23: 91-101 mg against 75-83, 70-78 and 70-78 across the four Groundwork records.',
+  },
+  {
+    where: 'products/groundwork-organic-mocha-cold-brew-latte.json',
+    claim: 'the only one of the four that adds sugar',
+    basis: 'Checked 2026-09-23: the other three Groundwork records carry addedSugar false; this one lists 7 g of date sugar.',
+  },
+  {
+    where: 'products/groundwork-organic-mocha-cold-brew-latte.json',
+    claim: 'the strongest of the four Groundwork variants',
+    basis: 'The same claim as the summary above, restated in caffeineNote. Both rest on the same four figures and move together.',
+  },
+  {
+    where: 'products/joe-coffee-honey-oat-latte.json',
+    claim: 'the smallest can we track',
+    basis: 'Checked 2026-09-23: 7.5 oz is the lowest sizeOz in the database.',
+  },
+  {
+    where: 'products/la-colombe-pumpkin-spice-draft-latte.json',
+    claim: 'the only one on the label',
+    basis: "About this can's own ingredient list rather than the database: cane sugar is the only sweetener printed on it. A record-local claim, so no other product can make it stale.",
+  },
+  {
+    where: 'products/projo-power-coffee-vanilla-latte.json',
+    claim: 'The most protein of any can in our database',
+    basis: 'Checked 2026-09-23: 25 g is the top proteinG, and /best/high-protein crowns the same figure from the same field.',
+  },
+  {
+    where: 'products/starbucks-doubleshot-espresso-salted-caramel-cream.json',
+    claim: 'The most widely available latte in a can',
+    basis: 'Editorial judgement about shelf presence, not a figure we hold. Nothing here can confirm or falsify it; kept because it is true of the category, and recorded as opinion so nobody mistakes it for data.',
+  },
+  // ---- /best list copy -----------------------------------------------------
+  {
+    where: 'listContent.ts -> least-sugar',
+    claim: 'The sweetest flavored dairy cans we have checked against a label carry 38 to 39 g',
+    basis: 'Checked 2026-09-23: the two Bones cold brew cans at 38 and 39 g are the highest sugarG on any verified record. "We have checked against a label" is the denominator, and it is doing real work — unverified records are excluded.',
+  },
+  {
+    where: 'listContent.ts -> least-sugar',
+    claim: 'the best of the rest get down to a single gram',
+    basis: 'Checked 2026-09-23: Slate Vanilla at 1 g is the lowest non-zero sugarG, above the sucralose-sweetened zeros named earlier in the same sentence.',
+  },
+  {
+    where: 'listContent.ts -> least-sugar',
+    claim: 'less than half of what the sweetest dairy cans carry',
+    basis: 'Arithmetic on the 38-39 g figure earlier in the same paragraph: 15 g is under half of 38. Moves with that claim, not independently.',
+  },
+  {
+    where: 'listContent.ts -> least-sugar',
+    claim: 'the only cans we list at 0 g',
+    basis: 'Checked 2026-09-23: the two Loco Coffee records are the only ones with sugarG 0.',
+  },
+  {
+    where: 'listContent.ts -> no-added-sugar',
+    claim: 'the least-sugar list',
+    basis: 'The name of the page at /best/least-sugar, not a claim about a can.',
+  },
+  {
+    where: 'listContent.ts -> most-caffeine',
+    claim: 'the strongest cans on this list genuinely replace a large coffee-shop order',
+    basis: 'Rests on the 140-200 mg drip figure quoted in the same sentence against the 230-260 mg top of the list. Directional, and true across a wide margin.',
+  },
+  {
+    where: 'listContent.ts -> most-caffeine',
+    claim: 'the strongest we track at the 250–260 mg of caffeine the brand publishes',
+    basis: 'Checked 2026-09-23: the same leader as the Bones Holy Cannoli summary, stated in its published range rather than as a midpoint.',
+  },
+  {
+    where: 'listContent.ts -> most-caffeine',
+    claim: 'roughly two of the strongest cans on this list',
+    basis: 'Arithmetic against the 400 mg daily figure in the same sentence: two cans at 250-260 mg. Moves only if the top of the list moves a long way.',
+  },
+  {
+    where: 'listContent.ts -> cheapest-per-can',
+    claim: 'The cheapest per-can path for most people',
+    basis: 'Advice about how to buy, not a ranking of cans. Nothing in the database confirms or contradicts it.',
+  },
+  {
+    where: 'listContent.ts -> cheapest-per-can',
+    claim: 'the cheapest at about $2.83 per can in a 12-pack',
+    basis: "Checked 2026-09-23: $2.83 is the lowest pricePerCan in the database, and /best/cheapest-per-can crowns the same figure. The S'mores can joined the La Colombe line at $2.89 as a single, which is what \"in a 12-pack\" is holding apart.",
+  },
+  {
+    where: 'listContent.ts -> cheapest-per-can',
+    claim: 'the best real-world deal',
+    basis: 'Advice about where to buy, hedged with "often". Not a figure.',
+  },
+  {
+    where: 'listContent.ts -> dairy-free',
+    claim: "Most of La Colombe's reformulated Draft Lattes print",
+    basis: "Checked 2026-09-23 against the label photos we hold: Caramel, Mocha, Triple, Vanilla and Pumpkin Spice print \"lactose free\" on the front band, the S'mores limited edition does not, and the same sentence names it as the exception.",
+  },
+];
+
+// Where each scanned field lives, stably. A listContent string is named by the
+// /best slug whose block contains it and a news string by its date, rather than
+// by an index that shifts the moment a paragraph is inserted above it.
+const sectionAt = (sections, at) => {
+  let name = null;
+  for (const s of sections) { if (s.at <= at) name = s.name; else break; }
+  return name;
+};
+const stripComments = (s) => s.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/^\s*\/\/.*$/gm, ' ');
+// key: 'value' where the value is long enough to be prose, or a bare string in an
+// array (a paragraph). Short literals — slugs, hrefs, labels — are skipped.
+const TS_STRING = /(\w+)\s*:\s*'((?:[^'\\\n]|\\.)*)'|'((?:[^'\\\n]|\\.)*)'/g;
+
+const handWritten = [];
+for (const [id, d] of Object.entries(PRODUCTS)) {
+  for (const key of ['summary', 'caffeineNote', 'tastingNotes']) {
+    if (typeof d[key] === 'string' && d[key].trim()) {
+      handWritten.push({ where: `products/${id}.json`, key, text: d[key], question: false });
+    }
+  }
+}
+for (const [path, label, sectionRe] of [
+  ['src/lib/listContent.ts', 'listContent.ts', /^ {2}'([a-z0-9-]+)':\s*\{/gm],
+  ['src/lib/news.ts', 'news.ts', /date:\s*'(\d{4}-\d{2}-\d{2})'/g],
+]) {
+  if (!existsSync(path)) { failures.push(`${path} is missing, so its copy went unscanned for superlatives`); continue; }
+  const body = stripComments(readFileSync(path, 'utf8'));
+  const sections = [...body.matchAll(sectionRe)].map((m) => ({ at: m.index, name: m[1] }));
+  if (!sections.length) {
+    failures.push(`${label}: found no sections to key its strings by — this scanner is broken, not the copy`);
+  }
+  for (const m of body.matchAll(TS_STRING)) {
+    const key = m[1] ?? null;
+    const text = (m[2] ?? m[3] ?? '').replace(/\\'/g, "'");
+    if (text.length < 30) continue;
+    handWritten.push({
+      where: `${label} -> ${sectionAt(sections, m.index) ?? '(top)'}`,
+      key: key ?? 'paragraph',
+      text,
+      question: key === 'q',
+    });
+  }
+}
+
+let superlativeFields = 0, superlativeClaims = 0;
+for (const entry of SUPERLATIVE_CLAIMS) {
+  if (!entry.basis || entry.basis.trim().length < 20) {
+    failures.push(`SUPERLATIVE_CLAIMS entry "${entry.claim}" has no basis written down — an allowlist without reasons is a mute button`);
+  }
+}
+const usedClaims = new Set();
+for (const field of handWritten) {
+  superlativeFields++;
+  // Blank out every reviewed claim that is actually in this field, then read what
+  // is left. Same idiom as the qualified-figure sweep above: an exemption is a
+  // listed phrase, never a loosened pattern.
+  let said = field.text;
+  for (const entry of SUPERLATIVE_CLAIMS) {
+    if (!said.includes(entry.claim)) continue;
+    if (!field.where.startsWith(entry.where)) {
+      failures.push(
+        `SUPERLATIVE_CLAIMS says "${entry.claim}" lives in ${entry.where}, but it was found in ${field.where} — ` +
+        `move the entry or the copy, so the basis stays attached to the sentence it describes`,
+      );
+    }
+    usedClaims.add(entry.claim);
+    said = said.split(entry.claim).join(' '.repeat(entry.claim.length));
+  }
+  if (field.question) continue;   // a heading asks; the answer below it claims
+  superlativeClaims++;
+  const hits = [
+    ...said.matchAll(DEFINITE_SUPERLATIVE),
+    ...[...said.matchAll(LEADING_SUPERLATIVE)].filter((m) => /[A-Z]/.test(m[0])),
+  ];
+  for (const h of hits) {
+    const a = Math.max(0, h.index - 60), b = Math.min(said.length, h.index + h[0].length + 80);
+    failures.push(
+      `${field.where} (${field.key}): unreviewed superlative "${h[0].trim()}" in ` +
+      `"…${field.text.slice(a, b).replace(/\s+/g, ' ')}…" — nothing recomputes this sentence, so add it to ` +
+      `SUPERLATIVE_CLAIMS with the basis you checked it against, or rewrite it without the crown`,
+    );
+  }
+}
+// An entry whose claim is nowhere in the copy has outlived its sentence, and the
+// next person to read the allowlist would be reading a basis for writing that is
+// gone. Same rule as the stale-EDITION_IMAGES check in check-data.mjs.
+for (const entry of SUPERLATIVE_CLAIMS) {
+  if (!usedClaims.has(entry.claim)) {
+    failures.push(`stale SUPERLATIVE_CLAIMS entry: "${entry.claim}" is in no hand-written field any more (was ${entry.where})`);
+  }
+}
+
 // (f) /table — "N Cans, One Table"
 if (existsSync('dist/table.html')) {
   const h = readFileSync('dist/table.html', 'utf8');
@@ -922,7 +1186,7 @@ if (existsSync('dist/table.html')) {
   else if (parseInt(m[1], 10) !== n) failures.push(`table.html: title counts ${m[1]} cans, the table lists ${n}`);
 }
 
-totalClaims = compareClaims + caffeineClaims + guideClaims + discloseClaims + titleClaims + sweepCells + proseClaims + ratingClaims;
+totalClaims = compareClaims + caffeineClaims + guideClaims + discloseClaims + titleClaims + sweepCells + proseClaims + ratingClaims + superlativeClaims;
 
 // ---- the zero-coverage guard ----
 // The guide row counts declared guides, not discovered ones, so "no guide pages
@@ -949,6 +1213,15 @@ const groups = [
   // page count and does not move when the number of ratings does. A site with no
   // ratings at all still has to prove no page is claiming one.
   ['product pages', ratingPages, 'rating and schema-gate checks', ratingClaims, ratingPages],
+  // An absolute floor, not one derived from the scan. Deriving it from
+  // superlativeFields would make the row self-referential: a string-literal regex
+  // that stopped matching listContent.ts would drop the count and the floor
+  // together and still report a pass, which is the exact near-blindness the note
+  // above is about. 218 fields are scanned today: 169 product records and 49
+  // strings out of the two TypeScript modules. The floor sits above the products
+  // alone, so losing either source trips it. The stale-entry rule below catches
+  // the same failure from the other side, loudly.
+  ['hand-written fields', superlativeFields, 'superlative reviews', superlativeClaims, 200],
 ];
 for (const [pageWhat, pageN, claimWhat, claimN, min] of groups) {
   if (pageN > 0 && claimN < min) {
@@ -977,5 +1250,7 @@ console.log(
   `${sweepCells} caffeine cells swept across ${sweepTables} tables for a dropped qualifier, ` +
   `${proseClaims} prose figure checks across ${proseBlocks} blocks naming a can, ` +
   `${ratingClaims} rating and schema-gate checks across ${ratingPages} product pages, ` +
-  `${ratedPages} of them rated).`
+  `${ratedPages} of them rated; ` +
+  `${superlativeClaims} hand-written field(s) read for an unreviewed superlative, against ` +
+  `${SUPERLATIVE_CLAIMS.length} reviewed claim(s)).`
 );
