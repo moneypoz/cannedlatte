@@ -71,7 +71,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   'dairy-free': {
     paragraphs: [
       'Every can here is made without dairy — oat milk dominates, with two almond cans and one coconut alongside it. Beyond the milk itself, the differences that matter are caffeine (50 to 207 mg across this list), sweetener (dates, cane sugar, or none), and storage (most are shelf-stable; NOBL is refrigerated and ships cold).',
-      'Lactose-intolerant but not dairy-free? Note that La Colombe\'s reformulated Draft Lattes use lactose-free whole milk — real dairy, no lactose — which sits between this list and the standard dairy cans.',
+      'Lactose-intolerant but not dairy-free? Most of La Colombe\'s reformulated Draft Lattes print "lactose free" on the can — real dairy, no lactose — which sits between this list and the standard dairy cans. Read the milk column rather than assuming the line: their limited-edition S\'mores carries lactase in the ingredients but makes no lactose-free claim on the label.',
     ],
     faqs: [
       { q: 'Are dairy-free canned lattes lactose-free?', a: 'Yes — no dairy means no lactose. Separately, some dairy cans (like La Colombe\'s Draft Lattes) use lactose-free milk, so lactose-intolerant drinkers have options on both lists.' },

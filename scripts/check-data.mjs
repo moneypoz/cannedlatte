@@ -54,6 +54,34 @@ for (const { id, data } of products) {
   }
 }
 
+// A label photo a record cites in `sources` is referenced too, just not rendered.
+// Gate 1 says every figure on a verified record traces to a label photo, and until
+// now the only way to honour that was to point `sources` at the catalogue shot and
+// hope it showed the panel. The S'mores can is the case that broke it: its
+// catalogue shot is the front of the can, so the citation backed none of the
+// figures it was cited for. A panel photo cited here is the evidence, and the page
+// renders it as a numbered source link.
+//
+// These live in public/ only. Nothing lays one out, so there is no src/assets/ copy
+// for Astro to process — which is why the lockstep rule at the bottom subtracts
+// them rather than counting a missing twin as drift.
+const LOCAL_IMG = /^\/images\/products\/([^/]+\.(?:jpe?g|png|webp))$/i;
+const cited = new Map(); // basename -> [product ids]
+for (const { id, data } of products) {
+  for (const src of data.sources ?? []) {
+    const m = LOCAL_IMG.exec(String(src));
+    if (m) cited.set(m[1], [...(cited.get(m[1]) ?? []), id]);
+  }
+}
+
+// (a0) a cited photo that is not on disk is a source link that 404s — the same
+// silent failure check-urls.mjs exists to catch for og:image, one directory over.
+for (const [base, ids] of cited) {
+  if (!publicFiles.includes(base)) {
+    failures.push(`cited image missing: ${PUBLIC_IMG}/${base} — cited in sources by ${ids.join(', ')}`);
+  }
+}
+
 // (a) every referenced image must exist in both places: public/ backs the absolute
 // JSON-LD URL, src/assets/ is what Astro processes into WebP.
 for (const [base, ids] of referenced) {
@@ -67,8 +95,8 @@ for (const [base, ids] of referenced) {
 // (b) no photo may sit on disk unreferenced — this is the orphan check
 for (const [dir, files] of [[PUBLIC_IMG, publicFiles], [ASSET_IMG, assetFiles]]) {
   for (const f of files) {
-    if (!referenced.has(f) && !EDITION_IMAGES.has(f)) {
-      failures.push(`orphaned image: ${dir}/${f} — referenced by no product, and not in EDITION_IMAGES`);
+    if (!referenced.has(f) && !EDITION_IMAGES.has(f) && !cited.has(f)) {
+      failures.push(`orphaned image: ${dir}/${f} — referenced by no product, cited in no sources, and not in EDITION_IMAGES`);
     }
   }
 }
@@ -160,9 +188,16 @@ for (const [, slug] of guideBlock.matchAll(/slug:\s*'([^']+)'/g)) {
   }
 }
 
-// (d) the two image directories must stay in lockstep
-if (publicFiles.length !== assetFiles.length) {
-  failures.push(`image count drift: ${PUBLIC_IMG} has ${publicFiles.length}, ${ASSET_IMG} has ${assetFiles.length}`);
+// (d) the two image directories must stay in lockstep, over the photos that are
+// laid out. A cited-only label photo has no src/assets/ twin on purpose, so it is
+// subtracted from the public side rather than read as a missing file.
+const citedOnly = publicFiles.filter((f) => cited.has(f) && !referenced.has(f));
+const laidOut = publicFiles.length - citedOnly.length;
+if (laidOut !== assetFiles.length) {
+  failures.push(
+    `image count drift: ${PUBLIC_IMG} has ${laidOut} laid-out image(s) ` +
+    `(${publicFiles.length} less ${citedOnly.length} cited-only label photo(s)), ${ASSET_IMG} has ${assetFiles.length}`,
+  );
 }
 
 // A checker that inspected nothing must never report success. Without this, an
@@ -174,6 +209,8 @@ const coverage = [
   ['images on disk in src/assets/', assetFiles.length],
   ['range-sourced records inspected', rangeRecords],
 ];
+// `cited` is deliberately not in the list above: zero cited label photos is a
+// legitimate state for this database, so a floor there would fail on a truth.
 for (const [what, n] of coverage) {
   if (n === 0) failures.push(`checked nothing: 0 ${what} — the check itself is broken, not the data`);
 }
@@ -187,7 +224,8 @@ if (failures.length) {
 
 console.log(
   `  Data integrity OK — ${products.length} products, ${referenced.size} photos referenced, ` +
-  `${publicFiles.length} on disk in each location, ` +
+  `${laidOut} laid out in each location, ` +
   `${EDITION_IMAGES.size} allowed edition/news image(s), ` +
+  `${cited.size} label photo(s) cited as a source, ` +
   `${rangeRecords} range-sourced record(s) with min <= midpoint <= max.`
 );

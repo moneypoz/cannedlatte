@@ -28,7 +28,7 @@
     }
   ],
   "verified": true,
-  "updated": "2026-09-02",
+  "updated": "2026-09-23",
   "sources": [
     "https://www.lacolombe.com/collections/lattes"
   ],
@@ -37,7 +37,7 @@
   "name": "Caramel Draft Latte",
   "flavor": "Caramel",
   "caffeineNote": "Label: 190 mg per can",
-  "milk": "dairy",
+  "milk": "lactose-free dairy",
   "dairyFree": false,
   "image": "/images/products/la-colombe-caramel-draft-latte.jpg",
   "summary": "Caramel version of the Draft Latte: 190 mg of caffeine, 14 g of sugar and 7 g of protein per 11 oz can at 160 calories."

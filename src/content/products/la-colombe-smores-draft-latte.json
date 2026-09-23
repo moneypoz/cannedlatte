@@ -24,6 +24,7 @@
   "verified": true,
   "updated": "2026-09-23",
   "sources": [
+    "/images/products/la-colombe-smores-draft-latte-label.jpg",
     "/images/products/la-colombe-smores-draft-latte.jpg"
   ],
   "brand": "La Colombe",
@@ -34,5 +35,6 @@
   "milk": "dairy",
   "dairyFree": false,
   "image": "/images/products/la-colombe-smores-draft-latte.jpg",
-  "summary": "Limited-edition S'mores Draft Latte: espresso roast on whole milk with Dutch cocoa and cane sugar, nitrogen-frothed in the same 11 oz can as the Vanilla and Pumpkin Spice. 190 mg of caffeine and 7 g of protein, with 20 g of sugar (11 g of it added) at 190 calories. Lactase is in the ingredients, but unlike its siblings this can prints no lactose-free badge on the front."
+  "summary": "Limited-edition S'mores Draft Latte: espresso roast on whole milk with Dutch cocoa and cane sugar, nitrogen-frothed in the same 11 oz can as the Vanilla and Pumpkin Spice. 190 mg of caffeine and 7 g of protein, with 20 g of sugar (11 g of it added) at 190 calories. Lactase is in the ingredients, but unlike its siblings this can prints no lactose-free badge on the front.",
+  "upc": "604913005574"
 }
