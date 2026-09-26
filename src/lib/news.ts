@@ -36,6 +36,12 @@ export type NewsItem = {
 
 export const news: NewsItem[] = [
   {
+    date: '2026-09-26',
+    text: 'Stella Blue’s Sweet Cream Latte is label-verified from a can in hand: 190 mg of caffeine, 25 g of sugar with 14 g of it added, 7 g of protein and 2 g of fiber from chicory root in an 11 oz can at 170 calories — every figure matching the brand’s own site. The can itself reads Espresso Sweet Cream.',
+    link: { href: '/latte/stella-blue-sweet-cream-latte', label: 'Sweet Cream Latte' },
+    image: 'stella-blue-sweet-cream-latte-card.png',
+  },
+  {
     date: '2026-09-23',
     text: 'La Colombe has a limited-edition S’mores Draft Latte on shelves — spotted in store and label-verified from the can in hand: 190 mg of caffeine, 20 g of sugar with 11 g of it added, and 7 g of protein in an 11 oz can at 190 calories. It runs on the same 190 mg espresso base as their Caramel, Mocha, Vanilla and Pumpkin Spice cans.',
     link: { href: '/latte/la-colombe-smores-draft-latte', label: 'S’mores Draft Latte' },

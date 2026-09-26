@@ -27,9 +27,12 @@
       "affiliate": true
     }
   ],
-  "verified": false,
-  "updated": "2026-09-06",
+  "verified": true,
+  "updated": "2026-09-26",
   "sources": [
+    "/images/products/stella-blue-sweet-cream-latte-label.jpg",
+    "/images/products/stella-blue-sweet-cream-latte-label-2.jpg",
+    "/images/products/stella-blue-sweet-cream-latte-label-3.jpg",
     "https://stellabluecoffee.com/collections/canned-lattes",
     "https://stellabluecoffee.com/products/espresso-sweet-cream"
   ],
@@ -37,8 +40,9 @@
   "brandSlug": "stella-blue",
   "name": "Sweet Cream Latte",
   "flavor": "Sweet Cream",
-  "caffeineNote": "Label: 190 mg of natural caffeine per can",
+  "caffeineNote": "Label: 190 mg of natural caffeine per can, printed on the side band; the brand site publishes the same 190 mg",
   "milk": "dairy",
   "dairyFree": false,
-  "summary": "Espresso and reduced-fat milk with a sweet cream finish on 100% Colombian coffee: 190 mg of caffeine and 7 g of protein per 11 oz can, at 170 calories and 25 g of sugar."
+  "image": "/images/products/stella-blue-sweet-cream-latte.jpg",
+  "summary": "Espresso and reduced-fat milk with a sweet cream finish on 100% Colombian coffee, sold on Stella Blue’s site as Sweet Cream though the can itself reads Espresso Sweet Cream. A label-printed 190 mg of caffeine and 7 g of protein per 11 oz can, at 170 calories and 25 g of sugar (14 g of it added), plus 2 g of fiber, from chicory root."
 }
