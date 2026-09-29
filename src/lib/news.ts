@@ -36,6 +36,12 @@ export type NewsItem = {
 
 export const news: NewsItem[] = [
   {
+    date: '2026-09-29',
+    text: 'Stella Blue’s Caffe Mocha Latte is label-verified from a can in hand, so both Stella Blue cans we track are now checked against the label: 190 mg of caffeine, 27 g of sugar with 15 g of it added, 8 g of protein and 2 g of fiber from chicory root in an 11 oz can at 190 calories — every figure matching the brand’s own site. The can itself reads Espresso Caffe Mocha.',
+    link: { href: '/latte/stella-blue-caffe-mocha-latte', label: 'Caffe Mocha Latte' },
+    image: 'stella-blue-caffe-mocha-latte-card.png',
+  },
+  {
     date: '2026-09-26',
     text: 'Stella Blue’s Sweet Cream Latte is label-verified from a can in hand: 190 mg of caffeine, 25 g of sugar with 14 g of it added, 7 g of protein and 2 g of fiber from chicory root in an 11 oz can at 170 calories — every figure matching the brand’s own site. The can itself reads Espresso Sweet Cream.',
     link: { href: '/latte/stella-blue-sweet-cream-latte', label: 'Sweet Cream Latte' },
