@@ -27,9 +27,11 @@
       "affiliate": true
     }
   ],
-  "verified": false,
-  "updated": "2026-09-06",
+  "verified": true,
+  "updated": "2026-10-03",
   "sources": [
+    "/images/products/throne-mocha-java-latte-label.jpg",
+    "/images/products/throne-mocha-java-latte-label-2.jpg",
     "https://sportcoffee.com/",
     "https://sportcoffee.com/products/mocha-java-latte"
   ],
@@ -37,8 +39,9 @@
   "brandSlug": "throne",
   "name": "Mocha Java Latte",
   "flavor": "Mocha Java",
-  "caffeineNote": "Label: 150 mg per can",
-  "milk": "skim",
+  "caffeineNote": "Label: 150 mg per can, printed as the caffeine-content line under the ingredients; the side panel repeats 150 mg of natural caffeine",
+  "milk": "lactose-free dairy",
   "dairyFree": false,
-  "summary": "Cocoa-flavored cold brew latte on ultra-filtered skim milk: 10 g of protein and 150 mg of caffeine per 11 oz can, at 140 calories and 22 g of sugar."
+  "image": "/images/products/throne-mocha-java-latte.jpg",
+  "summary": "Cocoa-powder cold brew latte on lactose-free ultra-filtered skim milk: 10 g of protein and 150 mg of caffeine per 11 oz can, at 140 calories and 22 g of sugar (21 g of it added). Its panel differs from the vanilla and caramel cans in two places: 160 mg of sodium against their 150 mg, and under 1 g of fiber against 0 g."
 }

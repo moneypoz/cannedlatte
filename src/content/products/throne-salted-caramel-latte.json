@@ -27,9 +27,10 @@
       "affiliate": true
     }
   ],
-  "verified": false,
-  "updated": "2026-09-06",
+  "verified": true,
+  "updated": "2026-10-03",
   "sources": [
+    "/images/products/throne-salted-caramel-latte-label.jpg",
     "https://sportcoffee.com/",
     "https://sportcoffee.com/products/salted-caramel-latte"
   ],
@@ -37,8 +38,9 @@
   "brandSlug": "throne",
   "name": "Salted Caramel Latte",
   "flavor": "Salted Caramel",
-  "caffeineNote": "Label: 150 mg per can",
-  "milk": "skim",
+  "caffeineNote": "Label: 150 mg per can, printed as the caffeine-content line under the ingredients",
+  "milk": "lactose-free dairy",
   "dairyFree": false,
-  "summary": "Salted caramel cold brew latte on ultra-filtered skim milk, NSF Certified for Sport: 10 g of protein and 150 mg of caffeine per 11 oz can, at 140 calories and 22 g of sugar."
+  "image": "/images/products/throne-salted-caramel-latte.jpg",
+  "summary": "Salted caramel cold brew latte on lactose-free ultra-filtered skim milk, NSF Certified for Sport: 10 g of protein and 150 mg of caffeine per 11 oz can, at 140 calories and 22 g of sugar (21 g of it added). The panel shows 150 mg of sodium and 0 g of fiber."
 }

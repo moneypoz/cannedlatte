@@ -4,7 +4,7 @@
   "caffeineMg": 230,
   "sugarG": 15,
   "addedSugar": true,
-  "addedSugarG": null,
+  "addedSugarG": 5,
   "proteinG": 7,
   "calories": 160,
   "refrigerated": false,
@@ -28,8 +28,9 @@
     }
   ],
   "verified": true,
-  "updated": "2026-09-23",
+  "updated": "2026-10-03",
   "sources": [
+    "/images/products/la-colombe-triple-draft-latte-label.jpg",
     "https://www.lacolombe.com/collections/lattes",
     "https://www.fooddive.com/news/la-colombe-ready-to-drink-lattes-new-recipe/816692/",
     "https://sporked.com/article/best-canned-lattes/"
@@ -38,9 +39,9 @@
   "brandSlug": "la-colombe",
   "name": "Triple Draft Latte",
   "flavor": "Original, triple shot",
-  "caffeineNote": "Label: 230 mg per can",
+  "caffeineNote": "Label: 230 mg of caffeine per can, printed on the side band above the nutrition panel beside \"Do not shake\"",
   "milk": "lactose-free dairy",
   "dairyFree": false,
   "image": "/images/products/la-colombe-triple-draft-latte.jpg",
-  "summary": "Three shots in the same frothy can. Sporked's top pick in its canned latte taste test."
+  "summary": "Three shots in the same frothy can, on whole milk made lactose-free. Sporked’s top pick in its canned latte taste test. The label prints 230 mg of caffeine on the side band, and 15 g of sugar with 5 g of it added."
 }

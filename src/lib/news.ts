@@ -36,6 +36,12 @@ export type NewsItem = {
 
 export const news: NewsItem[] = [
   {
+    date: '2026-10-03',
+    text: 'Three of the four Throne Sport Coffee cans we track — French Vanilla, Mocha Java and Salted Caramel — are label-verified from cans in hand: 150 mg of caffeine, 22 g of sugar with 21 g of it added and 10 g of protein in an 11 oz can at 140 calories, every figure matching the brand’s own site, on lactose-free ultra-filtered skim milk. The panels are not identical: Mocha Java prints 160 mg of sodium and under 1 g of fiber against 150 mg and 0 g on the other two. La Colombe’s Triple Draft Latte is photographed too, its side band printing 230 mg of caffeine over a panel showing 5 g of added sugar. Throne’s Coffee Latte stays unverified.',
+    link: { href: '/brands/throne', label: 'Throne Sport Coffee' },
+    image: 'throne-mocha-java-latte-card.png',
+  },
+  {
     date: '2026-09-29',
     text: 'Stella Blue’s Caffe Mocha Latte is label-verified from a can in hand, so both Stella Blue cans we track are now checked against the label: 190 mg of caffeine, 27 g of sugar with 15 g of it added, 8 g of protein and 2 g of fiber from chicory root in an 11 oz can at 190 calories — every figure matching the brand’s own site. The can itself reads Espresso Caffe Mocha.',
     link: { href: '/latte/stella-blue-caffe-mocha-latte', label: 'Caffe Mocha Latte' },

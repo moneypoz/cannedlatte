@@ -27,9 +27,11 @@
       "affiliate": true
     }
   ],
-  "verified": false,
-  "updated": "2026-09-06",
+  "verified": true,
+  "updated": "2026-10-03",
   "sources": [
+    "/images/products/throne-french-vanilla-latte-label.jpg",
+    "/images/products/throne-french-vanilla-latte-label-2.jpg",
     "https://sportcoffee.com/",
     "https://sportcoffee.com/products/french-vanilla-latte"
   ],
@@ -37,8 +39,9 @@
   "brandSlug": "throne",
   "name": "French Vanilla Latte",
   "flavor": "French Vanilla",
-  "caffeineNote": "Label: 150 mg per can",
-  "milk": "skim",
+  "caffeineNote": "Label: 150 mg per can, printed as the caffeine-content line under the ingredients; the side panel repeats 150 mg of natural caffeine",
+  "milk": "lactose-free dairy",
   "dairyFree": false,
-  "summary": "Madagascar vanilla over cold brew and ultra-filtered skim milk: 10 g of protein and 150 mg of caffeine per 11 oz can, at 140 calories and 22 g of sugar."
+  "image": "/images/products/throne-french-vanilla-latte.jpg",
+  "summary": "Vanilla over cold brew and lactose-free ultra-filtered skim milk: 10 g of protein and 150 mg of caffeine per 11 oz can, at 140 calories and 22 g of sugar (21 g of it added). The panel shows 150 mg of sodium and 0 g of fiber."
 }
