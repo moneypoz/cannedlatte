@@ -11,7 +11,7 @@
   "proteinG": 1,
   "calories": 150,
   "refrigerated": false,
-  "pricePerCan": null,
+  "pricePerCan": 3.39,
   "packPrice": null,
   "packSize": null,
   "retailers": [
@@ -39,5 +39,5 @@
   "milk": "oat",
   "dairyFree": true,
   "image": "/images/products/great-lakes-coffee-vanilla-latte.jpg",
-  "summary": "Cold brew vanilla latte on the same oatmilk-and-olive-oil base as Great Lakes’ Mocha, at a label-printed 160 mg of caffeine per 11 fl oz can and 150 calories. All 15 g of its sugar is added, for 1 g of protein and 7 g of fat. Great Lakes’ own site sells it only inside their Latte Variety Pack, mixed with the Mocha and Lavender, so there is no single-flavor price to list."
+  "summary": "Cold brew vanilla latte on the same oatmilk-and-olive-oil base as Great Lakes’ Mocha, at a label-printed 160 mg of caffeine per 11 fl oz can and 150 calories. All 15 g of its sugar is added, for 1 g of protein and 7 g of fat. Great Lakes’ own site sells it only inside their Latte Variety Pack, mixed with the Mocha and Lavender; the per-can price here is a Meijer shelf price."
 }
