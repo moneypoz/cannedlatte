@@ -36,6 +36,18 @@ export type NewsItem = {
 
 export const news: NewsItem[] = [
   {
+    date: '2026-10-04',
+    text: 'La Colombe has a Vanilla Matcha Latte on store shelves, confirmed and label-verified from a can in hand: matcha green tea on lactose-free whole milk under the Coffee Workshop name, with no coffee in it. The can prints 65 mg of caffeine, with 16 g of sugar (7 g of it added) and 7 g of protein in an 11 oz can at 160 calories.',
+    link: { href: '/latte/la-colombe-vanilla-matcha-latte', label: 'Vanilla Matcha Latte' },
+    image: 'la-colombe-vanilla-matcha-latte-card.png',
+  },
+  {
+    date: '2026-10-04',
+    text: 'Great Lakes’ Cold Brew Vanilla Latte now has its own record, label-verified from a can in hand: 160 mg of caffeine printed on the front, 15 g of sugar, all of it added, and 1 g of protein in an 11 oz oatmilk can at 150 calories. Great Lakes’ own site sells it only inside their Latte Variety Pack.',
+    link: { href: '/latte/great-lakes-coffee-vanilla-latte', label: 'Cold Brew Vanilla Latte' },
+    image: 'great-lakes-coffee-vanilla-latte-card.png',
+  },
+  {
     date: '2026-10-03',
     text: 'Three of the four Throne Sport Coffee cans we track — French Vanilla, Mocha Java and Salted Caramel — are label-verified from cans in hand: 150 mg of caffeine, 22 g of sugar with 21 g of it added and 10 g of protein in an 11 oz can at 140 calories, every figure matching the brand’s own site, on lactose-free ultra-filtered skim milk. The panels are not identical: Mocha Java prints 160 mg of sodium and under 1 g of fiber against 150 mg and 0 g on the other two. La Colombe’s Triple Draft Latte is photographed too, its side band printing 230 mg of caffeine over a panel showing 5 g of added sugar. Throne’s Coffee Latte stays unverified.',
     link: { href: '/brands/throne', label: 'Throne Sport Coffee' },

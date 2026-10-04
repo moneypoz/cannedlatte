@@ -29,6 +29,11 @@ const products = defineCollection({
     // caffeineFigure and isQualified in src/lib/titles.ts, and the rules in
     // check-data.mjs (the fields each basis requires) and check-claims.mjs (that no
     // rendered figure ever loses its qualifier, and no crown ever rests on one).
+    // What the caffeine comes from. Almost every can is coffee; a matcha latte is
+    // in scope as a latte but is tea, and a page that ranks a brand's cans by
+    // caffeine has to be able to say so rather than let a 65 mg tea can read as
+    // that brand's mildest coffee.
+    base: z.enum(['coffee', 'tea']).default('coffee'),
     caffeineBasis: z.enum(['exact', 'range', 'ceiling']).default('exact'),
     caffeineMinMg: z.number().nullable().default(null),
     caffeineMaxMg: z.number().nullable().default(null),

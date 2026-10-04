@@ -1,0 +1,32 @@
+{
+  "type": "latte",
+  "base": "tea",
+  "sizeOz": 11,
+  "caffeineMg": 65,
+  "sugarG": 16,
+  "addedSugar": true,
+  "addedSugarG": 7,
+  "proteinG": 7,
+  "calories": 160,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [],
+  "buyLinks": [],
+  "upc": "604913006717",
+  "verified": true,
+  "updated": "2026-10-04",
+  "sources": [
+    "/images/products/la-colombe-vanilla-matcha-latte-label.jpg"
+  ],
+  "brand": "La Colombe",
+  "brandSlug": "la-colombe",
+  "name": "Vanilla Matcha Latte",
+  "flavor": "Vanilla matcha",
+  "caffeineNote": "Label: 65 mg of caffeine per can, printed on the band above the nutrition panel; it comes from matcha green tea, not coffee",
+  "milk": "lactose-free dairy",
+  "dairyFree": false,
+  "image": "/images/products/la-colombe-vanilla-matcha-latte.jpg",
+  "summary": "Matcha, not coffee: single-origin matcha green tea on whole milk made lactose-free, sold under La Colombe’s Coffee Workshop name rather than as a Draft Latte. A label-printed 65 mg of caffeine per 11 oz can, all of it from the tea, at 160 calories with 16 g of sugar (7 g of it added), 7 g of protein and 3 g of fiber. The neck band calls it Vanilla Matcha Latte; the front reads Matcha Latte, Vanilla."
+}

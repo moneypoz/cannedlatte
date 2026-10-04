@@ -41,6 +41,22 @@ const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'e
 const count = (n: number) => WORDS[n] ?? String(n);
 const prose = (arr: string[]) => (arr.length > 1 ? `${arr.slice(0, -1).join(', ')} and ${arr.at(-1)}` : (arr[0] ?? ''));
 
+// A tea-based can (La Colombe's matcha) is a canned latte with a printed figure,
+// so it belongs in a table of every canned latte — leaving it out would make the
+// title's "every" false. But its caffeine comes from tea, and without a word it
+// would read as the line's mildest coffee. So it stays in, and wherever it would
+// set the low end the page names it as tea and gives the coffee-only floor too.
+const tea = ranked.filter((p) => p.data.base === 'tea');
+const coffee = ranked.filter((p) => p.data.base !== 'tea');
+const coffeeWeakest = coffee[coffee.length - 1] ?? null;
+const teaNote = tea.length
+  ? `${prose(tea.map((p) => p.data.name))} ${tea.length === 1 ? 'is' : 'are'} tea-based, with no coffee in the can${
+      coffeeWeakest && tea.includes(weakest)
+        ? `; the coffee lattes start at ${mgOf(coffeeWeakest)} mg (${coffeeWeakest.data.name})`
+        : ''
+    }.`
+  : null;
+
 // --- can sizes: the line is not one format, and the odd can out changes how the
 // per-can column should be read. Worked out rather than asserted, so a future
 // size change rewrites the sentence instead of leaving it wrong.
@@ -179,11 +195,12 @@ const jsonLd: Record<string, unknown>[] = [
 
   <p class="lede">
     <strong>{brand}'s canned lattes range from {minMg} mg ({weakest.data.name}) to {maxMg} mg ({strongest.data.name}), with exact figures per flavor below.</strong>
+    {teaNote && <> {teaNote}</>}
   </p>
 
   <div class="stats">
     <div class="stat-card"><div class="n">{maxMg} mg</div><div class="l">strongest — {strongest.data.name}</div></div>
-    <div class="stat-card"><div class="n">{minMg} mg</div><div class="l">mildest — {weakest.data.name}</div></div>
+    <div class="stat-card"><div class="n">{minMg} mg</div><div class="l">mildest — {weakest.data.name}{tea.includes(weakest) && ' (tea, not coffee)'}</div></div>
     {ozLeader && ozOf(ozLeader) != null && (
       <div class="stat-card"><div class="n">{ozOf(ozLeader)}</div><div class="l">mg per oz, {ozLeader.data.name}</div></div>
     )}
@@ -210,6 +227,14 @@ const jsonLd: Record<string, unknown>[] = [
   </div>
 
   {sizeNote && <p>{sizeNote}</p>}
+
+  {tea.length > 0 && (
+    <p>
+      {prose(tea.map((p) => p.data.name))} {tea.length === 1 ? 'is' : 'are'} in this table because {brand} sells {tea.length === 1 ? 'it' : 'them'} as a
+      canned latte, but the caffeine comes from tea rather than espresso.
+      {coffeeWeakest && <> Counting coffee alone, the line runs from {mgOf(coffeeWeakest)} mg ({coffeeWeakest.data.name}) to {maxMg} mg ({strongest.data.name}).</>}
+    </p>
+  )}
 
   {unverified.length > 0 && (
     <p class="meta">

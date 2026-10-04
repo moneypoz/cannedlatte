@@ -63,6 +63,19 @@ const retailers = [...new Set(items.flatMap((p) => p.data.retailers))]
 
 const listSep = (i: number, len: number) => (i === 0 ? '' : i === len - 1 ? ' and ' : ', ');
 const prose = (arr: string[]) => (arr.length > 1 ? `${arr.slice(0, -1).join(', ')} and ${arr.at(-1)}` : arr[0] ?? '');
+
+// A tea-based can (La Colombe's matcha) belongs in the lineup and in its range,
+// but under a "canned coffee" heading it would otherwise read as the brand's
+// mildest coffee. Where one sets the low end, both answers name it as tea and
+// give the coffee floor beside it.
+const teaCans = withCaffeine.filter((p) => p.data.base === 'tea');
+const coffeeCans = withCaffeine.filter((p) => p.data.base !== 'tea');
+const coffeeFloor = coffeeCans[coffeeCans.length - 1] ?? null;
+const teaClause =
+  teaCans.length && coffeeFloor && teaCans.some((p) => p.data.caffeineMg === minMg)
+    ? ` ${prose(teaCans.map((p) => p.data.name))} ${teaCans.length === 1 ? 'is' : 'are'} tea-based, not coffee; the coffee cans start at ${caffeineFigure(coffeeFloor.data)} (${coffeeFloor.data.name}).`
+    : '';
+
 const gRange = (a: number, b: number) => (a === b ? `${a} g` : `${a} to ${b} g`);
 
 // Plain-text mirrors of the on-page answers, for the FAQPage schema.
@@ -84,7 +97,7 @@ const caffeineAnswer = !mgs.length
       // bare "96 mg" in an answer whose own next clause says "91–101 mg".
       : anyQualified
         ? `${theCans} carry ${prose(withCaffeine.map((p) => `${p.data.name} at ${caffeineFigure(p.data)}`))}.`
-        : `${theCans} run from ${minMg} to ${maxMg} mg of caffeine. The strongest is ${strongest.data.name} at ${caffeineFigure(strongest.data)}.`;
+        : `${theCans} run from ${minMg} to ${maxMg} mg of caffeine.${teaClause} The strongest is ${strongest.data.name} at ${caffeineFigure(strongest.data)}.`;
 
 const buyAnswer = [
   directLink ? `You can order ${name} direct from ${directLink.label}.` : null,
@@ -119,7 +132,7 @@ const desc = `${name} canned lattes compared side by side: caffeine content, sug
 <Base title={brandTitle(name, items.length)} description={desc} jsonLd={jsonLd}>
   <p class="eyebrow"><a href="/">Canned Latte</a> · <a href="/brands">Brands</a> · {name}</p>
   <h1>{name} canned lattes</h1>
-  <p class="lede">Every {name} coffee in a can we track, side by side.</p>
+  <p class="lede">Every {name} {items.some((p) => p.data.base === 'tea') ? 'can' : 'coffee in a can'} we track, side by side.</p>
   {buy && <p><a class="btn" href={buy.url} rel={buy.affiliate ? 'sponsored nofollow noopener' : 'noopener'} target="_blank">Shop {name}</a></p>}
   <ProductTable products={items} showType={true} />
   <Disclosure />
@@ -131,7 +144,7 @@ const desc = `${name} canned lattes compared side by side: caffeine content, sug
         {oneCan ? (
           <p>{theOneCan}, <a href={`/caffeine/${strongest.id}`}>{strongest.data.name}</a>, carries {caffeineFigure(strongest.data)} of caffeine. To see where it sits against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
         ) : (
-          <p>{lineupSummary ? `${lineupSummary} Strongest first, that's ` : `${theCans}, strongest first: `}{withCaffeine.map((p, i) => (<>{listSep(i, withCaffeine.length)}<a href={`/caffeine/${p.id}`}>{p.data.name}</a> at {caffeineFigure(p.data)}</>))}. To see where they sit against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
+          <p>{lineupSummary ? `${lineupSummary}${teaClause} Strongest first, that's ` : `${theCans}, strongest first: `}{withCaffeine.map((p, i) => (<>{listSep(i, withCaffeine.length)}<a href={`/caffeine/${p.id}`}>{p.data.name}</a> at {caffeineFigure(p.data)}</>))}. To see where they sit against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
         )}
         {guide && <p><a href={`/caffeine/${guide.slug}`}>{guide.linkText}</a> — every flavor in one table, with can size and milligrams per ounce.</p>}
       </>

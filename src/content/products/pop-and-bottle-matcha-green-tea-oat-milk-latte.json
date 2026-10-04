@@ -1,5 +1,6 @@
 {
   "type": "latte",
+  "base": "tea",
   "sizeOz": 8,
   "caffeineMg": null,
   "sugarG": 12,
