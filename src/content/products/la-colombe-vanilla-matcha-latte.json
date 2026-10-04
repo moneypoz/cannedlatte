@@ -9,10 +9,12 @@
   "proteinG": 7,
   "calories": 160,
   "refrigerated": false,
-  "pricePerCan": null,
+  "pricePerCan": 2.89,
   "packPrice": null,
   "packSize": null,
-  "retailers": [],
+  "retailers": [
+    "Meijer"
+  ],
   "buyLinks": [],
   "upc": "604913006717",
   "verified": true,
