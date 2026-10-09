@@ -1078,7 +1078,7 @@ const SUPERLATIVE_CLAIMS = [
   {
     where: 'listContent.ts -> dairy-free',
     claim: "Most of La Colombe's reformulated Draft Lattes print",
-    basis: "Checked 2026-09-23 against the label photos we hold: Caramel, Mocha, Triple, Vanilla and Pumpkin Spice print \"lactose free\" on the front band, the S'mores limited edition does not, and the same sentence names it as the exception.",
+    basis: "Checked 2026-09-23 against the label photos we hold: Caramel, Mocha, Triple, Vanilla and Pumpkin Spice print \"lactose free\" on the front band, the S'mores limited edition does not, and the same sentence names it as the exception. Rechecked 2026-10-09 when the Peppermint Mocha limited edition landed: its can and four-pack box print no lactose-free claim either, so the sentence now names both exceptions, and the five lactose-free cans still outnumber them.",
   },
 ];
 

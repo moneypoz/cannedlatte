@@ -1,0 +1,32 @@
+{
+  "type": "latte",
+  "sizeOz": 9,
+  "caffeineMg": 100,
+  "sugarG": 13,
+  "addedSugar": true,
+  "addedSugarG": 9,
+  "proteinG": 6,
+  "calories": 130,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Target"
+  ],
+  "buyLinks": [],
+  "verified": true,
+  "updated": "2026-10-08",
+  "sources": [
+    "/images/products/la-colombe-peppermint-mocha-draft-latte-label.jpg"
+  ],
+  "brand": "La Colombe",
+  "brandSlug": "la-colombe",
+  "name": "Peppermint Mocha Draft Latte",
+  "flavor": "Peppermint Mocha",
+  "caffeineNote": "Label: 100 mg of caffeine per can, printed on the band above the nutrition panel",
+  "milk": "dairy",
+  "dairyFree": false,
+  "image": "/images/products/la-colombe-peppermint-mocha-draft-latte.jpg",
+  "summary": "Limited-edition Peppermint Mocha Draft Latte: cold brew on reduced-fat milk with Dutch cocoa, peppermint extract and cane sugar, in the same 9 oz can as the Everyday. A label-printed 100 mg of caffeine, with 13 g of sugar (9 g of it added), 6 g of protein and 5 g of fiber at 130 calories. Both the can and its four-pack box print LIMITED EDITION, so expect it to be seasonal. Lactase is in the ingredients, but like the S'mores the can makes no lactose-free claim."
+}

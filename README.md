@@ -103,6 +103,9 @@ gets re-litigated by whoever types the next file. This is that place.
   online. Noted here so that if lacolombe.com ever switches its own identity to the
   Coffee Workshop / LCT OPCO naming, it reads as a change we were already watching
   rather than a surprise. Nothing on the site needs to move unless that happens.
+  The 2026-10-08 Peppermint Mocha limited edition carries the same wordmark, but
+  its can prints "©2025 LCT OPCO LLC" while its four-pack box prints ©2026. That is
+  a print-run year, not a naming change.
 
 ## Adding rankings and comparisons
 

@@ -36,6 +36,12 @@ export type NewsItem = {
 
 export const news: NewsItem[] = [
   {
+    date: '2026-10-08',
+    text: 'La Colombe has a limited-edition Peppermint Mocha Draft Latte, confirmed with a four-pack in hand and label-verified from the can: 100 mg of caffeine, 13 g of sugar with 9 g of it added, and 6 g of protein in a 9 oz can at 130 calories. It is cold brew on reduced-fat milk, not the 190 mg espresso base their Caramel, Mocha, Vanilla, Pumpkin Spice and S’mores cans share, and La Colombe’s own site had no page for it on the day we checked.',
+    link: { href: '/latte/la-colombe-peppermint-mocha-draft-latte', label: 'Peppermint Mocha Draft Latte' },
+    image: 'la-colombe-peppermint-mocha-draft-latte-card.png',
+  },
+  {
     date: '2026-10-04',
     text: 'La Colombe has a Vanilla Matcha Latte on store shelves, confirmed and label-verified from a can in hand: matcha green tea on lactose-free whole milk under the Coffee Workshop name, with no coffee in it. The can prints 65 mg of caffeine, with 16 g of sugar (7 g of it added) and 7 g of protein in an 11 oz can at 160 calories.',
     link: { href: '/latte/la-colombe-vanilla-matcha-latte', label: 'Vanilla Matcha Latte' },
