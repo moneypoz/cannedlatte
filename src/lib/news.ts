@@ -36,6 +36,11 @@ export type NewsItem = {
 
 export const news: NewsItem[] = [
   {
+    date: '2026-10-09',
+    text: 'La Colombe’s Salted Caramel Apple Draft Latte is no longer sold on the brand’s own site: the product page we recorded it from on 2026-09-14, when it was already listed out of stock, is gone, and a search of lacolombe.com no longer finds it. The fall-seasonal 9 oz can stays in the database at 135 mg of caffeine, a brand figure we never checked against a label.',
+    link: { href: '/latte/la-colombe-salted-caramel-apple-draft-latte', label: 'Salted Caramel Apple Draft Latte' },
+  },
+  {
     date: '2026-10-08',
     text: 'La Colombe has a limited-edition Peppermint Mocha Draft Latte, confirmed with a four-pack in hand and label-verified from the can: 100 mg of caffeine, 13 g of sugar with 9 g of it added, and 6 g of protein in a 9 oz can at 130 calories. It is cold brew on reduced-fat milk, not the 190 mg espresso base their Caramel, Mocha, Vanilla, Pumpkin Spice and S’mores cans share, and La Colombe’s own site had no page for it on the day we checked.',
     link: { href: '/latte/la-colombe-peppermint-mocha-draft-latte', label: 'Peppermint Mocha Draft Latte' },
