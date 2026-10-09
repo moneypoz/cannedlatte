@@ -47,6 +47,43 @@ const similar = all
   .filter((x) => x.id !== product.id && x.data.type === p.type && x.data.milk === p.milk)
   .slice(0, 4);
 
+// --- caffeine in context ----------------------------------------------------
+// This used to be a page of its own at /caffeine/<id>, one per can. Those pages
+// answered the same question as this one's FAQ and drew impressions but almost
+// no clicks, so they were folded in here and 301'd (see public/_redirects). The
+// part worth keeping is the bit the brand never publishes: where the can sits
+// among every can we track, per ounce and against everyday drinks.
+//
+// Everything runs on caffeineMg. For a range or a ceiling, the sentences name it
+// as the midpoint or the bound it is, never as a bare figure. Nothing here crowns
+// a can either: a rank is a position in our table, and a superlative has nowhere
+// to carry an unverified or qualified figure's caveat.
+const known = all.filter((x) => x.data.caffeineMg != null);
+const mg = p.caffeineMg;
+const basis = p.caffeineBasis ?? 'exact';
+const ozOf = (x: (typeof all)[number]) => (x.data.sizeOz && x.data.caffeineMg != null ? +(x.data.caffeineMg / x.data.sizeOz).toFixed(1) : null);
+const perOz = mg != null ? ozOf(product) : null;
+const caf = mg == null ? null : (() => {
+  const rank = [...known].sort((x, y) => y.data.caffeineMg! - x.data.caffeineMg!).findIndex((x) => x.id === product.id) + 1;
+  const weaker = known.filter((x) => x.data.caffeineMg! < mg).length;
+  const pct = Math.round((weaker / Math.max(known.length - 1, 1)) * 100);
+  const round1 = (n: number) => Math.round(n * 10) / 10;
+  return {
+    rank,
+    // Only between the ends: "stronger than 100% of them" reads as a crown.
+    standing: rank === 1 || rank === known.length ? '' : `, stronger than ${pct}% of the others`,
+    qualifier: basis === 'range' ? ' at the midpoint' : basis === 'ceiling' ? ' at the ceiling' : '',
+    derivedFrom: basis === 'range' ? `The ${mg} mg midpoint` : basis === 'ceiling' ? `The ${mg} mg ceiling` : `${mg} mg`,
+    shots: round1(mg / 70),
+    dripPct: Math.round((mg / 170) * 20) * 5,
+    dailyPct: Math.round((mg / 400) * 100),
+    nearest: known
+      .filter((x) => x.data.brandSlug !== p.brandSlug)
+      .sort((x, y) => Math.abs(x.data.caffeineMg! - mg) - Math.abs(y.data.caffeineMg! - mg))
+      .slice(0, 2),
+  };
+})();
+
 const descCore = [
   `${name}: ${p.caffeineMg != null ? `${caffeineFigure(p)} caffeine` : 'caffeine TBD'}`,
   p.sugarG != null ? `${p.sugarG} g sugar` : null,
@@ -151,6 +188,27 @@ jsonLd.push({
       </tbody>
     </table>
   </div>
+
+  {caf && (
+    <section data-claims="product-caffeine">
+      <h2>Caffeine in context</h2>
+      <p>
+        {name} has {basis === 'exact' ? 'about ' : ''}{caffeineFigure(p)} of caffeine per can{perOz != null && <>, or <span data-per-oz>{perOz}</span> mg per ounce{caf.qualifier}</>}.
+        That puts it <strong data-rank>#{caf.rank}</strong> of <span data-of>{known.length}</span> cans we track with a published figure{caf.standing}.
+      </p>
+      <p>
+        {caf.derivedFrom} is about {caf.shots} {caf.shots === 1 ? 'espresso shot' : 'espresso shots'} (65–75 mg each), roughly {caf.dripPct}% of a
+        12 oz drip coffee (140–200 mg), and {caf.dailyPct}% of the FDA's 400 mg daily guideline for healthy adults.
+      </p>
+      {caf.nearest.length > 0 && (
+        <p>
+          Closest on caffeine from other brands: {caf.nearest.map((n, i) => (
+            <>{i > 0 && ', '}<a href={`/latte/${n.id}`}>{fullName(n.data)}</a> at {caffeineFigure(n.data)}</>
+          ))}. Or see <a href="/best/most-caffeine">every canned latte ranked by caffeine</a>.
+        </p>
+      )}
+    </section>
+  )}
 
   {rated && (
     <>

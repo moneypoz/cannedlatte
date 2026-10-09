@@ -98,24 +98,6 @@ export const rangeOf = (p: Caffeine) =>
     ? { min: p.caffeineMinMg, max: p.caffeineMaxMg }
     : null;
 
-/* ---- /caffeine/<product> ------------------------------------------------- */
-
-/** "La Colombe Triple Draft Latte Caffeine: 230 mg per Can",
- *  "Bones Holy Cannoli Caffeine: 250–260 mg per Can",
- *  "Death Wish Mocha Caffeine: Up to 120 mg per Can". Reporting. */
-export const caffeineTitle = (p: Named & Caffeine, _mg: number) => {
-  const fixed = ` Caffeine: ${caffeineFigureCap(p)} per Can`;
-  return fitAround(p, fixed) + fixed;
-};
-
-/** The pre-numbers title. Two ways to reach it, one benign and one not:
- *  a product with no published figure at all (this route does not build those),
- *  and a product whose note describes a range but which never had the structured
- *  fields populated. The second must not persist quietly, so check-data.mjs fails
- *  the build on it — this fallback only keeps a half-populated record from
- *  asserting a midpoint as though it were printed. */
-export const caffeineQuestionTitle = (p: Named) => `How much caffeine is in ${fullName(p)}?`;
-
 /** True when the note talks about a range but the fields to render it are absent.
  *  Shared with check-data.mjs's rule so both agree on what counts as a range. */
 export const NOTE_STATES_RANGE = /(\d+(?:\.\d+)?)\s*[–—-]\s*(\d+(?:\.\d+)?)\s*mg/;

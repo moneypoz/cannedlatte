@@ -4,7 +4,7 @@ import { caffeineFigure } from './titles';
 // Re-exported so pages keep importing every helper from one place.
 export { fullName, shortName, dedupeWords, fitName, clipName } from './names';
 export {
-  TITLE_BUDGET, caffeineTitle, caffeineQuestionTitle, productTitle,
+  TITLE_BUDGET, productTitle,
   brandTitle, compareTitle, tableTitle, bestHeadline, rangeOf,
   caffeineFigure, caffeineFigureCap, caffeineValue, isQualified, basisOf,
 } from './titles';
@@ -173,10 +173,10 @@ export const bestPages: BestPage[] = [
 /* ---- brand-level caffeine guides ---------------------------------------
  * A hand-built page at /caffeine/<slug> for a brand whose search demand is
  * brand-level ("la colombe caffeine") rather than flavor-level. The guide owns
- * those queries; the per-flavor /caffeine/<product> pages keep their own. So
- * everything points at the guide — brand hub, product page, per-flavor caffeine
- * page — and the guide points back down at every can, rather than either side
- * repeating the other's prose.
+ * those queries; each can's own /latte/<product> page answers the flavor query
+ * (the per-flavor /caffeine/<product> pages were folded into it and 301'd). So
+ * the brand hub and product page point at the guide, and the guide points back
+ * down at every can, rather than either side repeating the other's prose.
  *
  * Keys are brandSlug. Every entry needs a matching src/pages/caffeine/<slug>.astro;
  * check-data.mjs fails the build if one is missing, because an entry without a

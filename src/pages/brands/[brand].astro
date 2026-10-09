@@ -142,9 +142,9 @@ const desc = `${name} canned lattes compared side by side: caffeine content, sug
       <>
         <h2>How much caffeine is in {name} canned coffee?</h2>
         {oneCan ? (
-          <p>{theOneCan}, <a href={`/caffeine/${strongest.id}`}>{strongest.data.name}</a>, carries {caffeineFigure(strongest.data)} of caffeine. To see where it sits against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
+          <p>{theOneCan}, <a href={`/latte/${strongest.id}`}>{strongest.data.name}</a>, carries {caffeineFigure(strongest.data)} of caffeine. To see where it sits against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
         ) : (
-          <p>{lineupSummary ? `${lineupSummary}${teaClause} Strongest first, that's ` : `${theCans}, strongest first: `}{withCaffeine.map((p, i) => (<>{listSep(i, withCaffeine.length)}<a href={`/caffeine/${p.id}`}>{p.data.name}</a> at {caffeineFigure(p.data)}</>))}. To see where they sit against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
+          <p>{lineupSummary ? `${lineupSummary}${teaClause} Strongest first, that's ` : `${theCans}, strongest first: `}{withCaffeine.map((p, i) => (<>{listSep(i, withCaffeine.length)}<a href={`/latte/${p.id}`}>{p.data.name}</a> at {caffeineFigure(p.data)}</>))}. To see where they sit against every other can, check the <a href="/best/most-caffeine">cans with the most caffeine</a>.</p>
         )}
         {guide && <p><a href={`/caffeine/${guide.slug}`}>{guide.linkText}</a> — every flavor in one table, with can size and milligrams per ounce.</p>}
       </>

@@ -148,27 +148,82 @@ const EXPECTED_GUIDES = existsSync('src/lib/products.ts')
     ].map((m) => m[1])
   : [];
 
-// ---- caffeine pages: the headline mg must match the stat card on the page ----
-let caffeineClaims = 0, caffeinePages = 0;
+// ---- dist/caffeine/ now holds only the brand guides; collect them ----
+// The per-flavor /caffeine/<product> pages that used to share this directory were
+// folded into the product pages and 301'd (public/_redirects), so anything here
+// that is not a guide is a page that should no longer exist.
 const guideFiles = [];
 if (existsSync('dist/caffeine')) {
   for (const f of readdirSync('dist/caffeine')) {
     const h = readFileSync('dist/caffeine/' + f, 'utf8');
     if (h.includes(GUIDE_MARK)) { guideFiles.push('dist/caffeine/' + f); continue; }
-    const body = text(h.slice(h.indexOf('<main'), h.indexOf('</main>')));
-    caffeinePages++;
-    // The direct answer, first sentence, in whichever shape the source published:
-    // "has about 230 mg", "has 40–50 mg", "has up to 120 mg". It must match the
-    // headline stat card beside it. The alternation has to cover all three — when
-    // the ceiling form was added and this pattern did not, three pages silently
-    // stopped being counted here and the group still reported a pass.
-    const claim = body.match(/has (?:about )?((?:up to )?\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?) mg of caffeine/);
-    const stat = h.match(/<div class="n"[^>]*>((?:up to )?\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?) mg<\/div>/);
-    if (claim && stat) {
-      caffeineClaims++;
-      if (claim[1] !== stat[1]) {
-        failures.push(`${f}: answer says ${claim[1]} mg, stat card shows ${stat[1]} mg`);
-      }
+    failures.push(`caffeine/${f}: a page under /caffeine/ that is not a brand guide — the per-flavor pages were folded into /latte/<id>`);
+  }
+}
+
+// ---- product pages: the "Caffeine in context" section --------------------------
+// What the retired /caffeine/<product> pages carried, now on /latte/<id>. Every
+// number in it is computed, so the way it goes wrong is a template bug: the stated
+// figure losing its qualifier, a per-ounce rounding change, a rank sorted on the
+// wrong field or counted over the wrong set. Each is re-derived here from the
+// records rather than from the page, and the section must appear exactly where a
+// figure exists: on every can with caffeineMg and on no can without one.
+const SECTION_MARK = 'data-claims="product-caffeine"';
+const withCaffeine = Object.entries(PRODUCTS).filter(([, d]) => d.caffeineMg != null);
+let caffeineClaims = 0, caffeinePages = 0;
+for (const [id, d] of Object.entries(PRODUCTS)) {
+  const path = `dist/latte/${id}.html`;
+  if (!existsSync(path)) continue;
+  const h = readFileSync(path, 'utf8');
+  const sec = h.match(new RegExp(`<section[^>]*${SECTION_MARK}[^>]*>([\\s\\S]*?)<\\/section>`));
+  if (d.caffeineMg == null) {
+    if (sec) failures.push(`latte/${id}: a caffeine section on a can with no published figure`);
+    continue;
+  }
+  if (!sec) { failures.push(`latte/${id}: has a caffeine figure but no "Caffeine in context" section`); continue; }
+  caffeinePages++;
+  const body = text(sec[1]);
+  const want = figureFor(id);
+
+  // The stated figure, in whichever shape the source published: "about 230 mg",
+  // "40–50 mg", "up to 120 mg".
+  caffeineClaims++;
+  const claim = body.match(/has (?:about )?((?:up to )?\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)? mg) of caffeine per can/);
+  if (!claim) failures.push(`latte/${id}: caffeine section states no figure in the "has N mg of caffeine per can" form`);
+  else if (claim[1] !== want) failures.push(`latte/${id}: caffeine section says ${claim[1]}, the record publishes ${want}`);
+
+  if (d.sizeOz) {
+    caffeineClaims++;
+    const oz = sec[1].match(/data-per-oz[^>]*>([^<]*)</);
+    const wantOz = +(d.caffeineMg / d.sizeOz).toFixed(1);
+    if (!oz) failures.push(`latte/${id}: caffeine section is missing its per-ounce figure`);
+    else if (parseFloat(oz[1]) !== wantOz) failures.push(`latte/${id}: caffeine section says ${oz[1]} mg per ounce, the record works out to ${wantOz}`);
+  }
+
+  // Cans that share a figure may take any of their tied places, depending on order.
+  caffeineClaims += 2;
+  const rank = sec[1].match(/data-rank[^>]*>#(\d+)</);
+  const of = sec[1].match(/data-of[^>]*>(\d+)</);
+  const first = withCaffeine.filter(([, x]) => x.caffeineMg > d.caffeineMg).length + 1;
+  const last = first + withCaffeine.filter(([x, v]) => x !== id && v.caffeineMg === d.caffeineMg).length;
+  if (!rank) failures.push(`latte/${id}: caffeine section is missing its rank`);
+  else if (+rank[1] < first || +rank[1] > last) {
+    failures.push(`latte/${id}: ranks itself #${rank[1]}, but at ${d.caffeineMg} mg it sits #${first}${last > first ? `–${last}` : ''}`);
+  }
+  if (!of) failures.push(`latte/${id}: caffeine section is missing the count it ranks against`);
+  else if (+of[1] !== withCaffeine.length) failures.push(`latte/${id}: ranks against ${of[1]} cans, but ${withCaffeine.length} records carry a figure`);
+
+  // A qualified can's bare number may appear only where it is named as the
+  // midpoint or ceiling it is. A figure stated after a link to another can is that
+  // can's figure, not this one's — the "closest from other brands" line routinely
+  // lands on a can whose exact figure equals this one's midpoint — so those are
+  // cut out first, the same attribution rule the prose group uses.
+  if (isQualified(d)) {
+    const own = sec[1].replace(/<a href="\/latte\/[^"]*"[^>]*>[\s\S]*?<\/a>\s*at\s*[^,.<]*/g, '');
+    const rest = text(own).replace(want, '');
+    const bare = new RegExp(`(?<![–\\d])${d.caffeineMg} mg(?! (?:midpoint|ceiling))`);
+    if (bare.test(rest)) {
+      failures.push(`latte/${id}: caffeine section states the bare ${d.caffeineMg} mg without calling it a ${basisOf(d) === 'range' ? 'midpoint' : 'ceiling'}`);
     }
   }
 }
@@ -389,44 +444,9 @@ const statCards = (h) =>
     .map((m) => ({ v: text(m[1]), l: text(m[2]) }));
 
 let titleClaims = 0;
-const titlePages = { caffeine: 0, latte: 0, brands: 0, best: 0, compare: 0, table: 0 };
+const titlePages = { latte: 0, brands: 0, best: 0, compare: 0, table: 0 };
 
-// (a) /caffeine/<product> — "<name> Caffeine: N mg per Can", or the published
-// range where the record carries one. RANGES[id] holds both ends; a record that
-// has them may not be titled with its midpoint alone, which is the whole point of
-// storing them.
-for (const f of existsSync('dist/caffeine') ? readdirSync('dist/caffeine') : []) {
-  const h = readFileSync('dist/caffeine/' + f, 'utf8');
-  if (h.includes(GUIDE_MARK)) continue;
-  const t = titleOf(h);
-  if (t == null) { failures.push(`caffeine/${f}: no <title>`); continue; }
-  titlePages.caffeine++;
-  const id = f.replace(/\.html$/, '');
-  const want = figureFor(id);
-  const statCard = h.match(/<div class="n"[^>]*>([^<]*? mg)<\/div>/);
-  titleClaims++;
-  if (/^How much caffeine is in /.test(t)) {
-    // The pre-numbers fallback. Legitimate only for a page with no figure at all,
-    // and this route builds only pages that have one, so it should never fire.
-    if (statCard) failures.push(`caffeine/${f}: title fell back to the question form though the page states ${statCard[1]}`);
-    continue;
-  }
-  const m = t.match(/ Caffeine: (.+) per Can$/);
-  if (!m) { failures.push(`caffeine/${f}: title "${t}" is not in the "<name> Caffeine: <figure> per Can" form`); continue; }
-  const d = PRODUCTS[id] ?? {};
-  if (m[1] !== cap(want)) {
-    failures.push(
-      `caffeine/${f}: the record publishes "${want}", but the title states "${m[1]} per Can"` +
-      (isQualified(d) && m[1] === `${d.caffeineMg} mg`
-        ? ` — the bare ${basisOf(d) === 'range' ? 'midpoint' : 'ceiling value'}, dropping the qualifier its source attached`
-        : ''),
-    );
-  }
-  if (!statCard) failures.push(`caffeine/${f}: title states ${m[1]} but the page has no mg stat card to check it against`);
-  else if (statCard[1] !== want) failures.push(`caffeine/${f}: stat card shows ${statCard[1]}, the record publishes ${want}`);
-}
-
-// (b) /latte/<product> — "<name>: N mg Caffeine, N g Sugar", each part present
+// (a) /latte/<product> — "<name>: N mg Caffeine, N g Sugar", each part present
 // only where the record publishes it. Checked in both directions, so a title can
 // neither state a figure the page lacks nor drop one the page shows.
 for (const f of existsSync('dist/latte') ? readdirSync('dist/latte') : []) {
@@ -476,7 +496,7 @@ for (const f of existsSync('dist/latte') ? readdirSync('dist/latte') : []) {
   }
 }
 
-// (c) /brands/<brand> — "All N Compared", or "Full Specs" for a one-can lineup
+// (b) /brands/<brand> — "All N Compared", or "Full Specs" for a one-can lineup
 for (const f of existsSync('dist/brands') ? readdirSync('dist/brands') : []) {
   if (f === 'index.html') continue;
   const h = readFileSync('dist/brands/' + f, 'utf8');
@@ -495,7 +515,7 @@ for (const f of existsSync('dist/brands') ? readdirSync('dist/brands') : []) {
   }
 }
 
-// (d) /best/<slug> — the headline stat, and Gate 1 over it.
+// (c) /best/<slug> — the headline stat, and Gate 1 over it.
 // Exactly one number per title, so its value is the whole claim: either the
 // crowned extreme, or the count the title falls back to when that extreme belongs
 // to an unverified record. Checking the fallback too means the Gate 1 rule cannot
@@ -557,7 +577,7 @@ for (const f of existsSync('dist/best') ? readdirSync('dist/best') : []) {
   }
 }
 
-// (e) /compare/<a>-vs-<b> — "A vs B: N vs N mg", against the Caffeine row
+// (d) /compare/<a>-vs-<b> — "A vs B: N vs N mg", against the Caffeine row
 for (const f of existsSync('dist/compare') ? readdirSync('dist/compare') : []) {
   const h = readFileSync('dist/compare/' + f, 'utf8');
   const t = titleOf(h);
@@ -618,9 +638,8 @@ for (const file of existsSync('dist') ? walkHtml('dist') : []) {
     for (const rm of tb[1].matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)) {
       const c = rawCells(rm[1]);
       if (c.length <= idx) continue;
-      // Which product this row is about: product tables link to /latte/<id>, the
-      // sibling table on a caffeine page links to /caffeine/<id>.
-      const id = (/href="\/(?:latte|caffeine)\/([^"#]+)"/.exec(rm[1]) || [])[1];
+      // Which product this row is about: product tables link to /latte/<id>.
+      const id = (/href="\/latte\/([^"#]+)"/.exec(rm[1]) || [])[1];
       if (!id || !PRODUCTS[id] || PRODUCTS[id].caffeineMg == null) continue;
       sweepCells++;
       const shown = text(c[idx]).replace(/\*$/, '').trim();
@@ -1174,7 +1193,7 @@ for (const entry of SUPERLATIVE_CLAIMS) {
   }
 }
 
-// (f) /table — "N Cans, One Table"
+// (e) /table — "N Cans, One Table"
 if (existsSync('dist/table.html')) {
   const h = readFileSync('dist/table.html', 'utf8');
   const t = titleOf(h);
@@ -1200,9 +1219,10 @@ totalClaims = compareClaims + caffeineClaims + guideClaims + discloseClaims + ti
 // content it covers shrinks.
 const groups = [
   ['compare pages', comparePages, 'compare claims', compareClaims, 40],
-  // One claim per page, every page — so the floor is the page count itself rather
-  // than a constant that drifts out of date as the database grows.
-  ['caffeine pages', caffeinePages, 'caffeine claims', caffeineClaims, caffeinePages],
+  // The figure, rank and count on every product page that carries a figure, at
+  // least — so the floor follows the records rather than a constant that drifts
+  // out of date as the database grows.
+  ['product caffeine sections', caffeinePages, 'caffeine-section claims', caffeineClaims, withCaffeine.length * 3],
   ['brand caffeine guides', Math.max(guidePages, EXPECTED_GUIDES.length), 'brand guide claims', guideClaims, 6],
   ['compare pages', disclosePages, 'sourcing-disclosure checks', discloseClaims, 150],
   ['titled pages', Object.values(titlePages).reduce((a, b) => a + b, 0), 'title claims', titleClaims, 190],
@@ -1242,7 +1262,7 @@ if (failures.length) {
 const titled = Object.entries(titlePages).filter(([, n]) => n > 0);
 console.log(
   `  Claims OK — ${totalClaims} numeric claims cross-checked against their own tables ` +
-  `(${compareClaims} across ${comparePages} compare pages, ${caffeineClaims} across ${caffeinePages} caffeine pages, ` +
+  `(${compareClaims} across ${comparePages} compare pages, ${caffeineClaims} across ${caffeinePages} product caffeine sections, ` +
   `${guideClaims} across ${guidePages} brand caffeine guide${guidePages === 1 ? '' : 's'}, ` +
   `${discloseClaims} sourcing-disclosure checks across ${disclosePages} compare pages, ` +
   `${titleClaims} title claims across ${titled.reduce((a, [, n]) => a + n, 0)} pages ` +

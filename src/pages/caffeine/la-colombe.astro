@@ -3,10 +3,9 @@ import Base from '../../layouts/Base.astro';
 import { allProducts, fmt } from '../../lib/products';
 
 // Brand-level caffeine guide. Search Console shows La Colombe demand arriving as
-// brand queries ("la colombe caffeine", "everyday draft latte caffeine") rather
-// than as the single-flavor phrasing the /caffeine/<product> pages answer, so this
-// page owns the brand query and links down to the per-flavor pages instead of
-// repeating them.
+// brand queries ("la colombe caffeine", "everyday draft latte caffeine"), so this
+// page owns the brand query. The single-flavor question is answered on each can's
+// own /latte/<id> page, which this table links down to rather than repeating.
 //
 // Nothing numeric below is typed by hand. The opening answer, the table, the
 // per-ounce column, the FAQ answers, the title tag and the meta description all
@@ -246,10 +245,6 @@ const jsonLd: Record<string, unknown>[] = [
   {unknown.length > 0 && (
     <p class="meta">Not listed: {prose(unknown.map((p) => p.data.name))} — no caffeine figure is published, and we would rather show nothing than an estimate.</p>
   )}
-
-  <p class="meta">
-    Per-flavor pages: {ranked.map((p, i) => (<>{i > 0 && ' · '}<a href={`/caffeine/${p.id}`}>{p.data.name}</a></>))}
-  </p>
 
   <h2>Reading the per-ounce column</h2>
   {ozLeader && ozTrailer && ozOf(ozLeader) != null && ozOf(ozTrailer) != null && (

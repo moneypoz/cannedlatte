@@ -111,7 +111,7 @@ gets re-litigated by whoever types the next file. This is that place.
 
 - **"Best for" pages** are defined in `src/lib/products.ts` → `bestPages`. Each has a filter, a sort, and the metric column to show. Add an entry and it becomes `/best/<slug>` on the next build.
 - **Head-to-head pages** are pairs of product IDs in `comparePairs`. Add a pair and it becomes `/compare/<a>-vs-<b>`.
-- **Caffeine pages** (`/caffeine/<slug>`) build automatically for every product with a `caffeineMg` value.
+- **Caffeine.** Every product with a `caffeineMg` value gets a computed "Caffeine in context" section on its product page: mg per ounce, its rank, and everyday equivalents. Brand-level guides at `/caffeine/<brandSlug>` are hand-built (see `brandCaffeineGuides`). The old per-product `/caffeine/<id>` pages are retired and 301 to `/latte/<id>`.
 
 ## Before you turn on money
 
@@ -135,7 +135,7 @@ src/
     brands/               brand index and hubs
     best/[slug].astro     rankings
     compare/[pair].astro  head-to-head
-    caffeine/[slug].astro "how much caffeine in X"
+    caffeine/la-colombe.astro  brand-level caffeine guide
     new.astro             launch tracker + newsletter
     shop.astro, about.astro, disclosure.astro, 404.astro
 ```

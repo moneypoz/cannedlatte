@@ -216,9 +216,34 @@ if (sitemapFile) {
   failures.push('no dist/sitemap-N.xml — the sitemap integration did not run');
 }
 
+// ---- redirects: every target is a real page, no source is one ----
+// public/_redirects is where retired URLs go to keep what they earned — the 71
+// per-flavor /caffeine/<product> pages, renamed products. A 301 into a page that no
+// longer builds is a chain into a 404, and Google drops both ends of it. A source
+// that still builds as a page is the opposite mistake: a live page sent somewhere
+// else, which nobody notices because the host applies the rule before the file.
+let redirectRules = 0;
+const builtPath = (p) => {
+  const clean = p.replace(/\/$/, '').replace(/\.html$/, '');
+  return clean === '' ? 'dist/index.html' : `dist${clean}.html`;
+};
+if (existsSync('public/_redirects')) {
+  for (const raw of readFileSync('public/_redirects', 'utf8').split(/\r?\n/)) {
+    const line = raw.trim();
+    if (!line || line.startsWith('#')) continue;
+    const [from, to, status] = line.split(/\s+/);
+    redirectRules++;
+    if (!to || !/^30[12178]$/.test(status ?? '')) { failures.push(`_redirects: malformed rule "${line}"`); continue; }
+    if (to.startsWith('/') && !existsSync(builtPath(to))) failures.push(`_redirects: ${from} points at ${to}, which does not build`);
+    if (!from.endsWith('.html') && existsSync(builtPath(from)) && builtPath(from) !== builtPath(to)) {
+      failures.push(`_redirects: ${from} is redirected away, but it still builds as a page`);
+    }
+  }
+}
+
 // ---- the zero-coverage guard ----
 // A checker that inspected nothing must never report success.
-for (const [what, n] of [['pages in dist/', pages.length], ['canonical tags', checked], ['sitemap URLs', locs.length]]) {
+for (const [what, n] of [['pages in dist/', pages.length], ['canonical tags', checked], ['sitemap URLs', locs.length], ['redirect rules', redirectRules]]) {
   if (n === 0) failures.push(`checked nothing: 0 ${what} — the check itself is broken, not the output`);
 }
 // The social group's floor is the page count, not 1. Every page emits its card from
@@ -261,6 +286,7 @@ console.log(
   `  URLs OK — ${checked} canonicals are extensionless, self-referencing and match og:url; ` +
   `${locs.length} sitemap URLs agree with them. ` +
   `${socialSets} pages carry a complete Open Graph + X card set, and their ${ogImageChecks} og:image URLs ` +
-  `all resolve to one of ${cardFiles.size} real image file(s) in dist/.` +
+  `all resolve to one of ${cardFiles.size} real image file(s) in dist/. ` +
+  `${redirectRules} redirect rules all land on a page that builds.` +
   (warnings.length ? ` ${warnings.length} long meta description(s) — see above.` : ` All ${described} meta descriptions within ${DESC_WARN_AT} chars.`)
 );

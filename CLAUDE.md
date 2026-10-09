@@ -158,12 +158,17 @@ trusting the pass.
 
 ## Page shapes
 
-- `/latte/<id>` — product page, one per JSON file in `src/content/products/`.
+- `/latte/<id>` — product page, one per JSON file in `src/content/products/`. Owns
+  the **flavor** query ("how much caffeine is in X") through its FAQ and its
+  computed "Caffeine in context" section.
 - `/brands/<brandSlug>` — brand hub.
-- `/caffeine/<product-id>` — "how much caffeine is in X", one per product with a
-  figure. Owns the **flavor** query.
 - `/caffeine/<brandSlug>` — brand-level caffeine guide, hand-built per brand and
   registered in `brandCaffeineGuides` in `src/lib/products.ts`. Owns the **brand**
-  query. Cross-link with the per-flavor pages rather than duplicating their prose.
+  query. Links down to each can's product page rather than duplicating it.
+- There is no `/caffeine/<product-id>` any more. Those 71 one-per-can pages repeated
+  the product page's answer, and were folded into it after the September 2026 spam
+  update dropped the site's rankings. Their URLs 301 to `/latte/<id>` from a fixed
+  list in `public/_redirects`. Don't bring back a page shape that restates another
+  page for every record: a templated page has to answer something its neighbour doesn't.
 - `/best/<slug>`, `/compare/<a>-vs-<b>` — rankings and head-to-heads, defined in
   `src/lib/products.ts`.
