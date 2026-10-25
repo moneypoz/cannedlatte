@@ -137,7 +137,13 @@ Three checkers run around the build; all three must pass before a deploy.
   sentence whose second half was right, and nothing was watching prose. It also
   reads the copy nothing recomputes — product summaries, the `/best` list text,
   news entries — and holds every hand-written superlative in it to a reviewed
-  basis in `SUPERLATIVE_CLAIMS`.
+  basis in `SUPERLATIVE_CLAIMS`. A count written as a word ("Fifteen cans
+  qualify", "Slate's five lattes") is held higher still: it has to appear in
+  `COUNT_CLAIMS` with a `count` that recomputes it from the records, and the
+  build fails when the word and the records disagree. Only a number that is not a
+  count of our records — a pack size, a brand's own statement, a dated news
+  entry — takes a written `basis` instead. Every other group reads digits, which
+  is how "Fourteen cans qualify" sat above a fifteen-row table and passed.
   Every group declares a minimum it expects to inspect: **a checker that parses
   zero claims must fail.** Set that minimum near what the group actually inspects,
   not to 1 — a floor of 1 let the compare group fall from 45 claims to 6 and still

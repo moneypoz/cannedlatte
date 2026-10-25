@@ -1193,6 +1193,188 @@ for (const entry of SUPERLATIVE_CLAIMS) {
   }
 }
 
+/* ---- spelled-out counts are recomputed from the records ---------------------
+ * The same hand-written copy, read for the other claim that goes stale in
+ * silence: a count written as a word. Every group above parses digits, so
+ * "Fourteen cans qualify" sat above a fifteen-row table on 2026-10-25 and passed,
+ * and the same scan then found "ten cans publish 5 g of added sugar or less"
+ * where the records said thirteen, two batches after the sentence was written.
+ *
+ * A count, unlike a superlative, can usually be recomputed, so the bar is higher
+ * than a written basis: each entry in COUNT_CLAIMS carries a `count` that
+ * re-derives the number from the product JSONs, and the build fails the day the
+ * word and the records disagree. Only a count that is not about our database —
+ * a brand's own statement, a pack size, arithmetic, a dated news entry, which
+ * records what was true on its date — takes a `basis` instead.
+ *
+ * What is scanned: a number word from two to twenty, followed within five words
+ * by what we count — cans, lattes, flavors, SKUs, records, brands. "One" is left
+ * out: "one table", "one of", "one coconut alongside it" would bury the counts
+ * that matter, the same trade the superlative group makes over bare "most".
+ */
+const NUMBER_WORDS = ['two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven',
+  'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
+const NUMBER_WORD = new RegExp(String.raw`\b(${NUMBER_WORDS.join('|')})\b`, 'i');
+const SPELLED_COUNT = new RegExp(
+  String.raw`\b(?:${NUMBER_WORDS.join('|')})\b(?:\s+[\w&'’-]+){0,5}?\s+(?:cans?|lattes?|flavou?rs?|SKUs?|records?|brands?)\b`, 'gi');
+const wordValue = (w) => NUMBER_WORDS.indexOf(w.toLowerCase()) + 2;
+
+const RECORDS = Object.entries(PRODUCTS).map(([id, d]) => ({ id, ...d }));
+const countOf = (f) => RECORDS.filter(f).length;
+
+/** Spelled-out counts in hand-written copy.
+ *
+ *  `where`  as in SUPERLATIVE_CLAIMS: the field it lives in, checked.
+ *  `claim`  the phrase verbatim, holding exactly one number word.
+ *  `count`  re-derives that number from the records. Write the filter the
+ *           sentence actually means, so a new can that belongs in it moves it.
+ *  `basis`  instead of `count`, only for a number that is not a count of our
+ *           records; say why it cannot be recomputed.
+ */
+const COUNT_CLAIMS = [
+  // ---- /best list copy -----------------------------------------------------
+  {
+    where: 'listContent.ts -> least-sugar',
+    claim: 'Loco Coffee\'s three zero-sugar lattes',
+    count: () => countOf((d) => d.brandSlug === 'loco-coffee' && d.sugarG === 0),
+  },
+  {
+    where: 'listContent.ts -> least-sugar',
+    claim: 'Bee Keeper\'s five lattes',
+    count: () => countOf((d) => d.brandSlug === 'beekeeper-coffee'),
+  },
+  {
+    where: 'listContent.ts -> most-caffeine',
+    claim: 'roughly two of the strongest cans',
+    basis: 'Arithmetic against the FDA\'s 400 mg a day, not a count of records; its SUPERLATIVE_CLAIMS entry holds the reasoning.',
+  },
+  {
+    where: 'listContent.ts -> high-protein',
+    claim: 'the six cans ranked above it',
+    // Above Beforeyouspeak on /best/high-protein, which sorts lattes by protein.
+    count: () => {
+      const byos = PRODUCTS['beforeyouspeak-protein-coffee-iced-vanilla-latte'];
+      return byos ? countOf((d) => d.type === 'latte' && (d.proteinG ?? 0) > byos.proteinG) : NaN;
+    },
+  },
+  {
+    where: 'listContent.ts -> no-added-sugar',
+    claim: 'Fifteen cans qualify',
+    // The filter on /best/no-added-sugar in src/lib/products.ts.
+    count: () => countOf((d) => d.addedSugar === false),
+  },
+  {
+    where: 'listContent.ts -> no-added-sugar',
+    claim: 'Slate\'s five lattes',
+    count: () => countOf((d) => d.brandSlug === 'slate' && d.addedSugar === false),
+  },
+  {
+    where: 'listContent.ts -> no-added-sugar',
+    claim: 'three of its oat milk lattes',
+    // Pop & Bottle's date-sweetened cans: the ones with nothing added. The fourth,
+    // the Matcha, is the coconut-nectar can the next paragraph names.
+    count: () => countOf((d) => d.brandSlug === 'pop-and-bottle' && d.milk === 'oat' && d.addedSugar === false),
+  },
+  {
+    where: 'listContent.ts -> no-added-sugar',
+    claim: 'thirteen cans publish 5 g of added sugar or less',
+    count: () => countOf((d) => d.addedSugarG > 0 && d.addedSugarG <= 5),
+  },
+  {
+    where: 'listContent.ts -> no-added-sugar',
+    claim: 'Bee Keeper\'s five honey-sweetened lattes',
+    count: () => countOf((d) => d.brandSlug === 'beekeeper-coffee' && d.addedSugarG > 0 && d.addedSugarG <= 5),
+  },
+  {
+    where: 'listContent.ts -> no-added-sugar',
+    claim: 'Bones Coffee\'s five flavored lattes',
+    count: () => countOf((d) => d.brandSlug === 'bones-coffee' && d.addedSugarG === 5),
+  },
+  {
+    where: 'listContent.ts -> dairy-free',
+    claim: 'two almond cans',
+    count: () => countOf((d) => d.dairyFree && d.milk === 'almond'),
+  },
+  // ---- product copy ---------------------------------------------------------
+  {
+    where: 'products/la-colombe-triple-draft-latte.json',
+    claim: 'Three shots in the same frothy can',
+    basis: 'Espresso shots in one can, not a count of cans.',
+  },
+  {
+    where: 'products/throne-coffee-latte.json',
+    claim: 'Throne says its three flavored lattes',
+    basis: 'Attributed to Throne: the size of its flavored line as the brand describes it, which our records need not match.',
+  },
+  // ---- news: each entry records what was true on its date ------------------
+  {
+    where: 'news.ts -> 2026-10-03',
+    claim: 'Three of the four Throne Sport Coffee cans we track',
+    basis: 'A dated news entry: what we tracked on 2026-10-03. Recomputing it would rewrite history the day a fifth Throne can lands.',
+  },
+  {
+    where: 'news.ts -> 2026-09-14',
+    claim: 'Two La Colombe cans we were not tracking',
+    basis: 'A dated news entry: the two SKUs added on 2026-09-14.',
+  },
+  {
+    where: 'news.ts -> 2026-09-10',
+    claim: 'six 8 oz cans',
+    basis: 'A pack size in a price, not a count of records.',
+  },
+];
+
+let countFields = 0, countChecks = 0;
+for (const entry of COUNT_CLAIMS) {
+  const words = entry.claim.match(new RegExp(NUMBER_WORD.source, 'gi')) ?? [];
+  // Only a recomputed claim has to say which word is the count.
+  if (entry.count && words.length !== 1) {
+    failures.push(`COUNT_CLAIMS entry "${entry.claim}" holds ${words.length} number words, expected exactly one to recompute`);
+  }
+  if (!entry.count && (!entry.basis || entry.basis.trim().length < 20)) {
+    failures.push(`COUNT_CLAIMS entry "${entry.claim}" has neither a count to recompute nor a basis written down`);
+  }
+}
+const usedCounts = new Set();
+for (const field of handWritten) {
+  if (field.question) continue;
+  countFields++;
+  let said = field.text;
+  for (const entry of COUNT_CLAIMS) {
+    if (!said.includes(entry.claim)) continue;
+    if (!field.where.startsWith(entry.where)) {
+      failures.push(
+        `COUNT_CLAIMS says "${entry.claim}" lives in ${entry.where}, but it was found in ${field.where} — ` +
+        `move the entry or the copy, so the count stays attached to the sentence it describes`,
+      );
+    }
+    usedCounts.add(entry.claim);
+    said = said.split(entry.claim).join(' '.repeat(entry.claim.length));
+    if (!entry.count) continue;
+    countChecks++;
+    const word = entry.claim.match(NUMBER_WORD)[1];
+    const stated = wordValue(word), actual = entry.count();
+    if (stated !== actual) {
+      failures.push(
+        `${field.where}: "${entry.claim}" says ${word} (${stated}), the records count ${actual} — ` +
+        `rewrite the sentence, then update the claim in COUNT_CLAIMS to match`,
+      );
+    }
+  }
+  for (const m of said.matchAll(SPELLED_COUNT)) {
+    const a = Math.max(0, m.index - 60), b = Math.min(said.length, m.index + m[0].length + 60);
+    failures.push(
+      `${field.where} (${field.key}): unchecked count "${m[0]}" in "…${field.text.slice(a, b).replace(/\s+/g, ' ')}…" — ` +
+      `add it to COUNT_CLAIMS with a count that recomputes it, or a basis if it is not a count of our records`,
+    );
+  }
+}
+for (const entry of COUNT_CLAIMS) {
+  if (!usedCounts.has(entry.claim)) {
+    failures.push(`stale COUNT_CLAIMS entry: "${entry.claim}" is in no hand-written field any more (was ${entry.where})`);
+  }
+}
+
 // (e) /table — "N Cans, One Table"
 if (existsSync('dist/table.html')) {
   const h = readFileSync('dist/table.html', 'utf8');
@@ -1205,7 +1387,7 @@ if (existsSync('dist/table.html')) {
   else if (parseInt(m[1], 10) !== n) failures.push(`table.html: title counts ${m[1]} cans, the table lists ${n}`);
 }
 
-totalClaims = compareClaims + caffeineClaims + guideClaims + discloseClaims + titleClaims + sweepCells + proseClaims + ratingClaims + superlativeClaims;
+totalClaims = compareClaims + caffeineClaims + guideClaims + discloseClaims + titleClaims + sweepCells + proseClaims + ratingClaims + superlativeClaims + countChecks;
 
 // ---- the zero-coverage guard ----
 // The guide row counts declared guides, not discovered ones, so "no guide pages
@@ -1242,6 +1424,9 @@ const groups = [
   // alone, so losing either source trips it. The stale-entry rule below catches
   // the same failure from the other side, loudly.
   ['hand-written fields', superlativeFields, 'superlative reviews', superlativeClaims, 200],
+  // Ten counts are recomputed today. The floor sits just under, so a scan that
+  // stops finding listContent.ts loses most of them and trips it.
+  ['hand-written fields', countFields, 'recomputed spelled-out counts', countChecks, 9],
 ];
 for (const [pageWhat, pageN, claimWhat, claimN, min] of groups) {
   if (pageN > 0 && claimN < min) {
@@ -1272,5 +1457,6 @@ console.log(
   `${ratingClaims} rating and schema-gate checks across ${ratingPages} product pages, ` +
   `${ratedPages} of them rated; ` +
   `${superlativeClaims} hand-written field(s) read for an unreviewed superlative, against ` +
-  `${SUPERLATIVE_CLAIMS.length} reviewed claim(s)).`
+  `${SUPERLATIVE_CLAIMS.length} reviewed claim(s); ${countChecks} spelled-out count(s) recomputed from the records, ` +
+  `${COUNT_CLAIMS.filter((e) => !e.count).length} more carrying a written basis).`
 );
