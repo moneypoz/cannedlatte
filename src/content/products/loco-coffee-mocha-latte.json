@@ -2,10 +2,13 @@
   "type": "latte",
   "sizeOz": 11,
   "caffeineMg": 200,
+  "caffeineBasis": "exact",
+  "caffeineMinMg": null,
+  "caffeineMaxMg": null,
   "sugarG": 0,
   "addedSugar": false,
   "addedSugarG": 0,
-  "proteinG": null,
+  "proteinG": 2,
   "calories": 90,
   "refrigerated": false,
   "pricePerCan": 3.17,
@@ -27,17 +30,20 @@
       "affiliate": true
     }
   ],
-  "verified": false,
-  "updated": "2026-09-10",
+  "upc": "850019447132",
+  "verified": true,
+  "updated": "2026-10-25",
   "sources": [
+    "/images/products/loco-coffee-mocha-latte-label.jpg",
     "https://drinklococoffee.com/collections/coffee/products/mocha-libre-oat-milk-latte"
   ],
   "brand": "Loco Coffee",
   "brandSlug": "loco-coffee",
-  "name": "Mocha Latte",
-  "flavor": "Mocha",
-  "caffeineNote": "Printed on the can as 200 mg; the brand publishes no nutrition panel in text",
+  "name": "Mocha Libre Latte",
+  "flavor": "Mocha Libre",
+  "caffeineNote": "Label: 200 mg per can, printed on the front; caffeine is also added as an ingredient, on top of what the coffee carries",
   "milk": "oat",
   "dairyFree": true,
-  "summary": "Zero-sugar mocha cold brew on oat milk, sold as Mocha Libre. Same build as Loco's vanilla can — 200 mg of caffeine, 0 g of sugar, sucralose in place of sugar — at 90 calories rather than 80, per the figures printed on the can in Loco's own product photography."
+  "summary": "Zero-sugar mocha cold brew on oat milk with cocoa powder, named Mocha Libre on the can (we listed it as the Mocha Latte until we had one in hand). Same build as Loco's Vanilla — 200 mg of caffeine printed on the front, 0 g of sugar, sucralose in place of it and caffeine added on top of the coffee — at 90 calories rather than 80, with 2 g of protein and 6 g of fat.",
+  "image": "/images/products/loco-coffee-mocha-latte.jpg"
 }

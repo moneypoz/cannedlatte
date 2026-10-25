@@ -11,7 +11,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
       'Watch can size too. A 6.5 oz can with 12 g of sugar is sweeter per sip than an 11 oz can with 16 g. Where brands publish it, the full label is on each product page.',
     ],
     faqs: [
-      { q: 'Which canned latte has the least sugar?', a: 'Loco Coffee\'s two zero-sugar lattes are the only cans we list at 0 g, reaching it with sucralose rather than sugar. Among cans that carry any sugar at all, Slate\'s five lead at 1 g with none of it added.' },
+      { q: 'Which canned latte has the least sugar?', a: 'Loco Coffee\'s three zero-sugar lattes are the only cans we list at 0 g, reaching it with sucralose rather than sugar. Among cans that carry any sugar at all, Slate\'s five lead at 1 g with none of it added.' },
       { q: 'Are low-sugar canned lattes unsweetened?', a: 'Not always. Some use the natural sweetness of oat milk or dates rather than added sugar, so they taste lightly sweet while showing 0 g added sugar on the label.' },
       { q: 'How much sugar is in a typical canned latte?', a: 'Flavored dairy canned coffees commonly run 15–39 g per can. Honey-sweetened cans are the exception: Bee Keeper\'s five lattes land at 10–11 g in a smaller 8 oz can. The low-sugar end of the category runs 0–8 g.' },
     ],
@@ -59,7 +59,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'no-added-sugar': {
     paragraphs: [
-      'These are the cans with a 0 in the added-sugars line: sweetness, where there is any, comes from the milk itself, from whole ingredients like dates, or from non-nutritive sweeteners that carry no sugar at all. Fourteen cans qualify, and they get there four different ways. NOBL keeps it to literally two ingredients (cold brew and oat milk), so the 5 g on its label is oat-milk sugar with nothing added. Slate\'s five lattes lean on stevia and monk fruit, which leaves 1 g of naturally occurring milk sugar next to 20 g of protein. Pop & Bottle sweetens three of its oat milk lattes with dates rather than sugar; the two whose totals it publishes show 8 and 10 g, none of it added. Groundwork does the same with date paste across its oat, almond and coconut cans, all at 5 g. Loco takes the fourth route and reaches 0 g total with sucralose.',
+      'These are the cans with a 0 in the added-sugars line: sweetness, where there is any, comes from the milk itself, from whole ingredients like dates, or from non-nutritive sweeteners that carry no sugar at all. Fifteen cans qualify, and they get there four different ways. NOBL keeps it to literally two ingredients (cold brew and oat milk), so the 5 g on its label is oat-milk sugar with nothing added. Slate\'s five lattes lean on stevia and monk fruit, which leaves 1 g of naturally occurring milk sugar next to 20 g of protein. Pop & Bottle sweetens three of its oat milk lattes with dates rather than sugar; the two whose totals it publishes show 8 and 10 g, none of it added. Groundwork does the same with date paste across its oat, almond and coconut cans, all at 5 g. Loco takes the fourth route and reaches 0 g total with sucralose.',
       'Read the added-sugars line rather than the front of the can. "No refined sugar" is a different claim from "no added sugar", and Pop & Bottle\'s own lineup shows the gap: the Caramel Cold Brew on this list earns the badge with 0 g added, while their Matcha Green Tea wears the same badge over 12 g of added sugar from coconut nectar — unrefined, but added, and the entire sugar content of that can.',
       'If a can you love isn\'t here, the least-sugar list is the neighboring compromise: ten cans publish 5 g of added sugar or less without reaching zero — Bee Keeper\'s five honey-sweetened lattes and La Colombe\'s Everyday Draft Latte at 4 g, and Bones Coffee\'s four flavored lattes at 5 g. All of them taste barely sweetened.',
     ],
@@ -70,7 +70,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'dairy-free': {
     paragraphs: [
-      'Every can here is made without dairy — oat milk dominates, with two almond cans and one coconut alongside it. Beyond the milk itself, the differences that matter are caffeine (50 to 207 mg across this list), sweetener (dates, cane sugar, or none), and storage (most are shelf-stable; NOBL is refrigerated and ships cold).',
+      'Every can here is made without dairy — oat milk dominates, with two almond cans and one coconut alongside it. Beyond the milk itself, the differences that matter are caffeine (50 to 207 mg across this list), sweetener (dates, cane sugar, sucralose, or none), and storage (most are shelf-stable; NOBL is refrigerated and ships cold).',
       'Lactose-intolerant but not dairy-free? Most of La Colombe\'s reformulated Draft Lattes print "lactose free" on the can — real dairy, no lactose — which sits between this list and the standard dairy cans. Read the milk column rather than assuming the line: their limited-edition S\'mores and Peppermint Mocha carry lactase in the ingredients but make no lactose-free claim on the label.',
     ],
     faqs: [

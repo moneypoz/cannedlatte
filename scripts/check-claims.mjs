@@ -1057,7 +1057,7 @@ const SUPERLATIVE_CLAIMS = [
   {
     where: 'listContent.ts -> least-sugar',
     claim: 'the only cans we list at 0 g',
-    basis: 'Checked 2026-09-23: the two Loco Coffee records are the only ones with sugarG 0.',
+    basis: 'Checked 2026-10-25: the three Loco Coffee records (Vanilla, Mocha Libre, Churro) are the only ones with sugarG 0, and all three are label-verified.',
   },
   {
     where: 'listContent.ts -> no-added-sugar',

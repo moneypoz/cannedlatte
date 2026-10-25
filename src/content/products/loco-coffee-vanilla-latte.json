@@ -2,10 +2,13 @@
   "type": "latte",
   "sizeOz": 11,
   "caffeineMg": 200,
+  "caffeineBasis": "exact",
+  "caffeineMinMg": null,
+  "caffeineMaxMg": null,
   "sugarG": 0,
   "addedSugar": false,
   "addedSugarG": 0,
-  "proteinG": null,
+  "proteinG": 1,
   "calories": 80,
   "refrigerated": false,
   "pricePerCan": 3.17,
@@ -27,17 +30,20 @@
       "affiliate": true
     }
   ],
-  "verified": false,
-  "updated": "2026-09-10",
+  "upc": "850019447576",
+  "verified": true,
+  "updated": "2026-10-25",
   "sources": [
+    "/images/products/loco-coffee-vanilla-latte-label.jpg",
     "https://drinklococoffee.com/collections/coffee/products/vanilla"
   ],
   "brand": "Loco Coffee",
   "brandSlug": "loco-coffee",
   "name": "Vanilla Latte",
   "flavor": "Vanilla",
-  "caffeineNote": "Printed on the can as 200 mg; the brand publishes no nutrition panel in text",
+  "caffeineNote": "Label: 200 mg per can, printed on the front; caffeine is also added as an ingredient, on top of what the coffee carries",
   "milk": "oat",
   "dairyFree": true,
-  "summary": "Zero-sugar vanilla cold brew on oat milk from the Holliston, Massachusetts brand. The can reads 200 mg of caffeine, 0 g of sugar and 80 calories in 11 fl oz, sweetened with sucralose instead. Loco publishes no nutrition panel in text — those figures are printed on the can in their own product photography."
+  "summary": "Zero-sugar vanilla cold brew on oat milk from the Holliston, Massachusetts brand. The can prints 200 mg of caffeine, 0 g of sugar and 80 calories on the front of an 11 fl oz can, and the nutrition panel agrees: 0 g total and 0 g added sugars, with 1 g of protein. The sweetness comes from sucralose, the last ingredient on the label, and caffeine is added on top of the coffee itself.",
+  "image": "/images/products/loco-coffee-vanilla-latte.jpg"
 }

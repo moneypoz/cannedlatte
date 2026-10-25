@@ -36,6 +36,12 @@ export type NewsItem = {
 
 export const news: NewsItem[] = [
   {
+    date: '2026-10-25',
+    text: 'Loco Coffee has a Churro Oat Milk Latte, confirmed and label-verified from a can in hand: 200 mg of caffeine printed on the front, 0 g of sugar with sucralose in its place, and 1 g of protein in an 11 oz can at 80 calories. The same day we checked Loco’s Vanilla and Mocha Libre cans against their labels, and every figure we had held from the brand’s product photos matched.',
+    link: { href: '/latte/loco-coffee-churro-latte', label: 'Churro Latte' },
+    image: 'loco-coffee-churro-latte-card.png',
+  },
+  {
     date: '2026-10-09',
     text: 'La Colombe’s Salted Caramel Apple Draft Latte is no longer sold on the brand’s own site: the product page we recorded it from on 2026-09-14, when it was already listed out of stock, is gone, and a search of lacolombe.com no longer finds it. The fall-seasonal 9 oz can stays in the database at 135 mg of caffeine, a brand figure we never checked against a label.',
     link: { href: '/latte/la-colombe-salted-caramel-apple-draft-latte', label: 'Salted Caramel Apple Draft Latte' },
