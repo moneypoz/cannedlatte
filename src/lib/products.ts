@@ -151,7 +151,7 @@ export const bestPages: BestPage[] = [
     short: 'No added sugar',
     title: 'Canned lattes with no added sugar',
     countTitle: (n: number) => `${n} Canned Lattes With No Added Sugar`,
-    intro: 'Lattes sweetened only by the milk itself or by whole ingredients like dates. Sorted by caffeine.',
+    intro: 'Sweetened by the milk, dates, stevia or sucralose. Sorted by caffeine.',
     filter: (p: P) => p.addedSugar === false,
     sort: (a: P, b: P) => (b.caffeineMg ?? -1) - (a.caffeineMg ?? -1),
     metric: (p: P) => fmt.g(p.sugarG),

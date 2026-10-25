@@ -93,7 +93,11 @@ const descCore = [
 ].filter(Boolean).join(', ') + '.';
 // Specs first, invitation second: the tail is dropped rather than letting the
 // description run past 155 and get truncated mid-phrase in the results page.
-const descTail = ' Full specs and where to buy.';
+// The invitation only promises what the page has: a can with no buy link (a
+// limited edition no retailer lists yet) gets no "where to buy" in its snippet.
+const descTail = p.buyLinks.length
+  ? ' Full specs and where to buy.'
+  : p.verified ? ' Full specs, read off the label.' : ' Full specs.';
 const desc = descCore.length + descTail.length <= 155 ? descCore + descTail : descCore;
 
 const faqs = [
