@@ -90,6 +90,19 @@ Rules that keep the data honest:
 
 Photos go in `public/images/products/` as `<slug>.jpg`, ~1200px wide, same background and angle for every can.
 
+Make them from a shelf photo with `scripts/make-cutout.py`, which writes the composite (to both
+`public/images/products/` and `src/assets/products/`) and the transparent card in
+`src/assets/products/cards/` in one run:
+
+```bash
+python -P scripts/make-cutout.py photo.jpg loco-coffee-churro-latte \
+  --can 70 540 --fit 150 600 --seam right --base 1230 1311 --preview check.jpg
+```
+
+`--can` is the front can's horizontal span; `--seam` puts an edge on the dark line where it
+touches a neighbouring can; `--base` clips the foot to an ellipse when a tray covers it. Look
+at the `--preview` sheet before committing. Needs Pillow, numpy, scipy and rembg.
+
 ### Brand naming notes
 
 There is no brand record: a brand is whatever the `brand` / `brandSlug` fields on its
