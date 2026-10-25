@@ -98,6 +98,9 @@ let described = 0;
 let socialSets = 0;        // pages carrying the full tag set
 let ogImageChecks = 0;     // og:image URLs resolved to a file on disk
 const cardFiles = new Set();
+let titled = 0;            // indexable pages whose <title> entered the uniqueness check
+const byTitle = new Map(); // title → pages carrying it
+const byDesc = new Map();  // meta description → pages carrying it
 
 for (const file of pages) {
   const html = readFileSync(file, 'utf8');
@@ -131,6 +134,16 @@ for (const file of pages) {
     described++;
     const n = decode(desc).length;
     if (n > DESC_WARN_AT) warnings.push(`${want} — meta description is ${n} chars`);
+  }
+
+  // Gate 4's "unique title and meta description", held across every indexable
+  // page. A noindex page (the 404) is out of the index, so it cannot collide.
+  if (!/<meta name="robots" content="[^"]*noindex/i.test(html)) {
+    const title = (html.match(/<title>([^<]*)<\/title>/) || [])[1];
+    if (title) { titled++; (byTitle.get(decode(title)) ?? byTitle.set(decode(title), []).get(decode(title))).push(want); }
+    else failures.push(`${file}: no <title>`);
+    if (desc) (byDesc.get(decode(desc)) ?? byDesc.set(decode(desc), []).get(decode(desc))).push(want);
+    else failures.push(`${file}: no meta description`);
   }
 
   // ---- the social card ----
@@ -241,6 +254,19 @@ if (existsSync('public/_redirects')) {
   }
 }
 
+// ---- no two indexable pages share a title or a description ----
+// Google shows the title as the result's headline, so two pages carrying the same
+// one are two results nobody can tell apart, and on a site this templated that
+// is the near-duplicate signal to avoid. It happened by clipping: three Death
+// Wish cans were all "Death Wish Coffee…: Up to 120 mg Caffeine, 16 g Sugar"
+// until fitName in src/lib/names.ts learned to drop the brand's generic words
+// before the flavor.
+for (const [what, map] of [['title', byTitle], ['meta description', byDesc]]) {
+  for (const [value, at] of map) {
+    if (at.length > 1) failures.push(`${at.length} pages share one ${what} "${value}": ${at.join(', ')}`);
+  }
+}
+
 // ---- the zero-coverage guard ----
 // A checker that inspected nothing must never report success.
 for (const [what, n] of [['pages in dist/', pages.length], ['canonical tags', checked], ['sitemap URLs', locs.length], ['redirect rules', redirectRules]]) {
@@ -256,6 +282,11 @@ if (pages.length > 0) {
       `only ${socialSets} of ${pages.length} pages parsed a full social tag set — ` +
       `if the pages are fine, this checker's meta selectors are broken`,
     );
+  }
+  // Every page but the noindex 404 is held to a unique title. Anything well short
+  // of that means the <title> selector stopped matching, not that titles vanished.
+  if (titled < pages.length - 1) {
+    failures.push(`only ${titled} of ${pages.length} pages entered the title uniqueness check — the selector is broken`);
   }
   if (ogImageChecks < pages.length) {
     failures.push(
@@ -287,6 +318,7 @@ console.log(
   `${locs.length} sitemap URLs agree with them. ` +
   `${socialSets} pages carry a complete Open Graph + X card set, and their ${ogImageChecks} og:image URLs ` +
   `all resolve to one of ${cardFiles.size} real image file(s) in dist/. ` +
-  `${redirectRules} redirect rules all land on a page that builds.` +
+  `${redirectRules} redirect rules all land on a page that builds. ` +
+  `${titled} indexable pages carry unique titles and descriptions.` +
   (warnings.length ? ` ${warnings.length} long meta description(s) — see above.` : ` All ${described} meta descriptions within ${DESC_WARN_AT} chars.`)
 );

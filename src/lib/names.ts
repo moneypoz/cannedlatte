@@ -36,13 +36,33 @@ export const clipName = (s: string, max: number) => {
   return base.replace(/[\s,:;.\-–—]+$/, '') + '…';
 };
 
+/** Words a brand carries that say what it sells rather than who it is. Dropped,
+ *  in a title only, before anything of the product name is. */
+const GENERIC_BRAND_WORDS = /\s+(?:Sport|Coffee|Roasting|Brewing|Brew|Company|Co\.)(?=\s|$)/gi;
+
+/** The brand cut down to the words that identify it: "Death Wish Coffee" →
+ *  "Death Wish", "Great Lakes Coffee Roasting Company" → "Great Lakes". The first
+ *  word always survives, so a brand is never reduced to nothing. */
+export const coreBrand = (brand: string) => {
+  const [first, ...rest] = brand.split(/\s+/);
+  return (first + (' ' + rest.join(' ')).replace(GENERIC_BRAND_WORDS, '')).trim();
+};
+
 /** The longest form of a name that fits `max`: the full name, else the compact one
- *  the charts use, else that clipped. Titles have a character budget, and the name
- *  is what gives way inside it — the number never does, since the number is the
- *  reason the title was retemplated. */
+ *  the charts use, else that with the brand cut to its core, else that clipped.
+ *  Titles have a character budget, and the name is what gives way inside it — the
+ *  number never does, since the number is the reason the title was retemplated.
+ *
+ *  The brand gives way before the product name because clipping cuts from the end,
+ *  and the end is the flavor: three Death Wish cans all titled "Death Wish
+ *  Coffee…: Up to 120 mg Caffeine, 16 g Sugar", and three Throne cans sharing
+ *  another, were six pages Google could not tell apart. "Death Wish Caramel" can
+ *  be. */
 export const fitName = (p: Named, max: number) => {
   const full = fullName(p);
   if (full.length <= max) return full;
   const short = shortName(p);
-  return short.length <= max ? short : clipName(short, max);
+  if (short.length <= max) return short;
+  const core = shortName({ brand: coreBrand(p.brand), name: p.name });
+  return core.length <= max ? core : clipName(core, max);
 };
