@@ -29,7 +29,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'oat-milk': {
     paragraphs: [
-      'Oat milk has become the default non-dairy base for canned lattes because it froths and carries coffee flavor more like dairy than almond or soy. Every can on this list is dairy-free, but they differ sharply in caffeine (50 mg to over 200 mg) and in how they\'re sweetened — some use dates or nothing at all, others add cane sugar. Whether you spell it oat milk or oatmilk, a canned oatmilk latte lives or dies on the same three numbers: caffeine, sugar, and price.',
+      'Oat milk has become the default non-dairy base for canned lattes because it froths and carries coffee flavor more like dairy than almond or soy. Every can on this list is dairy-free, but they differ sharply in caffeine (50 mg to over 200 mg) and in how they\'re sweetened — some use dates, sucralose or nothing at all, others add cane or coconut sugar. Whether you spell it oat milk or oatmilk, a canned oatmilk latte lives or dies on the same three numbers: caffeine, sugar, and price.',
       'One practical note: oat versions usually cost more than the same brand\'s dairy can. La Colombe\'s oat milk Draft Lattes, for example, run about $0.34 more per can than their dairy equivalents. Refrigeration also varies — most are shelf-stable, but NOBL ships cold.',
     ],
     faqs: [
@@ -70,7 +70,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'dairy-free': {
     paragraphs: [
-      'Every can here is made without dairy — oat milk dominates, with two almond cans and one coconut alongside it. Beyond the milk itself, the differences that matter are caffeine (50 to 207 mg across this list), sweetener (dates, cane sugar, sucralose, or none), and storage (most are shelf-stable; NOBL is refrigerated and ships cold).',
+      'Every can here is made without dairy — oat milk dominates, with two almond cans and one coconut alongside it. Beyond the milk itself, the differences that matter are caffeine (50 to 207 mg across this list), sweetener (dates, cane or coconut sugar, sucralose, or none), and storage (most are shelf-stable; NOBL is refrigerated and ships cold).',
       'Lactose-intolerant but not dairy-free? Most of La Colombe\'s reformulated Draft Lattes print "lactose free" on the can — real dairy, no lactose — which sits between this list and the standard dairy cans. Read the milk column rather than assuming the line: their limited-edition S\'mores and Peppermint Mocha carry lactase in the ingredients but make no lactose-free claim on the label.',
     ],
     faqs: [

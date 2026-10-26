@@ -1,0 +1,33 @@
+{
+  "type": "latte",
+  "sizeOz": 8,
+  "caffeineMg": 118.5,
+  "caffeineBasis": "exact",
+  "caffeineMinMg": null,
+  "caffeineMaxMg": null,
+  "sugarG": 10,
+  "addedSugar": true,
+  "addedSugarG": 10,
+  "proteinG": 2,
+  "calories": 110,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [],
+  "buyLinks": [],
+  "upc": "860013437008",
+  "verified": true,
+  "updated": "2026-10-25",
+  "sources": [
+    "/images/products/jolene-white-oat-milk-latte-label.jpg"
+  ],
+  "brand": "Jolene Coffee",
+  "brandSlug": "jolene",
+  "name": "White Oat Milk Latte",
+  "caffeineNote": "Label: 118.5 mg per can, printed above the nutrition panel; the half milligram is the can's own figure, not our rounding",
+  "milk": "oat",
+  "dairyFree": true,
+  "summary": "Jolene's plain oat milk latte, read off a can in hand. The panel is topped with 118.5 mg of caffeine for the 8 fl oz can, at 110 calories with 2 g of protein. All 10 g of its sugar is added, and it comes from organic coconut sugar rather than cane; the coffee is organic too. Made in a facility that also processes tree nuts. No price yet: we have not confirmed where Jolene sells it online.",
+  "image": "/images/products/jolene-white-oat-milk-latte.jpg"
+}

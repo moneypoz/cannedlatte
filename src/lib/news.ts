@@ -37,6 +37,18 @@ export type NewsItem = {
 export const news: NewsItem[] = [
   {
     date: '2026-10-25',
+    text: 'Jolene Coffee, a new brand to us, confirmed in stores and label-verified from a can in hand: its White Oat Milk Latte prints 118.5 mg of caffeine above the panel, with 10 g of sugar, all of it organic coconut sugar, and 2 g of protein in an 8 oz can at 110 calories.',
+    link: { href: '/latte/jolene-white-oat-milk-latte', label: 'White Oat Milk Latte' },
+    image: 'jolene-white-oat-milk-latte-card.png',
+  },
+  {
+    date: '2026-10-25',
+    text: 'Jolene’s Gold Salted Caramel Oat Milk Latte, confirmed and label-verified alongside the White: 118 mg of caffeine, 14 g of sugar, all of it added as organic coconut sugar, and 1 g of protein in an 8 oz can at 110 calories, with the Fair Trade Certified mark.',
+    link: { href: '/latte/jolene-gold-salted-caramel-oat-milk-latte', label: 'Gold Salted Caramel' },
+    image: 'jolene-gold-salted-caramel-oat-milk-latte-card.png',
+  },
+  {
+    date: '2026-10-25',
     text: 'Loco Coffee has a Churro Oat Milk Latte, confirmed and label-verified from a can in hand: 200 mg of caffeine printed on the front, 0 g of sugar with sucralose in its place, and 1 g of protein in an 11 oz can at 80 calories. The same day we checked Loco’s Vanilla and Mocha Libre cans against their labels, and every figure we had held from the brand’s product photos matched.',
     link: { href: '/latte/loco-coffee-churro-latte', label: 'Churro Latte' },
     image: 'loco-coffee-churro-latte-card.png',
