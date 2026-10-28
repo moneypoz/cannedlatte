@@ -15,7 +15,13 @@
   "packPrice": null,
   "packSize": null,
   "retailers": [],
-  "buyLinks": [],
+  "buyLinks": [
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://link.amazon/B0izCD91Z",
+      "affiliate": true
+    }
+  ],
   "upc": "850084631009",
   "verified": true,
   "updated": "2026-10-25",
