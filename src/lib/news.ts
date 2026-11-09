@@ -36,6 +36,18 @@ export type NewsItem = {
 
 export const news: NewsItem[] = [
   {
+    date: '2026-11-09',
+    text: 'Bones’ Holy Cannoli Cold Brew Latte is label-verified from a can in hand: it prints 255 mg of caffeine, replacing the 250 to 260 mg range we had from the brand’s site, with 28 g of sugar (16 g added) and 8 g of protein in an 11 oz can at 210 calories.',
+    link: { href: '/latte/bones-holy-cannoli-latte', label: 'Holy Cannoli Cold Brew Latte' },
+    image: 'bones-holy-cannoli-latte-card.png',
+  },
+  {
+    date: '2026-11-09',
+    text: 'Bones sells French Toast in both of its canned lines, and the Cold Brew Latte version is now in the database, label-verified at 255 mg of caffeine, 28 g of sugar and 8 g of protein. It is a different recipe from the 200 mg French Toast Latte on the flavored-latte line.',
+    link: { href: '/latte/bones-french-toast-cold-brew-latte', label: 'French Toast Cold Brew Latte' },
+    image: 'bones-french-toast-cold-brew-latte-card.png',
+  },
+  {
     date: '2026-10-25',
     text: 'Jolene Coffee, a new brand to us, confirmed in stores and label-verified from a can in hand: its White Oat Milk Latte prints 118.5 mg of caffeine above the panel, with 10 g of sugar, all of it organic coconut sugar, and 2 g of protein in an 8 oz can at 110 calories.',
     link: { href: '/latte/jolene-white-oat-milk-latte', label: 'White Oat Milk Latte' },

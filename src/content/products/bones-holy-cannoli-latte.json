@@ -2,12 +2,12 @@
   "type": "latte",
   "sizeOz": 11,
   "caffeineMg": 255,
-  "caffeineBasis": "range",
-  "caffeineMinMg": 250,
-  "caffeineMaxMg": 260,
+  "caffeineBasis": "exact",
+  "caffeineMinMg": null,
+  "caffeineMaxMg": null,
   "sugarG": 28,
   "addedSugar": true,
-  "addedSugarG": null,
+  "addedSugarG": 16,
   "proteinG": 8,
   "calories": 210,
   "refrigerated": false,
@@ -31,9 +31,11 @@
       "affiliate": true
     }
   ],
-  "verified": false,
-  "updated": "2026-09-06",
+  "verified": true,
+  "updated": "2026-11-09",
   "sources": [
+    "/images/products/bones-holy-cannoli-latte-label.jpg",
+    "/images/products/bones-holy-cannoli-latte-label-2.jpg",
     "https://www.bonescoffee.com/",
     "https://www.bonescoffee.com/products/holy-cannoli-cold-brew-latte-12-pack"
   ],
@@ -41,8 +43,9 @@
   "brandSlug": "bones-coffee",
   "name": "Holy Cannoli Cold Brew Latte",
   "flavor": "Holy Cannoli",
-  "caffeineNote": "Brand states 250–260 mg",
+  "caffeineNote": "Label: \"Contains 255mg caffeine\", printed below the ingredients, with \"Caffeine contents may vary\"; the can's own figure supersedes the range Bones publishes on its site",
   "milk": "dairy",
   "dairyFree": false,
-  "summary": "Cannoli-flavored cold brew latte on reduced-fat milk and the strongest can in our database at 250–260 mg of caffeine, with 8 g of protein and 28 g of sugar per 11 oz can at 210 calories. This is Bones' cold brew line: their Cannoli Latte is a separate, milder and less sweet can at 200 mg."
+  "image": "/images/products/bones-holy-cannoli-latte.jpg",
+  "summary": "Cannoli-flavored cold brew latte on reduced-fat milk, read off the can at 255 mg of caffeine per 11 fl oz, with 28 g of sugar (16 g of it added, as cane sugar), 8 g of protein and 210 calories. This is Bones' Cold Brew Latte line: their Cannoli Latte is a separate, milder and less sweet can from the flavored-latte line at 200 mg, while the French Toast Cold Brew Latte prints the same 255 mg as this one."
 }

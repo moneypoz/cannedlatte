@@ -200,15 +200,21 @@ for (const [id, d] of Object.entries(PRODUCTS)) {
     else if (parseFloat(oz[1]) !== wantOz) failures.push(`latte/${id}: caffeine section says ${oz[1]} mg per ounce, the record works out to ${wantOz}`);
   }
 
-  // Cans that share a figure may take any of their tied places, depending on order.
-  caffeineClaims += 2;
+  // Competition ranking: cans that share a figure share the place, and the page
+  // names the tie. This used to accept any place inside the tied band, which is
+  // how two 255 mg cans rendered as "#1" and "#2" and passed.
+  caffeineClaims += 3;
   const rank = sec[1].match(/data-rank[^>]*>#(\d+)</);
   const of = sec[1].match(/data-of[^>]*>(\d+)</);
+  const tiedEl = sec[1].match(/data-tied[^>]*>(\d+)</);
   const first = withCaffeine.filter(([, x]) => x.caffeineMg > d.caffeineMg).length + 1;
-  const last = first + withCaffeine.filter(([x, v]) => x !== id && v.caffeineMg === d.caffeineMg).length;
+  const tied = withCaffeine.filter(([x, v]) => x !== id && v.caffeineMg === d.caffeineMg).length;
   if (!rank) failures.push(`latte/${id}: caffeine section is missing its rank`);
-  else if (+rank[1] < first || +rank[1] > last) {
-    failures.push(`latte/${id}: ranks itself #${rank[1]}, but at ${d.caffeineMg} mg it sits #${first}${last > first ? `–${last}` : ''}`);
+  else if (+rank[1] !== first) {
+    failures.push(`latte/${id}: ranks itself #${rank[1]}, but at ${d.caffeineMg} mg it sits #${first}${tied ? `, tied with ${tied}` : ''}`);
+  }
+  if ((tiedEl ? +tiedEl[1] : 0) !== tied) {
+    failures.push(`latte/${id}: says it is tied with ${tiedEl ? tiedEl[1] : 'no'} other can(s), but ${tied} other record(s) carry ${d.caffeineMg} mg`);
   }
   if (!of) failures.push(`latte/${id}: caffeine section is missing the count it ranks against`);
   else if (+of[1] !== withCaffeine.length) failures.push(`latte/${id}: ranks against ${of[1]} cans, but ${withCaffeine.length} records carry a figure`);
@@ -984,11 +990,6 @@ const SUPERLATIVE_CLAIMS = [
     basis: 'Checked 2026-09-23: no other record names chili, capsaicin or pepper. Recheck when a spicy can is added.',
   },
   {
-    where: 'products/bones-holy-cannoli-latte.json',
-    claim: 'the strongest can in our database',
-    basis: 'Checked 2026-09-23: 250-260 mg is the top caffeineMg, and /best/most-caffeine sorts it first. That ranking recomputes itself; this sentence does not.',
-  },
-  {
     where: 'products/french-truck-lightly-sweetened-latte.json',
     claim: 'the least sweet of the three',
     basis: 'Checked 2026-09-23: French Truck has three records, at 15, 21 and 27 g of sugar. "Of the three" carries its own denominator, so a fourth flavour makes the sentence visibly wrong rather than quietly wrong.',
@@ -1067,17 +1068,17 @@ const SUPERLATIVE_CLAIMS = [
   {
     where: 'listContent.ts -> most-caffeine',
     claim: 'the strongest cans on this list genuinely replace a large coffee-shop order',
-    basis: 'Rests on the 140-200 mg drip figure quoted in the same sentence against the 230-260 mg top of the list. Directional, and true across a wide margin.',
+    basis: 'Rests on the 140-200 mg drip figure quoted in the same sentence against the 230-255 mg top of the list (rechecked 2026-11-09, when Holy Cannoli moved from a 250-260 mg brand range to a label-printed 255). Directional, and true across a wide margin.',
   },
   {
     where: 'listContent.ts -> most-caffeine',
-    claim: 'the strongest we track at the 250–260 mg of caffeine the brand publishes',
-    basis: 'Checked 2026-09-23: the same leader as the Bones Holy Cannoli summary, stated in its published range rather than as a midpoint.',
+    claim: 'tie as the strongest we track, each at a label-printed 255 mg of caffeine',
+    basis: 'Checked 2026-11-09: Holy Cannoli and French Toast Cold Brew are the only records at 255 mg, the top caffeineMg in the database, both exact and both label-verified from the photos cited in their sources. Next is Triple Draft at 230 mg. A third can at 255 mg, or anything above it, makes this wrong.',
   },
   {
     where: 'listContent.ts -> most-caffeine',
     claim: 'roughly two of the strongest cans on this list',
-    basis: 'Arithmetic against the 400 mg daily figure in the same sentence: two cans at 250-260 mg. Moves only if the top of the list moves a long way.',
+    basis: 'Arithmetic against the 400 mg daily figure in the same sentence: two cans at 255 mg (rechecked 2026-11-09). Moves only if the top of the list moves a long way.',
   },
   {
     where: 'listContent.ts -> cheapest-per-can',
