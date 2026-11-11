@@ -521,6 +521,31 @@ for (const f of existsSync('dist/brands') ? readdirSync('dist/brands') : []) {
   }
 }
 
+// (b2) /brands/<brand> — the computed "strongest" sentence against the records.
+// It used to crown withCaffeine[0] whatever the figure behind it, so a tie at the
+// top would have named one can by sort order. Each sentence must name every can
+// at the brand's top figure, and only those.
+let strongestClaims = 0;
+for (const f of existsSync('dist/brands') ? readdirSync('dist/brands') : []) {
+  if (f === 'index.html') continue;
+  const slug = f.replace(/\.html$/, '');
+  const lineup = Object.values(PRODUCTS).filter((d) => d.brandSlug === slug && d.caffeineMg != null);
+  if (!lineup.length) continue;
+  const top = Math.max(...lineup.map((d) => d.caffeineMg));
+  const want = lineup.filter((d) => d.caffeineMg === top).map((d) => d.name).sort();
+  const body = text(readFileSync('dist/brands/' + f, 'utf8'));
+  const claims = [
+    ...[...body.matchAll(/The strongest is (.{1,120}?) at (?:up to )?\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)? mg\./g)].map((m) => [m[0], [m[1]]]),
+    ...[...body.matchAll(/(?:^|\. |")([^."]{1,200}?) tie as the strongest, each at/g)].map((m) => [m[0], m[1].split(/, | and /)]),
+  ];
+  for (const [said, names] of claims) {
+    strongestClaims++;
+    if (names.slice().sort().join('|') !== want.join('|')) {
+      failures.push(`brands/${f}: "${said.trim()}" — the top figure, ${top} mg, belongs to ${want.join(' and ')}`);
+    }
+  }
+}
+
 // (c) /best/<slug> — the headline stat, and Gate 1 over it.
 // Exactly one number per title, so its value is the whole claim: either the
 // crowned extreme, or the count the title falls back to when that extreme belongs
@@ -1388,7 +1413,7 @@ if (existsSync('dist/table.html')) {
   else if (parseInt(m[1], 10) !== n) failures.push(`table.html: title counts ${m[1]} cans, the table lists ${n}`);
 }
 
-totalClaims = compareClaims + caffeineClaims + guideClaims + discloseClaims + titleClaims + sweepCells + proseClaims + ratingClaims + superlativeClaims + countChecks;
+totalClaims = strongestClaims + compareClaims + caffeineClaims + guideClaims + discloseClaims + titleClaims + sweepCells + proseClaims + ratingClaims + superlativeClaims + countChecks;
 
 // ---- the zero-coverage guard ----
 // The guide row counts declared guides, not discovered ones, so "no guide pages
@@ -1409,6 +1434,8 @@ const groups = [
   ['brand caffeine guides', Math.max(guidePages, EXPECTED_GUIDES.length), 'brand guide claims', guideClaims, 6],
   ['compare pages', disclosePages, 'sourcing-disclosure checks', discloseClaims, 150],
   ['titled pages', Object.values(titlePages).reduce((a, b) => a + b, 0), 'title claims', titleClaims, 190],
+  // Six hubs print the sentence today, each twice (the FAQ and its schema copy).
+  ['brand hubs', titlePages.brands, 'strongest-can sentences', strongestClaims, 10],
   ['tables with a Caffeine column', sweepTables, 'swept caffeine cells', sweepCells, 200],
   ['prose blocks naming a can', proseBlocks, 'prose figure checks', proseClaims, 150],
   // Two checks land on every product page whether or not it is rated (the gate, in
@@ -1453,6 +1480,7 @@ console.log(
   `${discloseClaims} sourcing-disclosure checks across ${disclosePages} compare pages, ` +
   `${titleClaims} title claims across ${titled.reduce((a, [, n]) => a + n, 0)} pages ` +
   `[${titled.map(([k, n]) => `${k} ${n}`).join(', ')}], ` +
+  `${strongestClaims} brand-hub strongest-can sentences against the lineup, ` +
   `${sweepCells} caffeine cells swept across ${sweepTables} tables for a dropped qualifier, ` +
   `${proseClaims} prose figure checks across ${proseBlocks} blocks naming a can, ` +
   `${ratingClaims} rating and schema-gate checks across ${ratingPages} product pages, ` +

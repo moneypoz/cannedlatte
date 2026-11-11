@@ -76,6 +76,14 @@ const teaClause =
     ? ` ${prose(teaCans.map((p) => p.data.name))} ${teaCans.length === 1 ? 'is' : 'are'} tea-based, not coffee; the coffee cans start at ${caffeineFigure(coffeeFloor.data)} (${coffeeFloor.data.name}).`
     : '';
 
+// Crowning withCaffeine[0] alone is only right while the top figure is unique; on
+// a tie it would name whichever can the sort happened to put first. Jolene's Gold
+// and Red both print 118 mg, one step under the White, which is what prompted this.
+const topCans = withCaffeine.filter((p) => p.data.caffeineMg === maxMg);
+const strongestSentence = !strongest ? "" : topCans.length === 1
+  ? `The strongest is ${strongest.data.name} at ${caffeineFigure(strongest.data)}.`
+  : `${prose(topCans.map((p) => p.data.name))} tie as the strongest, each at ${caffeineFigure(strongest.data)}.`;
+
 const gRange = (a: number, b: number) => (a === b ? `${a} g` : `${a} to ${b} g`);
 
 // Plain-text mirrors of the on-page answers, for the FAQPage schema.
@@ -97,7 +105,7 @@ const caffeineAnswer = !mgs.length
       // bare "96 mg" in an answer whose own next clause says "91–101 mg".
       : anyQualified
         ? `${theCans} carry ${prose(withCaffeine.map((p) => `${p.data.name} at ${caffeineFigure(p.data)}`))}.`
-        : `${theCans} run from ${minMg} to ${maxMg} mg of caffeine.${teaClause} The strongest is ${strongest.data.name} at ${caffeineFigure(strongest.data)}.`;
+        : `${theCans} run from ${minMg} to ${maxMg} mg of caffeine.${teaClause} ${strongestSentence}`;
 
 const buyAnswer = [
   directLink ? `You can order ${name} direct from ${directLink.label}.` : null,

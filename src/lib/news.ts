@@ -36,6 +36,12 @@ export type NewsItem = {
 
 export const news: NewsItem[] = [
   {
+    date: '2026-11-11',
+    text: 'A third Jolene Coffee flavor confirmed in stores and label-verified from a can in hand: the Red Velvet Oat Milk Latte, sold as Red, prints the same 118 mg of caffeine as the Gold, with 10 g of sugar, all of it added as organic coconut sugar, and 1 g of protein in an 8 oz can at 120 calories.',
+    link: { href: '/latte/jolene-red-velvet-oat-milk-latte', label: 'Red Velvet Oat Milk Latte' },
+    image: 'jolene-red-velvet-oat-milk-latte-card.png',
+  },
+  {
     date: '2026-11-09',
     text: 'Bones’ Holy Cannoli Cold Brew Latte is label-verified from a can in hand: it prints 255 mg of caffeine, replacing the 250 to 260 mg range we had from the brand’s site, with 28 g of sugar (16 g added) and 8 g of protein in an 11 oz can at 210 calories.',
     link: { href: '/latte/bones-holy-cannoli-latte', label: 'Holy Cannoli Cold Brew Latte' },
