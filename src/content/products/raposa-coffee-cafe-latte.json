@@ -21,6 +21,11 @@
       "label": "Raposa Coffee (4-pack)",
       "url": "https://raposacoffee.com/products/nitro-cold-brew-cafe-latte",
       "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://link.amazon/B0evvtODp",
+      "affiliate": true
     }
   ],
   "verified": false,
