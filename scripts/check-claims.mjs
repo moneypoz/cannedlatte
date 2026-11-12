@@ -1303,7 +1303,7 @@ const COUNT_CLAIMS = [
   },
   {
     where: 'listContent.ts -> no-added-sugar',
-    claim: 'thirteen cans publish 5 g of added sugar or less',
+    claim: 'fourteen cans publish 5 g of added sugar or less',
     count: () => countOf((d) => d.addedSugarG > 0 && d.addedSugarG <= 5),
   },
   {

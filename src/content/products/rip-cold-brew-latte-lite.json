@@ -1,0 +1,44 @@
+{
+  "type": "latte",
+  "sizeOz": 11,
+  "caffeineMg": 100,
+  "caffeineBasis": "exact",
+  "sugarG": 5,
+  "addedSugar": true,
+  "addedSugarG": 3,
+  "proteinG": 1,
+  "calories": 40,
+  "refrigerated": false,
+  "pricePerCan": 3.5,
+  "packPrice": 41.99,
+  "packSize": 12,
+  "retailers": [
+    "RIP Cold Brew",
+    "Amazon"
+  ],
+  "buyLinks": [
+    {
+      "label": "RIP Cold Brew (12-pack)",
+      "url": "https://ripcoldbrew.com/products/rip-cold-brew-latte-lite-dairy-latte-12-pack",
+      "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://www.amazon.com/dp/B0H8F38FK2",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-11-12",
+  "sources": [
+    "https://ripcoldbrew.com/products/rip-cold-brew-latte-lite-dairy-latte-12-pack",
+    "https://ripcoldbrew.com/cdn/shop/files/Latte_Nutrition_RIP_Cold_Brew_x_Michael_Walker_4_50.jpg"
+  ],
+  "brand": "RIP Cold Brew",
+  "brandSlug": "rip-cold-brew",
+  "name": "Latte Lite",
+  "caffeineNote": "RIP's product page states 100 mg; the nutrition panel image it publishes prints no caffeine figure",
+  "milk": "dairy",
+  "dairyFree": false,
+  "summary": "Figures from RIP Cold Brew's own site, not yet checked against a can: the brand's Original Black cold brew with a splash of reduced-fat milk, at 100 mg of caffeine per its product page, and 40 calories, 5 g of sugar (3 g added) and 1 g of protein on the nutrition panel image it publishes, in an 11 oz can. Kosher Dairy."
+}

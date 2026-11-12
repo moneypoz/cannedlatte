@@ -37,6 +37,11 @@ export type NewsItem = {
 export const news: NewsItem[] = [
   {
     date: '2026-11-12',
+    text: 'RIP Cold Brew, a new brand to us, added from its own published figures and still awaiting a can in hand: the Latte Lite Dairy Latte lists 100 mg of caffeine on its product page, with 40 calories, 5 g of sugar (3 g added) and 1 g of protein on the nutrition panel image the brand publishes, in an 11 oz can.',
+    link: { href: '/latte/rip-cold-brew-latte-lite', label: 'Latte Lite' },
+  },
+  {
+    date: '2026-11-12',
     text: 'With the Caramel in, all four Death Wish lattes we track are label-verified from a can in hand: the Caramel, Mocha and Vanilla Cold Brew Lattes each print up to 120 mg of caffeine, and the Original prints no milligram figure at all, only “up to as much caffeine as 1.5 cups of coffee”.',
     link: { href: '/brands/death-wish', label: 'Death Wish Coffee' },
   },
