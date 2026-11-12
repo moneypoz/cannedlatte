@@ -1112,8 +1112,8 @@ const SUPERLATIVE_CLAIMS = [
   },
   {
     where: 'listContent.ts -> cheapest-per-can',
-    claim: 'the cheapest at about $2.83 per can in a 12-pack',
-    basis: "Checked 2026-09-23: $2.83 is the lowest pricePerCan in the database, and /best/cheapest-per-can crowns the same figure. The S'mores can joined the La Colombe line at $2.89 as a single, which is what \"in a 12-pack\" is holding apart.",
+    claim: 'The lowest price we track is Torke',
+    basis: "Checked 2026-11-12: Torke Highlander Grogg at $2.00 per can ($23.95 / 12, from Torke's product page) is the lowest pricePerCan in the database; next is $2.83 (La Colombe's 12-pack Draft Lattes). The record is unverified, which the same sentence says, so it reports the price rather than crowning the can's label figures. The /best/cheapest-per-can title runs on a count for the same reason.",
   },
   {
     where: 'listContent.ts -> cheapest-per-can',

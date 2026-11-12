@@ -19,7 +19,7 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   'most-caffeine': {
     paragraphs: [
       'Caffeine in canned lattes ranges from a gentle 34 mg to over 250 mg per can — the difference between a soda\'s worth and two strong cups of coffee. For reference, a 12 oz drip coffee is typically 140–200 mg and a single espresso shot is 65–75 mg, so the strongest cans on this list genuinely replace a large coffee-shop order.',
-      'Two things drive the number: the coffee format (cold brew concentrates and triple-shot builds carry more) and the can size. Bones Coffee\'s Holy Cannoli and French Toast Cold Brew Lattes top our database, each printing 255 mg on the label, with La Colombe\'s Triple Draft Latte at 230 mg, Projo\'s Power Coffee at 225 mg and NOBL\'s cold brew oat latte at 207 mg; most dairy lattes land somewhere between 75 and 200 mg, the figure Bones prints on its whole flavored-latte line.',
+      'Two things drive the number: the coffee format (cold brew concentrates and triple-shot builds carry more) and the can size. Bones Coffee\'s Holy Cannoli and French Toast Cold Brew Lattes top our database, each printing 255 mg on the label, with La Colombe\'s Triple Draft Latte at 230 mg, Projo\'s Power Coffee at 225 mg, Torke\'s Highlander Grogg Oat Milk Latte at a brand-listed 220 mg and NOBL\'s cold brew oat latte at 207 mg; most dairy lattes land somewhere between 75 and 200 mg, the figure Bones prints on its whole flavored-latte line.',
       'Brands aren\'t required to print caffeine on the label, and actual content varies batch to batch, so treat every figure as typical rather than exact. Where a brand publishes a range, we note it on the product page.',
     ],
     faqs: [
@@ -49,11 +49,11 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'cheapest-per-can': {
     paragraphs: [
-      'Price per can is the honest way to compare, because pack sizes vary from singles to 12-packs. The cans here run from about $3 to $5 at the brand\'s own store or its most common retailer. Grocery and club prices swing with promotions, so treat this as a ranking rather than a quote — and note that DTC 12-packs (La Colombe at $34/12, NOBL at $38/12) usually beat single-can convenience-store prices by a dollar or more.',
+      'Price per can is the honest way to compare, because pack sizes vary from singles to 12-packs. The cans here run from about $2 to $5 at the brand\'s own store or its most common retailer. Grocery and club prices swing with promotions, so treat this as a ranking rather than a quote — and note that DTC 12-packs (La Colombe at $34/12, NOBL at $38/12) usually beat single-can convenience-store prices by a dollar or more.',
       'The cheapest per-can path for most people: buy the multipack of a shelf-stable can you already know you like. Refrigerated and single-serve options carry a premium.',
     ],
     faqs: [
-      { q: 'What is the cheapest canned latte?', a: 'Among cans we track with published prices, La Colombe\'s dairy Draft Lattes are the cheapest at about $2.83 per can in a 12-pack, ahead of Bones Coffee at $3.08 and Death Wish at $3.33. Store-brand and promotional prices can go lower.' },
+      { q: 'What is the cheapest canned latte?', a: 'The lowest price we track is Torke\'s Highlander Grogg Oat Milk Latte at $23.95 for a 12-pack direct from Torke, about $2.00 per can, though that can is not yet checked against a label. Next come La Colombe\'s dairy Draft Lattes at about $2.83 per can in a 12-pack, ahead of Bones Coffee at $3.08 and Death Wish at $3.33. Store-brand and promotional prices can go lower.' },
       { q: 'Is buying direct from the brand cheaper?', a: 'Usually per can, yes, via 12-packs and subscriptions — but shipping can erase the gap on small orders. Grocery multipacks are often the best real-world deal.' },
     ],
   },
@@ -70,12 +70,12 @@ export const listContent: Record<string, { paragraphs: string[]; faqs: { q: stri
   },
   'dairy-free': {
     paragraphs: [
-      'Every can here is made without dairy — oat milk dominates, with two almond cans and one coconut alongside it. Beyond the milk itself, the differences that matter are caffeine (50 to 207 mg across this list), sweetener (dates, cane or coconut sugar, sucralose, or none), and storage (most are shelf-stable; NOBL is refrigerated and ships cold).',
+      'Every can here is made without dairy — oat milk dominates, with two almond cans and one coconut alongside it. Beyond the milk itself, the differences that matter are caffeine (50 to 220 mg across this list), sweetener (dates, cane or coconut sugar, sucralose, or none), and storage (most are shelf-stable; NOBL is refrigerated and ships cold).',
       'Lactose-intolerant but not dairy-free? Most of La Colombe\'s reformulated Draft Lattes print "lactose free" on the can — real dairy, no lactose — which sits between this list and the standard dairy cans. Read the milk column rather than assuming the line: their limited-edition S\'mores and Peppermint Mocha carry lactase in the ingredients but make no lactose-free claim on the label.',
     ],
     faqs: [
       { q: 'Are dairy-free canned lattes lactose-free?', a: 'Yes — no dairy means no lactose. Separately, some dairy cans (like La Colombe\'s Draft Lattes) use lactose-free milk, so lactose-intolerant drinkers have options on both lists.' },
-      { q: 'Which dairy-free canned latte has the most caffeine?', a: 'NOBL\'s Cold Brew Oat Milk Latte, at about 207 mg per can.' },
+      { q: 'Which dairy-free canned latte has the most caffeine?', a: 'The two highest figures on this list are both brand-published and not yet checked against a can: Torke\'s Highlander Grogg Oat Milk Latte lists 220 mg per 11.75 oz can, and NOBL\'s Cold Brew Oat Milk Latte about 207 mg per can.' },
     ],
   },
 };

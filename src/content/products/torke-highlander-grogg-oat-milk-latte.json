@@ -1,0 +1,44 @@
+{
+  "type": "latte",
+  "sizeOz": 11.75,
+  "caffeineMg": 220,
+  "caffeineBasis": "exact",
+  "sugarG": null,
+  "addedSugar": null,
+  "addedSugarG": null,
+  "proteinG": null,
+  "calories": 190,
+  "refrigerated": false,
+  "pricePerCan": 2,
+  "packPrice": 23.95,
+  "packSize": 12,
+  "retailers": [
+    "Torke Coffee",
+    "Amazon"
+  ],
+  "buyLinks": [
+    {
+      "label": "Torke Coffee (12-pack)",
+      "url": "https://www.torkecoffee.com/products/highlander-grogg-oat-milk-latte",
+      "affiliate": false
+    },
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://link.amazon/B030SudmZ",
+      "affiliate": true
+    }
+  ],
+  "verified": false,
+  "updated": "2026-11-12",
+  "sources": [
+    "https://www.torkecoffee.com/products/highlander-grogg-oat-milk-latte"
+  ],
+  "brand": "Torke Coffee",
+  "brandSlug": "torke-coffee",
+  "name": "Highlander Grogg Oat Milk Latte",
+  "flavor": "Highlander Grogg",
+  "caffeineNote": "Torke's product page lists 220 mg in its spec list",
+  "milk": "oat",
+  "dairyFree": true,
+  "summary": "From Torke's own product page and not yet checked against a can: the Wisconsin roaster's Highlander Grogg flavor, with notes of caramel, butterscotch and vanilla, as a ready-to-drink latte on an oat milk base. Torke lists 220 mg of caffeine and 190 calories in an 11.75 oz can, and publishes no sugar, protein or ingredient list."
+}
