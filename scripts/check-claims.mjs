@@ -1334,6 +1334,11 @@ const COUNT_CLAIMS = [
   },
   // ---- news: each entry records what was true on its date ------------------
   {
+    where: 'news.ts -> 2026-11-12',
+    claim: 'all four Death Wish lattes',
+    basis: 'A dated news entry: the four Death Wish records on 2026-11-12, each with a cited label photo matching its panel.',
+  },
+  {
     where: 'news.ts -> 2026-10-03',
     claim: 'Three of the four Throne Sport Coffee cans we track',
     basis: 'A dated news entry: what we tracked on 2026-10-03. Recomputing it would rewrite history the day a fifth Throne can lands.',

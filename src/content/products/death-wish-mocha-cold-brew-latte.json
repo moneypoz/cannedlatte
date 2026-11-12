@@ -5,7 +5,7 @@
   "caffeineBasis": "ceiling",
   "sugarG": 16,
   "addedSugar": true,
-  "addedSugarG": null,
+  "addedSugarG": 8,
   "proteinG": 8,
   "calories": 140,
   "refrigerated": false,
@@ -19,19 +19,15 @@
   ],
   "buyLinks": [
     {
-      "label": "Death Wish Coffee",
-      "url": "https://www.deathwishcoffee.com/products/caramel-cold-brew-latte",
-      "affiliate": false
-    },
-    {
       "label": "Amazon (12-pack)",
       "url": "https://amzn.to/3Uw3xLz",
       "affiliate": true
     }
   ],
   "verified": true,
-  "updated": "2026-09-02",
+  "updated": "2026-11-12",
   "sources": [
+    "/images/products/death-wish-mocha-cold-brew-latte.jpg",
     "https://www.bevnet.com/pr/2026/04/09/death-wish-coffee-co-expands-readytodrink-lineup-with-new-betterforyou-caramel-cold-brew-latte"
   ],
   "brand": "Death Wish Coffee",
@@ -42,5 +38,5 @@
   "milk": "dairy",
   "dairyFree": false,
   "image": "/images/products/death-wish-mocha-cold-brew-latte.jpg",
-  "summary": "Mocha flavor from Death Wish's original RTD latte lineup. Specs pending a label photo."
+  "summary": "Death Wish's mocha latte, label-verified from a can in hand: up to 120 mg of caffeine, 16 g of sugar (8 g added), 8 g of protein and 140 calories in an 11 oz can, made with dairy milk, cocoa and Fair Trade Certified cold brew."
 }

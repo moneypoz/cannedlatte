@@ -37,6 +37,11 @@ export type NewsItem = {
 export const news: NewsItem[] = [
   {
     date: '2026-11-12',
+    text: 'With the Caramel in, all four Death Wish lattes we track are label-verified from a can in hand: the Caramel, Mocha and Vanilla Cold Brew Lattes each print up to 120 mg of caffeine, and the Original prints no milligram figure at all, only “up to as much caffeine as 1.5 cups of coffee”.',
+    link: { href: '/brands/death-wish', label: 'Death Wish Coffee' },
+  },
+  {
+    date: '2026-11-12',
     text: 'Death Wish’s Caramel Cold Brew Latte is label-verified from a can in hand: it prints up to 120 mg of caffeine, the same ceiling we had from the brand, with 16 g of sugar (8 g added) and 7 g of protein in an 11 oz can at 140 calories.',
     link: { href: '/latte/death-wish-caramel-cold-brew-latte', label: 'Caramel Cold Brew Latte' },
     image: 'death-wish-caramel-cold-brew-latte-card.png',
