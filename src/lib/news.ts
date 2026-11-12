@@ -37,6 +37,11 @@ export type NewsItem = {
 export const news: NewsItem[] = [
   {
     date: '2026-11-12',
+    text: 'Wegmans, our first store brand, added from its own product listings while it awaits a can in hand: its Vanilla Latte comes as an 11 oz single at 160 calories and 15 g of sugar, with no caffeine figure published, and in a four-pack of 9 oz cans listed at 100 mg of caffeine and 130 calories each.',
+    link: { href: '/brands/wegmans', label: 'Wegmans' },
+  },
+  {
+    date: '2026-11-12',
     text: 'Torke Coffee, a Wisconsin roaster new to us, added from its own product page while it awaits a can in hand: the Highlander Grogg Oat Milk Latte, with notes of caramel, butterscotch and vanilla, lists 220 mg of caffeine and 190 calories in an 11.75 oz can, at $23.95 for a 12-pack.',
     link: { href: '/latte/torke-highlander-grogg-oat-milk-latte', label: 'Highlander Grogg Oat Milk Latte' },
   },

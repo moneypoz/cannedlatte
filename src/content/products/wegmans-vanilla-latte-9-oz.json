@@ -1,0 +1,38 @@
+{
+  "type": "latte",
+  "sizeOz": 9,
+  "caffeineMg": 100,
+  "caffeineBasis": "exact",
+  "sugarG": 12,
+  "addedSugar": true,
+  "addedSugarG": 4,
+  "proteinG": 6,
+  "calories": 130,
+  "refrigerated": false,
+  "pricePerCan": 2.25,
+  "packPrice": 8.99,
+  "packSize": 4,
+  "retailers": [
+    "Wegmans"
+  ],
+  "buyLinks": [
+    {
+      "label": "Wegmans (4-pack)",
+      "url": "https://www.wegmans.com/shop/product/63322",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-11-12",
+  "sources": [
+    "https://www.wegmans.com/shop/product/63322"
+  ],
+  "brand": "Wegmans",
+  "brandSlug": "wegmans",
+  "name": "9 oz Vanilla Latte",
+  "flavor": "Vanilla",
+  "caffeineNote": "Wegmans’ product listing states 100 mg of caffeine per can; the nutrition panel has no caffeine row",
+  "milk": "lactose-free dairy",
+  "dairyFree": false,
+  "summary": "The four-pack version of Wegmans’ own-brand vanilla latte, from its product listing and not yet checked against a can: the same recipe as the 11 oz single, cold brew with lactose-free whole milk, cane sugar and vanilla extract, in a 9 oz can. Wegmans lists 100 mg of caffeine, 130 calories, 12 g of sugar (4 g added) and 6 g of protein per can, at $8.99 for four."
+}

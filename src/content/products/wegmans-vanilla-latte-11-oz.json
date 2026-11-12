@@ -1,0 +1,38 @@
+{
+  "type": "latte",
+  "sizeOz": 11,
+  "caffeineMg": null,
+  "caffeineBasis": "exact",
+  "sugarG": 15,
+  "addedSugar": true,
+  "addedSugarG": 5,
+  "proteinG": 7,
+  "calories": 160,
+  "refrigerated": false,
+  "pricePerCan": 2.79,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Wegmans"
+  ],
+  "buyLinks": [
+    {
+      "label": "Wegmans (single can)",
+      "url": "https://www.wegmans.com/shop/product/63318",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-11-12",
+  "sources": [
+    "https://www.wegmans.com/shop/product/63318"
+  ],
+  "brand": "Wegmans",
+  "brandSlug": "wegmans",
+  "name": "11 oz Vanilla Latte",
+  "flavor": "Vanilla",
+  "caffeineNote": "Wegmans publishes no caffeine figure for the 11 oz can; its 9 oz four-pack can lists 100 mg",
+  "milk": "lactose-free dairy",
+  "dairyFree": false,
+  "summary": "Wegmans’ own-brand canned latte, from its product listing and not yet checked against a can: cold brew with whole milk made lactose-free, cane sugar and vanilla extract, poured with nitrous oxide for a draft-style foam. The 11 oz can lists 160 calories, 15 g of sugar (5 g added) and 7 g of protein. Wegmans sells it as a single at $2.79 and publishes no caffeine figure for this size."
+}
