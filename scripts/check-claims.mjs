@@ -1285,7 +1285,7 @@ const COUNT_CLAIMS = [
   },
   {
     where: 'listContent.ts -> no-added-sugar',
-    claim: 'Fifteen cans qualify',
+    claim: 'Sixteen cans qualify',
     // The filter on /best/no-added-sugar in src/lib/products.ts.
     count: () => countOf((d) => d.addedSugar === false),
   },
@@ -1333,6 +1333,11 @@ const COUNT_CLAIMS = [
     basis: 'Attributed to Throne: the size of its flavored line as the brand describes it, which our records need not match.',
   },
   // ---- news: each entry records what was true on its date ------------------
+  {
+    where: 'news.ts -> 2026-11-12',
+    claim: 'three oat milk lattes',
+    basis: 'A dated news entry: the three Raposa records added on 2026-11-12.',
+  },
   {
     where: 'news.ts -> 2026-11-12',
     claim: 'all four Death Wish lattes',

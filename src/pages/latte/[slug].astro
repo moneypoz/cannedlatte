@@ -61,6 +61,11 @@ const similar = all
 const known = all.filter((x) => x.data.caffeineMg != null);
 const mg = p.caffeineMg;
 const basis = p.caffeineBasis ?? 'exact';
+// A caffeine note set inside a sentence, in parentheses. Only its first letter
+// gives way, and not when the note opens on the brand's own name: lowercasing the
+// whole note printed "la colombe's product page" and "rip's".
+const noteInline = (note: string, brand: string) =>
+  note.startsWith(brand.split(/\s+/)[0]) ? note : note.charAt(0).toLowerCase() + note.slice(1);
 const ozOf = (x: (typeof all)[number]) => (x.data.sizeOz && x.data.caffeineMg != null ? +(x.data.caffeineMg / x.data.sizeOz).toFixed(1) : null);
 const perOz = mg != null ? ozOf(product) : null;
 const caf = mg == null ? null : (() => {
@@ -109,7 +114,7 @@ const descTail = p.buyLinks.length
 const desc = descCore.length + descTail.length <= 155 ? descCore + descTail : descCore;
 
 const faqs = [
-  p.caffeineMg != null && { q: `How much caffeine is in ${name}?`, a: `${name} has ${p.caffeineBasis === 'exact' ? 'about ' : ''}${caffeineFigure(p)} of caffeine per ${p.sizeOz ? `${p.sizeOz} oz ` : ''}can${p.caffeineNote ? ` (${p.caffeineNote.toLowerCase()})` : ''}. A 12 oz drip coffee is typically 140–200 mg.` },
+  p.caffeineMg != null && { q: `How much caffeine is in ${name}?`, a: `${name} has ${p.caffeineBasis === 'exact' ? 'about ' : ''}${caffeineFigure(p)} of caffeine per ${p.sizeOz ? `${p.sizeOz} oz ` : ''}can${p.caffeineNote ? ` (${noteInline(p.caffeineNote, p.brand)})` : ''}. A 12 oz drip coffee is typically 140–200 mg.` },
   p.sugarG != null && { q: `How much sugar is in ${name}?`, a: `${p.sugarG} g of sugar per can${p.addedSugar === false ? ', with no added sugar' : p.addedSugar ? ', including added sugar' : ''}.` },
   { q: `Is ${name} dairy-free?`, a: p.dairyFree ? `Yes. It's made with ${milkLabel[p.milk].toLowerCase()} milk.` : `No. It's made with ${milkLabel[p.milk].toLowerCase()} milk.` },
   p.refrigerated && { q: `Does ${name} need to be refrigerated?`, a: `Yes. It has no shelf-stable processing and ships cold.` },

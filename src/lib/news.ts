@@ -37,6 +37,11 @@ export type NewsItem = {
 export const news: NewsItem[] = [
   {
     date: '2026-11-12',
+    text: 'Raposa Coffee, a Miami nitro cold brew brand new to us, added from its own published figures and still awaiting cans in hand: three oat milk lattes, the Caramel Latte, Café Latte and Flat White, each listed at 150 mg of caffeine in a 250 mL can.',
+    link: { href: '/brands/raposa-coffee', label: 'Raposa Coffee' },
+  },
+  {
+    date: '2026-11-12',
     text: 'RIP Cold Brew, a new brand to us, added from its own published figures and still awaiting a can in hand: the Latte Lite Dairy Latte lists 100 mg of caffeine on its product page, with 40 calories, 5 g of sugar (3 g added) and 1 g of protein on the nutrition panel image the brand publishes, in an 11 oz can.',
     link: { href: '/latte/rip-cold-brew-latte-lite', label: 'Latte Lite' },
   },

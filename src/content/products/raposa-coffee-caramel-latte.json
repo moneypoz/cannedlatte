@@ -1,0 +1,39 @@
+{
+  "type": "latte",
+  "sizeOz": 8.45,
+  "caffeineMg": 150,
+  "caffeineBasis": "exact",
+  "sugarG": null,
+  "addedSugar": true,
+  "addedSugarG": null,
+  "proteinG": null,
+  "calories": 110,
+  "refrigerated": false,
+  "pricePerCan": 4.49,
+  "packPrice": 17.95,
+  "packSize": 4,
+  "retailers": [
+    "Raposa Coffee",
+    "Amazon"
+  ],
+  "buyLinks": [
+    {
+      "label": "Raposa Coffee (4-pack)",
+      "url": "https://raposacoffee.com/products/nitro-cold-brew-caramel-latte",
+      "affiliate": false
+    }
+  ],
+  "verified": false,
+  "updated": "2026-11-12",
+  "sources": [
+    "https://raposacoffee.com/products/nitro-cold-brew-caramel-latte"
+  ],
+  "brand": "Raposa Coffee",
+  "brandSlug": "raposa-coffee",
+  "name": "Caramel Latte",
+  "flavor": "Caramel",
+  "caffeineNote": "Raposa's product page states 150 mg of caffeine",
+  "milk": "oat",
+  "dairyFree": true,
+  "summary": "Raposa's nitro cold brew with oat milk and caramel syrup, from the brand's own site and not yet checked against a can: 150 mg of caffeine and 110 calories in a 250 mL (8.45 oz) can. Raposa lists cold brew at 60.3% of the can, oat beverage at 31.16% and caramel syrup at 5.65%, then sugar and inulin; it publishes no sugar or protein figures."
+}
