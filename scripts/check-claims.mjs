@@ -1335,8 +1335,8 @@ const COUNT_CLAIMS = [
   // ---- news: each entry records what was true on its date ------------------
   {
     where: 'news.ts -> 2026-11-12',
-    claim: 'three oat milk lattes',
-    basis: 'A dated news entry: the three Raposa records added on 2026-11-12.',
+    claim: 'two oat milk lattes',
+    basis: 'A dated news entry: the two Raposa lattes added on 2026-11-12 (a Flat White added the same day was removed as not a latte).',
   },
   {
     where: 'news.ts -> 2026-11-12',

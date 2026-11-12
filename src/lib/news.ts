@@ -37,7 +37,7 @@ export type NewsItem = {
 export const news: NewsItem[] = [
   {
     date: '2026-11-12',
-    text: 'Raposa Coffee, a Miami nitro cold brew brand new to us, added from its own published figures and still awaiting cans in hand: three oat milk lattes, the Caramel Latte, Café Latte and Flat White, each listed at 150 mg of caffeine in a 250 mL can.',
+    text: 'Raposa Coffee, a Miami nitro cold brew brand new to us, added from its own published figures and still awaiting cans in hand: two oat milk lattes, the Caramel Latte and Café Latte, each listed at 150 mg of caffeine in a 250 mL can.',
     link: { href: '/brands/raposa-coffee', label: 'Raposa Coffee' },
   },
   {

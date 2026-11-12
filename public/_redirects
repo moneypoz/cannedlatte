@@ -20,6 +20,12 @@
 /caffeine/starbucks-doubleshot-energy-mocha  /brands/starbucks  301
 /caffeine/starbucks-doubleshot-energy-mocha/  /brands/starbucks  301
 
+# Removed 2026-11-12, the day it was added: Raposa's Flat White is not a latte, so
+# it is out of scope. Its page was live for a few hours; send it to the brand hub.
+/latte/raposa-coffee-flat-white  /brands/raposa-coffee  301
+/latte/raposa-coffee-flat-white/  /brands/raposa-coffee  301
+/latte/raposa-coffee-flat-white.html  /brands/raposa-coffee  301
+
 # The per-flavor /caffeine/<product> pages, retired and folded into each can's
 # product page. A fixed list rather than a splat: /caffeine/:id would also swallow
 # the brand guides (/caffeine/la-colombe), and a list generated from the current
