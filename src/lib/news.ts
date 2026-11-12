@@ -36,6 +36,12 @@ export type NewsItem = {
 
 export const news: NewsItem[] = [
   {
+    date: '2026-11-12',
+    text: 'Death Wish’s Caramel Cold Brew Latte is label-verified from a can in hand: it prints up to 120 mg of caffeine, the same ceiling we had from the brand, with 16 g of sugar (8 g added) and 7 g of protein in an 11 oz can at 140 calories.',
+    link: { href: '/latte/death-wish-caramel-cold-brew-latte', label: 'Caramel Cold Brew Latte' },
+    image: 'death-wish-caramel-cold-brew-latte-card.png',
+  },
+  {
     date: '2026-11-11',
     text: 'A third Jolene Coffee flavor confirmed in stores and label-verified from a can in hand: the Red Velvet Oat Milk Latte, sold as Red, prints the same 118 mg of caffeine as the Gold, with 10 g of sugar, all of it added as organic coconut sugar, and 1 g of protein in an 8 oz can at 120 calories.',
     link: { href: '/latte/jolene-red-velvet-oat-milk-latte', label: 'Red Velvet Oat Milk Latte' },

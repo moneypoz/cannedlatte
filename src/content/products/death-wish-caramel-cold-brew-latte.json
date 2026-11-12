@@ -5,9 +5,9 @@
   "caffeineBasis": "ceiling",
   "sugarG": 16,
   "addedSugar": true,
-  "addedSugarG": null,
-  "proteinG": null,
-  "calories": null,
+  "addedSugarG": 8,
+  "proteinG": 7,
+  "calories": 140,
   "refrigerated": false,
   "pricePerCan": 3.33,
   "packPrice": 39.99,
@@ -31,18 +31,20 @@
       "affiliate": true
     }
   ],
-  "verified": false,
-  "updated": "2026-09-06",
+  "verified": true,
+  "updated": "2026-11-12",
   "sources": [
+    "/images/products/death-wish-caramel-cold-brew-latte-label.jpg",
     "https://www.bevnet.com/pr/2026/04/09/death-wish-coffee-co-expands-readytodrink-lineup-with-new-betterforyou-caramel-cold-brew-latte"
   ],
   "brand": "Death Wish Coffee",
   "brandSlug": "death-wish",
   "name": "Caramel Cold Brew Latte",
   "flavor": "Caramel",
-  "caffeineNote": "Brand says up to 120 mg",
+  "caffeineNote": "Label: up to 120 mg per can, printed on the can as a ceiling",
   "milk": "dairy",
   "dairyFree": false,
   "launched": "2026-04",
-  "summary": "Launched April 2026. Fair Trade Colombian cold brew, 16 g sugar, which Death Wish pitches as 65% less than the leading competitor."
+  "image": "/images/products/death-wish-caramel-cold-brew-latte.jpg",
+  "summary": "Launched April 2026 and label-verified from a can in hand: up to 120 mg of caffeine, 16 g of sugar (8 g added), 7 g of protein and 140 calories in an 11 oz can, made with dairy milk and Fair Trade Certified cold brew. Death Wish prints a claim of 65% less total sugar than the leading RTD coffee beverage per serving."
 }
