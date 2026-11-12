@@ -1,0 +1,38 @@
+{
+  "type": "latte",
+  "sizeOz": 8,
+  "caffeineMg": 50,
+  "caffeineBasis": "exact",
+  "sugarG": null,
+  "addedSugar": true,
+  "addedSugarG": null,
+  "proteinG": null,
+  "calories": 160,
+  "refrigerated": false,
+  "pricePerCan": null,
+  "packPrice": null,
+  "packSize": null,
+  "retailers": [
+    "Amazon"
+  ],
+  "buyLinks": [
+    {
+      "label": "Amazon (12-pack)",
+      "url": "https://link.amazon/B0iqatlhE",
+      "affiliate": true
+    }
+  ],
+  "verified": false,
+  "updated": "2026-11-12",
+  "sources": [
+    "https://www.amazon.com/dp/B0GZD12JLV"
+  ],
+  "brand": "Pop & Bottle",
+  "brandSlug": "pop-and-bottle",
+  "name": "Chocolate Pistachio Oat Milk Latte",
+  "flavor": "Chocolate Pistachio",
+  "caffeineNote": "Pop & Bottle's Amazon listing states 50 mg per 8 fl oz can",
+  "milk": "oat",
+  "dairyFree": true,
+  "summary": "From Pop & Bottle's Amazon listing and not yet checked against a can: cold brew on oat milk with chocolate and pistachio butter, sweetened with organic coconut nectar, at 50 mg of caffeine and 160 calories in an 8 oz can. Dairy-free and vegan, but it contains pistachio, a tree nut. The listing gives no sugar or protein figures."
+}

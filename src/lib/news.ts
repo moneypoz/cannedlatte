@@ -37,6 +37,11 @@ export type NewsItem = {
 export const news: NewsItem[] = [
   {
     date: '2026-11-12',
+    text: 'A Pop & Bottle flavor new to us, found on Amazon and added from the brand’s listing while it awaits a can in hand: the Chocolate Pistachio Oat Milk Latte, cold brew with chocolate and pistachio butter sweetened with coconut nectar, listed at 50 mg of caffeine and 160 calories in an 8 oz can.',
+    link: { href: '/latte/pop-and-bottle-chocolate-pistachio-oat-milk-latte', label: 'Chocolate Pistachio Oat Milk Latte' },
+  },
+  {
+    date: '2026-11-12',
     text: 'Raposa Coffee, a Miami nitro cold brew brand new to us, added from its own published figures and still awaiting cans in hand: two oat milk lattes, the Caramel Latte and Café Latte, each listed at 150 mg of caffeine in a 250 mL can.',
     link: { href: '/brands/raposa-coffee', label: 'Raposa Coffee' },
   },
