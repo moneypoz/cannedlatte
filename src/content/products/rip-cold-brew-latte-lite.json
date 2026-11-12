@@ -24,8 +24,8 @@
     },
     {
       "label": "Amazon (12-pack)",
-      "url": "https://www.amazon.com/dp/B0H8F38FK2",
-      "affiliate": false
+      "url": "https://link.amazon/B08Exm3Is",
+      "affiliate": true
     }
   ],
   "verified": false,
