@@ -2,7 +2,9 @@
 import Base from '../layouts/Base.astro';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { allProducts, fullName, fmt, caffeineFigure } from '../lib/products';
+import { allProducts, fullName, fmt, caffeineFlag, UNVERIFIED_MARK_TITLE } from '../lib/products';
+import Caffeine from '../components/Caffeine.astro';
+import UnverifiedNote from '../components/UnverifiedNote.astro';
 import { newsByDate } from '../lib/news';
 
 // News thumbnails are the same transparent cutouts the homepage uses at card size.
@@ -10,6 +12,9 @@ const cardImages = import.meta.glob<{ default: ImageMetadata }>('../assets/produ
 const newsImage = (file?: string) => (file ? cardImages[`../assets/products/cards/${file}`]?.default : undefined);
 const products = (await allProducts()).filter((p) => p.data.launched).sort((a, b) => b.data.launched!.localeCompare(a.data.launched!));
 const news = newsByDate();
+// Same marking as the product table: the name for a wholly brand-sourced record,
+// the caffeine cell for a label-read one whose caffeine came from the brand.
+const anyMarked = products.some((p) => !p.data.verified || caffeineFlag(p.data) === 'field');
 ---
 <Base title="New canned lattes" description="Every new latte in a can, newest first, with specs the day it hits shelves. Death Wish, Wandering Bear, La Colombe and more." ogType="article">
   <p class="eyebrow">Launch tracker</p>
@@ -19,10 +24,11 @@ const news = newsByDate();
     <table>
       <thead><tr><th>Launched</th><th>Product</th><th>Caffeine</th><th>Sugar</th><th>Per can</th></tr></thead>
       <tbody>{products.map((p) => (
-        <tr><td class="num">{fmt.ym(p.data.launched)}</td><td><a href={`/latte/${p.id}`}>{fullName(p.data)}</a></td><td class="num">{caffeineFigure(p.data)}</td><td class="num">{fmt.g(p.data.sugarG)}</td><td class="num">{fmt.usd(p.data.pricePerCan)}</td></tr>
+        <tr><td class="num">{fmt.ym(p.data.launched)}</td><td><a href={`/latte/${p.id}`}>{fullName(p.data)}</a>{!p.data.verified && <sup class="unv" title={UNVERIFIED_MARK_TITLE}>*</sup>}</td><td class="num"><Caffeine p={p.data} covered /></td><td class="num">{fmt.g(p.data.sugarG)}</td><td class="num">{fmt.usd(p.data.pricePerCan)}</td></tr>
       ))}</tbody>
     </table>
   </div>
+  {anyMarked && <UnverifiedNote />}
   {news.length > 0 && (
     <>
       <h2>Category news</h2>
@@ -56,6 +62,7 @@ const news = newsByDate();
 </Base>
 
 <style>
+  .unv { color: var(--muted-foreground); font-size: 11px; cursor: help; line-height: 1; }
   /* Date rail on the left, one sentence on the right. The rail collapses above
      the text on narrow screens rather than squeezing the sentence to a column. */
   .news { list-style: none; margin: 0 0 28px; padding: 0; max-width: 68ch; }

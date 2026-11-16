@@ -40,6 +40,7 @@
   "name": "Caramel Cold Brew Oat Milk Latte",
   "flavor": "Caramel Cold Brew",
   "caffeineNote": "Label says single-shot coffee with no mg; the brand FAQ states 80 mg per 8 oz oat milk latte",
+  "caffeineSource": "brand",
   "milk": "oat",
   "dairyFree": true,
   "image": "/images/products/pop-and-bottle-caramel-cold-brew-oat-milk-latte.jpg",

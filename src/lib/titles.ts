@@ -92,6 +92,35 @@ export const caffeineFigureCap = (p: Caffeine): string => {
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
+/* ---- where a caffeine figure came from -------------------------------------
+ * `verified` is a fact about a whole record: its nutrition panel was read off a can
+ * we photographed. Caffeine is the one figure a label often leaves off, so a
+ * label-verified record can still carry a caffeine figure the brand published
+ * (Slate, Bee Keeper: "not stated on the label; the brand publishes 175 mg").
+ * `caffeineSource: 'brand'` marks exactly that case, and these helpers are the one
+ * place that turns record + field into a decision:
+ *
+ *   caffeineFlag      what a printed figure must be marked as: 'record' (the whole
+ *                     record is brand-sourced), 'field' (the panel is label-read but
+ *                     this figure is not), or null (read off the can)
+ *   caffeineChecked   the figure was read off a can we photographed
+ *   caffeineCrownable checked AND exact — the only figure a superlative may rest on
+ *
+ * Reporting a flagged figure is allowed wherever it carries its mark (the
+ * <Caffeine> component prints both together). Crowning one is not, anywhere. */
+type Sourced = Caffeine & { verified: boolean; caffeineSource?: 'label' | 'brand' };
+
+export const caffeineFlag = (p: Sourced): 'record' | 'field' | null =>
+  p.caffeineMg == null ? null : !p.verified ? 'record' : p.caffeineSource === 'brand' ? 'field' : null;
+
+export const caffeineChecked = (p: Sourced) => p.caffeineMg != null && caffeineFlag(p) === null;
+
+export const caffeineCrownable = (p: Sourced) => caffeineChecked(p) && !isQualified(p);
+
+/** What the * beside a flagged figure means, as a tooltip and as a footnote. */
+export const UNVERIFIED_MARK_TITLE = 'Brand-published figure, not yet checked against a label';
+export const UNVERIFIED_NOTE = '* brand-published, not yet checked against a label.';
+
 /** Kept for the pages that ask "does this record carry a span". */
 export const rangeOf = (p: Caffeine) =>
   basisOf(p) === 'range' && p.caffeineMinMg != null && p.caffeineMaxMg != null
@@ -189,7 +218,7 @@ export type Crowned<T> =
   | { kind: 'qualified'; holder: T }
   | null;
 
-export const bestHeadline = <T extends { verified: boolean } & Partial<Caffeine>>(
+export const bestHeadline = <T extends { verified: boolean; caffeineSource?: 'label' | 'brand' } & Partial<Caffeine>>(
   list: T[],
   field: keyof T,
   lowerWins: boolean,
@@ -200,10 +229,13 @@ export const bestHeadline = <T extends { verified: boolean } & Partial<Caffeine>
     const x = a[field] as number, y = b[field] as number;
     return (lowerWins ? y < x : y > x) ? b : a;
   });
-  // The qualifier lives on the caffeine figure, so it only bears on a list crowned
-  // on caffeine. A sugar or price crown is unaffected by how caffeine was published.
+  // The qualifier and the caffeine source both live on the caffeine figure, so they
+  // only bear on a list crowned on caffeine. A sugar or price crown is unaffected by
+  // how caffeine was published — but a caffeine crown on a label-verified record
+  // whose caffeine came from the brand is still a brand figure being crowned.
   const qualified = field === 'caffeineMg' && isQualified(holder as Caffeine);
-  if (!holder.verified) return { kind: 'unverified', holder };
+  const checked = field === 'caffeineMg' ? caffeineChecked(holder as unknown as Sourced) : holder.verified;
+  if (!checked) return { kind: 'unverified', holder };
   if (qualified) return { kind: 'qualified', holder };
   return { kind: 'crown', value: holder[field] as number, holder };
 };

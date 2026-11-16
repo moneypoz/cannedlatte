@@ -102,6 +102,17 @@ exist any more, and `Product` schema only with a real rating.
   crowned. Today `/best/most-caffeine` is led by a range record that is unverified,
   so it runs on a count and the stop is armed rather than firing.
 
+- **A brand figure on a label-verified can is still a brand figure.** `verified`
+  covers a record's panel. When the label prints no caffeine, the record carries the
+  brand's number and says so with `caffeineSource: 'brand'` — `check-data.mjs` refuses
+  a note saying the label is silent without it. Every caffeine figure renders through
+  `<Caffeine>` (`src/components/Caffeine.astro`), which puts a * on any figure not
+  read off a can, in tables, prose, cards and the can's own page. Every superlative —
+  a brand hub's "The strongest is" or "Strongest first", the guide's stat cards, the
+  homepage picks and tiles, a `/best` title — asks `caffeineCrownable` (or, for
+  sugar, protein and price, `verified`) in `src/lib/titles.ts`, and without a
+  crownable holder it reports instead: a range, "by caffeine per can", a count.
+
 - **A rating is opinion; every other number is data.** `rating` and `tastingNotes`
   are both-or-neither — a score with no reasoning behind it, or notes with no score,
   is refused at content-load in `src/content.config.ts`. The scale is 1.0–5.0 to at
@@ -144,6 +155,13 @@ Three checkers run around the build; all three must pass before a deploy.
   count of our records — a pack size, a brand's own statement, a dated news
   entry — takes a written `basis` instead. Every other group reads digits, which
   is how "Fourteen cans qualify" sat above a fifteen-row table and passed.
+  Computed copy is held too: the crown group reads every superlative the
+  templates write (hub sentences and "strongest first" orderings, guide stat
+  cards, homepage picks and tiles) and fails one resting on a figure that is
+  brand-published, unverified or qualified; the sourcing-mark checks fail any
+  brand-published caffeine figure that renders without its * and any label-read
+  one that wears it. Both exist because the superlative scanner reads only
+  hand-written fields, so "Strongest first" over a brand's 125 mg passed for months.
   Every group declares a minimum it expects to inspect: **a checker that parses
   zero claims must fail.** Set that minimum near what the group actually inspects,
   not to 1 — a floor of 1 let the compare group fall from 45 claims to 6 and still

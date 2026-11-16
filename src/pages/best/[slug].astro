@@ -1,7 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Disclosure from '../../components/Disclosure.astro';
-import { allProducts, bestPages, fullName, fmt, milkLabel, bestHeadline, caffeineFigure } from '../../lib/products';
+import { allProducts, bestPages, fullName, fmt, milkLabel, bestHeadline, caffeineFlag } from '../../lib/products';
+import Caffeine from '../../components/Caffeine.astro';
+import UnverifiedNote from '../../components/UnverifiedNote.astro';
 import { listContent } from '../../lib/listContent';
 
 export async function getStaticPaths() {
@@ -11,6 +13,11 @@ export async function getStaticPaths() {
 const { page, products } = Astro.props;
 const list = products.filter((p) => page.filter(p.data)).sort((a, b) => page.sort(a.data, b.data));
 const updated = list.map((p) => p.data.updated).sort().at(-1);
+// A whole-record unverified row says so in words beside the name; a label-verified
+// row whose caffeine came from the brand carries a * on that figure instead, and
+// the * needs its footnote.
+const anyFieldMark = list.some((p) => caffeineFlag(p.data) === 'field');
+const caffeineRanked = page.metricLabel === 'Caffeine';
 const content = listContent[page.slug];
 const jsonLd: Record<string, unknown>[] = [{
   '@context': 'https://schema.org',
@@ -73,8 +80,8 @@ for (const sentence of page.intro.match(/[^.]+\./g) ?? []) {
         {list.map((p) => (
           <tr>
             <td><a href={`/latte/${p.id}`}>{fullName(p.data)}</a>{!p.data.verified && <> <span class="tag warn">unverified</span></>}</td>
-            <td class="num"><strong style="color:var(--primary)">{page.metric(p.data)}</strong></td>
-            <td class="num">{caffeineFigure(p.data)}</td>
+            <td class="num"><strong style="color:var(--primary)">{caffeineRanked ? <Caffeine p={p.data} covered /> : page.metric(p.data)}</strong></td>
+            <td class="num"><Caffeine p={p.data} covered /></td>
             <td class="num">{fmt.g(p.data.sugarG)}</td>
             <td class="num">{fmt.g(p.data.proteinG)}</td>
             <td>{milkLabel[p.data.milk]}</td>
@@ -84,6 +91,7 @@ for (const sentence of page.intro.match(/[^.]+\./g) ?? []) {
       </tbody>
     </table>
   </div>
+  {anyFieldMark && <UnverifiedNote />}
   <Disclosure />
   {content && (
     <div style="max-width:62ch;margin:8px auto 0">

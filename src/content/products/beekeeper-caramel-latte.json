@@ -32,6 +32,7 @@
   "name": "Caramel Latte",
   "flavor": "Caramel",
   "caffeineNote": "Not stated on the label; the brand publishes 125 mg",
+  "caffeineSource": "brand",
   "milk": "dairy",
   "dairyFree": false,
   "image": "/images/products/beekeeper-caramel-latte.jpg",

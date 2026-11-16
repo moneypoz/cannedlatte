@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Disclosure from '../../components/Disclosure.astro';
 import BuyLinks from '../../components/BuyLinks.astro';
-import { allProducts, comparePairs, fullName, fmt, milkLabel, metricSpread, rankedDiffs, compareTitle, caffeineFigure, caffeineValue } from '../../lib/products';
+import { allProducts, comparePairs, fullName, fmt, milkLabel, metricSpread, rankedDiffs, compareTitle, caffeineFigure, caffeineValue, caffeineFlag, UNVERIFIED_MARK_TITLE } from '../../lib/products';
 
 export async function getStaticPaths() {
   const products = await allProducts();
@@ -35,9 +35,11 @@ const rows: [string, string, string][] = [
   ['Price per can', fmt.usd(A.pricePerCan), fmt.usd(B.pricePerCan)],
 ];
 
-// Sourcing disclosure. Every figure here comes from one record, and a record is
-// either label-checked or brand-published as a whole — so each side's figures
-// carry the mark if that side is unverified. Without this the page showed a
+// Sourcing disclosure. Every figure here comes from one record. A record is
+// label-checked or brand-published as a whole, with one exception: a label that
+// prints no caffeine leaves that figure (and the per-ounce one derived from it) to
+// the brand on an otherwise label-read record. So the caffeine rows take their mark
+// from caffeineFlag, and every other row from the record. Without this the page showed a
 // brand-sourced 255 mg exactly like a label-read one, which is the disclosure the
 // /best tables have always made and these did not. It is also what lets the
 // <title> restate these numbers at all: a reported figure may be unverified only
@@ -47,9 +49,9 @@ const rows: [string, string, string][] = [
 // A cell is a figure when it states a number; "Oat", "Yes" and "Shelf-stable" are
 // specs but not figures, and an unpublished "—" has nothing to disclose.
 const isFigure = (v: string) => /\d/.test(v);
-const unverified = [!A.verified, !B.verified] as const;
-const anyUnverified = rows.some(([, va, vb]) =>
-  (unverified[0] && isFigure(va)) || (unverified[1] && isFigure(vb)));
+const marked = (rec: typeof A, label: string, v: string) =>
+  isFigure(v) && (label.startsWith('Caffeine') ? caffeineFlag(rec) !== null : !rec.verified);
+const anyUnverified = rows.some(([k, va, vb]) => marked(A, k, va) || marked(B, k, vb));
 
 /** Compare one field. Returns null when either side is unpublished or they tie. */
 const cmp = (key: 'caffeineMg' | 'sugarG' | 'proteinG' | 'pricePerCan', lowerWins = false) => {
@@ -170,8 +172,8 @@ const title = compareTitle(A, B);
       <tbody>{rows.map(([k, va, vb]) => (
         <tr>
           <th>{k}</th>
-          <td class="num">{va}{unverified[0] && isFigure(va) && <sup class="unv" title="Brand-published figure, not yet checked against a label">*</sup>}</td>
-          <td class="num">{vb}{unverified[1] && isFigure(vb) && <sup class="unv" title="Brand-published figure, not yet checked against a label">*</sup>}</td>
+          <td class="num">{va}{marked(A, k, va) && <sup class="unv" title={UNVERIFIED_MARK_TITLE}>*</sup>}</td>
+          <td class="num">{vb}{marked(B, k, vb) && <sup class="unv" title={UNVERIFIED_MARK_TITLE}>*</sup>}</td>
         </tr>
       ))}</tbody>
     </table>

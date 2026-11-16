@@ -1,0 +1,25 @@
+---
+// A caffeine figure as printed anywhere on the site, with its sourcing mark.
+//
+// caffeineFigure() decides the shape ("230 mg", "40–50 mg", "up to 120 mg");
+// caffeineFlag() decides whether it was read off a can. This prints both, so a
+// brand-published figure cannot render without its * the way it used to on every
+// table, list and card that had no record-level marker to lean on.
+//
+// `covered` is for rows and pages that already mark the whole record as unverified
+// (a product table's name cell, a /best row's "unverified" tag, a product page's
+// "specs unverified" eyebrow): there a second * on the figure says nothing new. A
+// label-verified record whose caffeine came from the brand is never covered — the
+// record is checked, this one figure is not — so its * always prints.
+import { caffeineFigure, caffeineFlag, UNVERIFIED_MARK_TITLE } from '../lib/products';
+import type { P } from '../lib/products';
+interface Props { p: P; covered?: boolean; }
+const { p, covered = false } = Astro.props;
+const flag = caffeineFlag(p);
+const mark = flag === 'field' || (flag === 'record' && !covered);
+---
+{caffeineFigure(p)}{mark && <sup class="unv" title={UNVERIFIED_MARK_TITLE}>*</sup>}
+
+<style>
+  .unv { color: var(--muted-foreground); font-size: 11px; cursor: help; line-height: 1; }
+</style>

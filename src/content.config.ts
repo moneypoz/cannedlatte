@@ -38,6 +38,13 @@ const products = defineCollection({
     caffeineMinMg: z.number().nullable().default(null),
     caffeineMaxMg: z.number().nullable().default(null),
     caffeineNote: z.string().optional(),       // e.g. "brand lists 100–150 mg"
+    // Where the caffeine figure came from, when that differs from the record.
+    // `verified` covers the panel read off a photographed can; a label that prints
+    // no caffeine leaves that one figure to the brand. 'brand' marks it, so every
+    // page flags it and nothing crowns it (see caffeineFlag in src/lib/titles.ts).
+    // Only meaningful on a verified record — an unverified one is brand-sourced
+    // throughout — and check-data.mjs refuses it anywhere else.
+    caffeineSource: z.enum(['label', 'brand']).optional(),
     sugarG: z.number().nullable(),
     addedSugar: z.boolean().nullable().default(null),
     addedSugarG: z.number().nullable().default(null),   // brand-published "includes Xg added sugars", where stated

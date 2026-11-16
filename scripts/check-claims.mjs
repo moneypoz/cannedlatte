@@ -73,6 +73,22 @@ const BEST_CONFIG = (() => {
 const basisOf = (d) => d.caffeineBasis ?? 'exact';
 const isQualified = (d) => basisOf(d) !== 'exact';
 
+/* ---- where a caffeine figure came from, re-derived ----------------------------
+ * A second implementation of caffeineChecked/caffeineCrownable from titles.ts, for
+ * the same reason as valueFor below. `verified` covers a record's panel; a
+ * label-verified record can still hold a brand's caffeine number when its label
+ * prints none, and `caffeineSource: 'brand'` says so. */
+const caffeineChecked = (d) => !!d && d.caffeineMg != null && d.verified === true && d.caffeineSource !== 'brand';
+/** The only figure a superlative may rest on: read off a can, and exact. */
+const caffeineCrownable = (d) => caffeineChecked(d) && !isQualified(d);
+/** Why a figure may not be crowned, in the words a failure message needs. */
+const whyNotCrownable = (d) =>
+  !d ? 'no such record'
+    : !d.verified ? 'the record is unverified'
+      : d.caffeineSource === 'brand' ? 'its caffeine figure is brand-published (caffeineSource: brand)'
+        : isQualified(d) ? `its figure is a ${basisOf(d)}, not an exact number`
+          : 'it has no caffeine figure';
+
 /** "230" | "40–50" | "up to 120" | null */
 const valueFor = (id) => {
   const d = PRODUCTS[id];
@@ -188,7 +204,9 @@ for (const [id, d] of Object.entries(PRODUCTS)) {
   // The stated figure, in whichever shape the source published: "about 230 mg",
   // "40–50 mg", "up to 120 mg".
   caffeineClaims++;
-  const claim = body.match(/has (?:about )?((?:up to )?\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)? mg) of caffeine per can/);
+  // A brand-published figure trails its * (see <Caffeine>); the marker itself is
+  // held by the sourcing-mark group below, so here it is only stepped over.
+  const claim = body.match(/has (?:about )?((?:up to )?\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)? mg)\*? of caffeine per can/);
   if (!claim) failures.push(`latte/${id}: caffeine section states no figure in the "has N mg of caffeine per can" form`);
   else if (claim[1] !== want) failures.push(`latte/${id}: caffeine section says ${claim[1]}, the record publishes ${want}`);
 
@@ -417,11 +435,14 @@ for (const [a, b] of COMPARE_PAIRS) {
         continue;
       }
       discloseClaims++;
-      if (!rec.verified) {
+      // The caffeine rows (the figure and the per-ounce one derived from it) take
+      // their sourcing from the caffeine figure; every other row from the record.
+      const fromBrand = label.startsWith('Caffeine') ? !caffeineChecked(rec) : !rec.verified;
+      if (fromBrand) {
         expected++;
-        if (!marked) failures.push(`${a}-vs-${b}: "${label}" shows ${who}'s ${val} from an unverified record with no sourcing marker`);
+        if (!marked) failures.push(`${a}-vs-${b}: "${label}" shows ${who}'s brand-published ${val} with no sourcing marker`);
       } else if (marked) {
-        failures.push(`${a}-vs-${b}: "${label}" marks ${who}'s ${val} as brand-published, but that record is label-verified`);
+        failures.push(`${a}-vs-${b}: "${label}" marks ${who}'s ${val} as brand-published, but it was read off the label`);
       }
     }
   }
@@ -521,30 +542,97 @@ for (const f of existsSync('dist/brands') ? readdirSync('dist/brands') : []) {
   }
 }
 
-// (b2) /brands/<brand> — the computed "strongest" sentence against the records.
-// It used to crown withCaffeine[0] whatever the figure behind it, so a tie at the
-// top would have named one can by sort order. Each sentence must name every can
-// at the brand's top figure, and only those.
+/* ---- (b2) crowns: every computed superlative, on every page that prints one --
+ * Reporting a figure and crowning one are different claims (CLAUDE.md). A crown is
+ * any superlative resting on one record's figure, and it may rest only on a figure
+ * read off a can we photographed AND published as an exact number. Templates write
+ * crowns in five places, and this group reads all of them back out of dist/:
+ *
+ *   brand hubs   "The strongest is X at N mg", "A and B tie as the strongest", and
+ *                "Strongest first, that's …" — an ordering announced as a
+ *                superlative crowns its first cans as surely as a sentence does
+ *   guides       the "strongest — X" / "mildest — X" / "mg per oz, X" stat cards,
+ *                and "X is the most concentrated … and Y the least"
+ *   home picks   "Strongest", "Least sugar", "Most protein", "Best value"
+ *   home tiles   each /best list's leader beside its figure
+ *
+ * Each must (1) name the right cans — on a tie, every can at the figure and only
+ * those, which the hub sentence once got wrong by sort order — and (2) rest on a
+ * crownable figure. A caffeine crown needs caffeineCrownable; a sugar, protein or
+ * price crown needs a label-verified record.
+ *
+ * Why this exists: the superlative scanner reads only hand-written fields, the
+ * qualifier checks key on a figure's shape and not its source, and the old hub
+ * group checked only that a crown named the right cans. So "Strongest first" over
+ * Bee Keeper's brand-published 125 mg, "The strongest is" over Thunder's unverified
+ * 150 mg, and an unverified $2.00 crowned on the homepage all passed every check. */
 let strongestClaims = 0;
+const crownCheck = (where, said, holders, field = 'caffeineMg') => {
+  strongestClaims++;
+  for (const d of holders) {
+    const ok = field === 'caffeineMg' ? caffeineCrownable(d) : !!d && d.verified === true;
+    if (!ok) {
+      failures.push(
+        `${where}: "${said.trim()}" crowns ${d?.name ?? 'an unknown can'}, but ${field === 'caffeineMg' ? whyNotCrownable(d) : 'the record is unverified'} — ` +
+        `a superlative may rest only on a figure read off a can`,
+      );
+    }
+  }
+};
+
+// brand hubs
 for (const f of existsSync('dist/brands') ? readdirSync('dist/brands') : []) {
   if (f === 'index.html') continue;
   const slug = f.replace(/\.html$/, '');
   const lineup = Object.values(PRODUCTS).filter((d) => d.brandSlug === slug && d.caffeineMg != null);
   if (!lineup.length) continue;
   const top = Math.max(...lineup.map((d) => d.caffeineMg));
-  const want = lineup.filter((d) => d.caffeineMg === top).map((d) => d.name).sort();
+  const topRecs = lineup.filter((d) => d.caffeineMg === top);
+  const want = topRecs.map((d) => d.name).sort();
   const body = text(readFileSync('dist/brands/' + f, 'utf8'));
-  const claims = [
+  const named = [
     // Either case: a hub with a caffeine guide folds the crown into its range
     // sentence ("…per can; the strongest is X at N mg."), mid-sentence.
     ...[...body.matchAll(/[Tt]he strongest is (.{1,120}?) at (?:up to )?\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)? mg\./g)].map((m) => [m[0], [m[1]]]),
     ...[...body.matchAll(/(?:^|\. |")([^."]{1,200}?) tie as the strongest, each at/g)].map((m) => [m[0], m[1].split(/, | and /)]),
   ];
-  for (const [said, names] of claims) {
-    strongestClaims++;
+  for (const [said, names] of named) {
     if (names.slice().sort().join('|') !== want.join('|')) {
       failures.push(`brands/${f}: "${said.trim()}" — the top figure, ${top} mg, belongs to ${want.join(' and ')}`);
     }
+    crownCheck(`brands/${f}`, said, topRecs);
+  }
+  // The ordering crown. Its holders are whatever sits at the top figure.
+  for (const m of body.matchAll(/[Ss]trongest first[^.]{0,80}/g)) crownCheck(`brands/${f}`, m[0], topRecs);
+}
+
+// brand caffeine guides: the crown stat cards and the per-ounce extremes
+for (const f of existsSync('dist/caffeine') ? readdirSync('dist/caffeine') : []) {
+  const slug = f.replace(/\.html$/, '');
+  const h = readFileSync('dist/caffeine/' + f, 'utf8');
+  const byName = (n) => Object.values(PRODUCTS).find((d) => d.brandSlug === slug && d.name === n.trim()) ?? null;
+  for (const c of statCards(h)) {
+    const m = c.l.match(/^(strongest|mildest) — (.+?)(?: \(tea, not coffee\))?$/) || c.l.match(/^(mg per oz), (.+)$/);
+    if (m) crownCheck(`caffeine/${f}`, `${c.v} ${c.l}`, [byName(m[2])]);
+  }
+  const body = text(h);
+  const conc = body.match(/([^.]+?) is the most concentrated at [\d.]+ mg\/oz and ([^.]+?) the least at/);
+  if (conc) crownCheck(`caffeine/${f}`, conc[0], [byName(conc[1].replace(/^.*per-can order\. /, '')), byName(conc[2])]);
+}
+
+// homepage: top picks and the "Find your can" tiles
+if (existsSync('dist/index.html')) {
+  const h = readFileSync('dist/index.html', 'utf8');
+  const PICK_FIELD = { Strongest: 'caffeineMg', 'Least sugar': 'sugarG', 'Most protein': 'proteinG', 'Best value': 'pricePerCan' };
+  for (const m of h.matchAll(/<a class="pick"[^>]*href="\/latte\/([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)) {
+    const label = text((m[2].match(/class="pick-label"[^>]*>([\s\S]*?)<\/span>/) || [])[1] ?? '');
+    if (!(label in PICK_FIELD)) { failures.push(`index.html: unknown top pick "${label}" — add it to PICK_FIELD so its crown is checked`); continue; }
+    crownCheck('index.html', `${label}: ${text(m[2])}`, [PRODUCTS[m[1]]], PICK_FIELD[label]);
+  }
+  for (const m of h.matchAll(/<a class="tile" href="\/best\/([^"]+)"[^>]*data-leader="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)) {
+    const metric = text((m[3].match(/class="tile-metric"[^>]*>([\s\S]*?)<\/span>/) || [])[1] ?? '');
+    const field = /mg$/.test(metric) ? 'caffeineMg' : (BEST_CONFIG[m[1]]?.field ?? 'caffeineMg');
+    crownCheck(`index.html tile /best/${m[1]}`, `${text(m[3])}`, [PRODUCTS[m[2]]], field);
   }
 }
 
@@ -578,6 +666,12 @@ for (const f of existsSync('dist/best') ? readdirSync('dist/best') : []) {
     // The same leader the page's own sort puts first: the first row at the extreme.
     const extreme = vals.reduce((x, y) => ((cfg.lowerWins ? y.metric < x.metric : y.metric > x.metric) ? y : x)).metric;
     const holder = vals.find((r) => r.metric === extreme);
+    // A caffeine crown also needs the caffeine figure itself read off the can: a
+    // label-verified record with a brand-published caffeine number shows no
+    // "unverified" tag, so the rendered row cannot say this on its own.
+    if (cfg.field === 'caffeineMg' && holder.id && PRODUCTS[holder.id] && !caffeineChecked(PRODUCTS[holder.id])) {
+      holder.unverified = true;
+    }
     if (holder.unverified) {
       expect = rows.length;
       why = `the row count, because the ${extreme} leader is unverified and Gate 1 bars crowning it`;
@@ -645,7 +739,7 @@ for (const f of existsSync('dist/compare') ? readdirSync('dist/compare') : []) {
  *
  * It runs over every product, not only the qualified ones, so the sweep also
  * catches a cell that has drifted from its record for any other reason. */
-let sweepCells = 0, sweepTables = 0;
+let sweepCells = 0, sweepTables = 0, markClaims = 0;
 const headerIndex = (tableHtml, label) => {
   const head = tableHtml.match(/<thead[^>]*>([\s\S]*?)<\/thead>/);
   if (!head) return -1;
@@ -675,6 +769,29 @@ for (const file of existsSync('dist') ? walkHtml('dist') : []) {
       const id = (/href="\/latte\/([^"#]+)"/.exec(rm[1]) || [])[1];
       if (!id || !PRODUCTS[id] || PRODUCTS[id].caffeineMg == null) continue;
       sweepCells++;
+      // The sourcing mark, held here because this loop already visits every
+      // Caffeine cell on the site. A figure not read off a can must say so: on the
+      // cell when only the caffeine came from the brand (the row's record is
+      // label-verified, so nothing else on the row would), or anywhere on the row
+      // when the whole record is brand-sourced (the name's * or "unverified" tag).
+      // A label-read figure must carry no mark at all.
+      {
+        const d = PRODUCTS[id];
+        const cellMarked = c[idx].includes(MARK);
+        const tagged = c.some((x) => /tag warn/.test(x)); // "unverified", in words
+        const rowMarked = cellMarked || tagged || c.some((x, j) => j !== idx && x.includes(MARK));
+        const where = file.replace(/^dist\//, '');
+        markClaims++;
+        // A caffeine-only table (a brand guide) may say "unverified" in words on a
+        // row whose only figure is the caffeine one; that is the cell's mark too.
+        if (d.verified && d.caffeineSource === 'brand' && !cellMarked && !tagged) {
+          failures.push(`${where}: ${id}'s brand-published ${text(c[idx])} renders with no * — the record is label-verified, so only the cell can carry the mark`);
+        } else if (!d.verified && !rowMarked) {
+          failures.push(`${where}: ${id} is unverified, but its row shows ${text(c[idx])} with no mark anywhere`);
+        } else if (caffeineChecked(d) && cellMarked) {
+          failures.push(`${where}: ${id}'s ${text(c[idx])} carries a * but was read off the label`);
+        }
+      }
       const shown = text(c[idx]).replace(/\*$/, '').trim();
       const want = figureFor(id);
       if (shown !== want) {
@@ -687,6 +804,33 @@ for (const file of existsSync('dist') ? walkHtml('dist') : []) {
         );
       }
     }
+  }
+}
+
+/* ---- a product page's own figure carries its mark ----------------------------
+ * The sweep above sees tables and the prose group sees figures after a link; a
+ * can's own page states its figure in neither shape — in the stat card and in the
+ * "Caffeine in context" sentence. A wholly unverified record is marked by the page's
+ * "specs unverified" tag; a label-verified one with a brand-published caffeine
+ * figure has nothing else to lean on, so both of those spots carry the *. */
+for (const [id, d] of Object.entries(PRODUCTS)) {
+  if (d.caffeineMg == null) continue;
+  const path = `dist/latte/${id}.html`;
+  if (!existsSync(path)) continue;
+  const h = readFileSync(path, 'utf8');
+  if (!d.verified) {
+    markClaims++;
+    if (!/specs unverified/.test(h)) failures.push(`latte/${id}: unverified record, but the page carries no "specs unverified" tag`);
+    continue;
+  }
+  const card = (h.match(/<div class="stat-card"[^>]*>\s*<div class="n"[^>]*>([\s\S]*?)<\/div>\s*<div class="l"[^>]*>caffeine<\/div>/) || [])[1] ?? '';
+  const sec = (h.match(/data-claims="product-caffeine"[^>]*>[\s\S]*?<p[^>]*>([\s\S]*?)<\/p>/) || [])[1] ?? '';
+  for (const [what, html] of [['caffeine stat card', card], ['"Caffeine in context" sentence', sec]]) {
+    markClaims++;
+    if (!html) { failures.push(`latte/${id}: could not find its ${what} to check for a sourcing mark`); continue; }
+    const marked = html.includes(MARK);
+    if (d.caffeineSource === 'brand' && !marked) failures.push(`latte/${id}: the ${what} shows the brand-published figure with no *`);
+    if (d.caffeineSource !== 'brand' && marked) failures.push(`latte/${id}: the ${what} marks a figure read off the label`);
   }
 }
 
@@ -891,6 +1035,15 @@ for (const file of existsSync('dist') ? walkHtml('dist') : []) {
       const m = said.match(PROSE_FIGURE);
       if (!m) continue;
       proseClaims++;
+      // The sourcing mark travels with the figure in prose as in tables: a figure
+      // not read off a can carries its * right after it, or says so in words in
+      // the same span (hand-written copy names it "unverified" or the brand's own).
+      if (!caffeineChecked(PRODUCTS[id]) && PRODUCTS[id].caffeineMg != null) {
+        markClaims++;
+        const span = inner.slice(from, to);
+        const flagged = span.includes(MARK) || /unverified|not yet checked|brand-published|(?:brand|company)(?:'s)? (?:own|publishes|states|lists)/i.test(said);
+        if (!flagged) failures.push(`${where}: prose gives ${id}'s brand-published "${m[1]} mg" with no * and no word saying where it came from`);
+      }
       const want = figureFor(id);
       if (m[1].toLowerCase() !== want.replace(/ mg$/, '').toLowerCase()) {
         const d = PRODUCTS[id];
@@ -1425,7 +1578,7 @@ if (existsSync('dist/table.html')) {
   else if (parseInt(m[1], 10) !== n) failures.push(`table.html: title counts ${m[1]} cans, the table lists ${n}`);
 }
 
-totalClaims = strongestClaims + compareClaims + caffeineClaims + guideClaims + discloseClaims + titleClaims + sweepCells + proseClaims + ratingClaims + superlativeClaims + countChecks;
+totalClaims = strongestClaims + markClaims + compareClaims + caffeineClaims + guideClaims + discloseClaims + titleClaims + sweepCells + proseClaims + ratingClaims + superlativeClaims + countChecks;
 
 // ---- the zero-coverage guard ----
 // The guide row counts declared guides, not discovered ones, so "no guide pages
@@ -1437,6 +1590,11 @@ totalClaims = strongestClaims + compareClaims + caffeineClaims + guideClaims + d
 // total blindness does not catch a group going nearly blind, so each is set just
 // under what the group inspects today and has to be raised, deliberately, when the
 // content it covers shrinks.
+// 24 crowns are read today: the hub sentences and their schema copies, the
+// "strongest first" orderings, the guide's three crown cards and per-ounce line, four
+// homepage picks and the tiles that may crown. 1095 sourcing-mark checks: every
+// Caffeine cell, every brand figure in prose, each product page's own figure.
+const CROWN_FLOOR = 20, MARK_FLOOR = 1000;
 const groups = [
   ['compare pages', comparePages, 'compare claims', compareClaims, 40],
   // The figure, rank and count on every product page that carries a figure, at
@@ -1447,7 +1605,12 @@ const groups = [
   ['compare pages', disclosePages, 'sourcing-disclosure checks', discloseClaims, 150],
   ['titled pages', Object.values(titlePages).reduce((a, b) => a + b, 0), 'title claims', titleClaims, 190],
   // Six hubs print the sentence today, each twice (the FAQ and its schema copy).
-  ['brand hubs', titlePages.brands, 'strongest-can sentences', strongestClaims, 10],
+  // Crowns across hubs, the guide and the homepage; floor set just under today's
+  // count (see the summary line), so losing a whole page shape trips it.
+  ['pages that can crown a can', titlePages.brands, 'crowns', strongestClaims, CROWN_FLOOR],
+  // Every Caffeine cell, every brand figure in prose, and each product page's own
+  // stat card and sentence.
+  ['pages with a caffeine figure', sweepTables, 'sourcing-mark checks', markClaims, MARK_FLOOR],
   ['tables with a Caffeine column', sweepTables, 'swept caffeine cells', sweepCells, 200],
   ['prose blocks naming a can', proseBlocks, 'prose figure checks', proseClaims, 150],
   // Two checks land on every product page whether or not it is rated (the gate, in
@@ -1470,7 +1633,7 @@ const groups = [
 ];
 for (const [pageWhat, pageN, claimWhat, claimN, min] of groups) {
   if (pageN > 0 && claimN < min) {
-    failures.push(`parsed 0 ${claimWhat} across ${pageN} ${pageWhat} — the checker's selectors are broken, not the content`);
+    failures.push(`parsed ${claimN} ${claimWhat} across ${pageN} ${pageWhat}, under the floor of ${min} — the checker's selectors are broken, or the floor needs a deliberate change`);
   }
 }
 if (totalClaims === 0) {
@@ -1492,7 +1655,8 @@ console.log(
   `${discloseClaims} sourcing-disclosure checks across ${disclosePages} compare pages, ` +
   `${titleClaims} title claims across ${titled.reduce((a, [, n]) => a + n, 0)} pages ` +
   `[${titled.map(([k, n]) => `${k} ${n}`).join(', ')}], ` +
-  `${strongestClaims} brand-hub strongest-can sentences against the lineup, ` +
+  `${strongestClaims} crowns (brand hubs, caffeine guides, homepage picks and tiles) each resting on a label-read figure, ` +
+  `${markClaims} sourcing-mark checks (every brand-published caffeine figure marked, no label-read one), ` +
   `${sweepCells} caffeine cells swept across ${sweepTables} tables for a dropped qualifier, ` +
   `${proseClaims} prose figure checks across ${proseBlocks} blocks naming a can, ` +
   `${ratingClaims} rating and schema-gate checks across ${ratingPages} product pages, ` +

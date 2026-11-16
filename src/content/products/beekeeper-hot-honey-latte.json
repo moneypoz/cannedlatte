@@ -38,6 +38,7 @@
   "name": "Hot Honey Latte",
   "flavor": "Hot Honey",
   "caffeineNote": "Not stated on the label; the brand publishes 125 mg",
+  "caffeineSource": "brand",
   "milk": "dairy",
   "dairyFree": false,
   "image": "/images/products/beekeeper-hot-honey-latte.jpg",

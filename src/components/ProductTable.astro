@@ -2,7 +2,9 @@
 import type { Product } from '../lib/products';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { fmt, fullName, milkLabel, typeLabel, caffeineFigure } from '../lib/products';
+import { fmt, fullName, milkLabel, typeLabel, caffeineFlag } from '../lib/products';
+import Caffeine from './Caffeine.astro';
+import UnverifiedNote from './UnverifiedNote.astro';
 interface Props { products: Product[]; sortable?: boolean; showType?: boolean; }
 const { products, sortable = true, showType = false } = Astro.props;
 
@@ -12,7 +14,10 @@ const productImages = import.meta.glob<{ default: ImageMetadata }>('../assets/pr
 const thumbFor = (image?: string) =>
   image ? productImages[`../assets/products/${image.split('/').pop()}`]?.default : undefined;
 
-const anyUnverified = products.some((p) => !p.data.verified);
+// A row is marked once, on the name, when the whole record is brand-sourced; a
+// label-verified record with a brand-published caffeine figure is marked on that
+// one cell. Either way the footnote explains the mark.
+const anyMarked = products.some((p) => !p.data.verified || caffeineFlag(p.data) === 'field');
 ---
 <div class="tablewrap">
 <table id="products" data-sortable={sortable ? 'true' : undefined}>
@@ -49,7 +54,7 @@ const anyUnverified = products.some((p) => !p.data.verified);
         </td>
         {showType && <td><span class="tag">{typeLabel[p.type]}</span></td>}
         <td class="num" data-v={p.sizeOz ?? ''}>{fmt.oz(p.sizeOz)}</td>
-        <td class="num" data-v={p.caffeineMg ?? ''}>{caffeineFigure(p)}</td>
+        <td class="num" data-v={p.caffeineMg ?? ''}><Caffeine p={p} covered /></td>
         <td class="num" data-v={p.sugarG ?? ''}>{fmt.g(p.sugarG)}</td>
         <td class="num" data-v={p.proteinG ?? ''}>{fmt.g(p.proteinG)}</td>
         <td>{milkLabel[p.milk]}</td>
@@ -59,7 +64,7 @@ const anyUnverified = products.some((p) => !p.data.verified);
   </tbody>
 </table>
 </div>
-{anyUnverified && <p class="tablenote">* specs from the brand's site, not yet checked against a label.</p>}
+{anyMarked && <UnverifiedNote />}
 
 <style>
   /* Tighter vertical padding so a 44px thumbnail still leaves rows ~56px tall. */
@@ -78,7 +83,6 @@ const anyUnverified = products.some((p) => !p.data.verified);
     color: var(--muted-foreground); opacity: .55;
   }
   .unv { color: var(--muted-foreground); font-size: 11px; cursor: help; line-height: 1; }
-  .tablenote { margin: -8px 0 16px; font-size: 12.5px; color: var(--muted-foreground); }
 </style>
 
 <script>

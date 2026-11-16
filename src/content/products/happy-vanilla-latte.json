@@ -42,6 +42,7 @@
   "name": "Vanilla Coffee Latte",
   "flavor": "Vanilla",
   "caffeineNote": "Brand states 40–50 mg",
+  "caffeineSource": "brand",
   "milk": "dairy",
   "dairyFree": false,
   "summary": "Colombian arabica espresso with real milk and sugar, on the mild end for caffeine at 40–50 mg per 11 oz can.",

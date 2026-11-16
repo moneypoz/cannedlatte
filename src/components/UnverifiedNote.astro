@@ -1,0 +1,10 @@
+---
+// The footnote for the * that <Caffeine> and the product table print. One string,
+// from titles.ts, so every page explains the mark in the same words.
+import { UNVERIFIED_NOTE } from '../lib/products';
+---
+<p class="tablenote">{UNVERIFIED_NOTE}</p>
+
+<style>
+  .tablenote { margin: -8px 0 16px; font-size: 12.5px; color: var(--muted-foreground); }
+</style>

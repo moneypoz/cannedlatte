@@ -7,6 +7,7 @@ export {
   TITLE_BUDGET, productTitle,
   brandTitle, compareTitle, tableTitle, bestHeadline, rangeOf,
   caffeineFigure, caffeineFigureCap, caffeineValue, isQualified, basisOf,
+  caffeineFlag, caffeineChecked, caffeineCrownable, UNVERIFIED_MARK_TITLE, UNVERIFIED_NOTE,
 } from './titles';
 
 export type Product = CollectionEntry<'products'>;

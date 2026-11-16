@@ -127,6 +127,39 @@ for (const { id, data } of products) {
   }
 }
 
+// (c0) a brand-published caffeine figure on a label-verified record.
+//
+// `verified` is per record; caffeine is the one figure a label often omits, so a
+// can whose panel we read can still hold the brand's caffeine number. Every page
+// flags and refuses to crown that figure only if `caffeineSource: 'brand'` says so,
+// and for months nothing did: Bee Keeper's 125 mg rendered exactly like a printed
+// figure in every table, title and list. So the field is required wherever the
+// record's own note says the label carries no figure, and refused where it means
+// nothing. The note patterns match how these notes are actually written; a note
+// that describes a label-printed figure ("Label: 190 mg …; the brand site
+// publishes the same") does not trip them.
+const LABEL_SILENT = /not (?:stated|printed) on the label|^brand states|with no mg/i;
+let brandCaffeine = 0;
+for (const { id, data } of products) {
+  const src = data.caffeineSource;
+  if (src != null && !data.verified) {
+    failures.push(`caffeineSource on an unverified record: ${id} — an unverified record is brand-sourced throughout; drop the field`);
+  }
+  if (src === 'brand') {
+    brandCaffeine++;
+    if (data.caffeineMg == null) failures.push(`caffeineSource 'brand' but no caffeine figure: ${id}`);
+    if (!(data.sources ?? []).some((s) => /^https?:/.test(s))) {
+      failures.push(`caffeineSource 'brand' but no brand URL in sources: ${id} — cite where the brand publishes it`);
+    }
+  }
+  if (data.verified && data.caffeineMg != null && src !== 'brand' && LABEL_SILENT.test(data.caffeineNote ?? '')) {
+    failures.push(
+      `${id}: the caffeine note says the label prints no figure ("${data.caffeineNote}"), so the ${data.caffeineMg} mg ` +
+      `is the brand's — set caffeineSource: 'brand' so every page flags it and nothing crowns it`,
+    );
+  }
+}
+
 // (c1) published ranges.
 //
 // A source that publishes "70–80 mg" gives no single figure. The record stores the
@@ -208,6 +241,7 @@ const coverage = [
   ['images on disk in public/', publicFiles.length],
   ['images on disk in src/assets/', assetFiles.length],
   ['range-sourced records inspected', rangeRecords],
+  ['brand-sourced caffeine figures on verified records', brandCaffeine],
 ];
 // `cited` is deliberately not in the list above: zero cited label photos is a
 // legitimate state for this database, so a floor there would fail on a truth.
@@ -227,5 +261,6 @@ console.log(
   `${laidOut} laid out in each location, ` +
   `${EDITION_IMAGES.size} allowed edition/news image(s), ` +
   `${cited.size} label photo(s) cited as a source, ` +
-  `${rangeRecords} range-sourced record(s) with min <= midpoint <= max.`
+  `${rangeRecords} range-sourced record(s) with min <= midpoint <= max, ` +
+  `${brandCaffeine} brand-published caffeine figure(s) on label-verified records, all flagged.`
 );

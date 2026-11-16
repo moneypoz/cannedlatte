@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { allProducts, fmt } from '../../lib/products';
+import { allProducts, fmt, caffeineChecked, caffeineCrownable } from '../../lib/products';
 
 // Brand-level caffeine guide. Search Console shows La Colombe demand arriving as
 // brand queries ("la colombe caffeine", "everyday draft latte caffeine"), so this
@@ -35,6 +35,18 @@ const strongest = ranked[0]!;
 const weakest = ranked[ranked.length - 1]!;
 const maxMg = mgOf(strongest);
 const minMg = mgOf(weakest);
+
+// This page is only about caffeine, so "unverified" here means the caffeine figure
+// was not read off a can — which a label-verified record can still be, when its
+// label prints none (caffeineChecked).
+const checked = (p: Row) => caffeineChecked(p.data);
+// The stat cards and the per-ounce sentence crown a can ("strongest — X", "the most
+// concentrated"). A crown needs a single holder whose figure is label-read and exact;
+// otherwise the card or clause is left out and the table still reports every figure.
+const soleCrownable = (p: Row | null, peers: Row[]) =>
+  !!p && caffeineCrownable(p.data) && peers.filter((x) => x !== p).length === 0;
+const crownStrongest = soleCrownable(strongest, ranked.filter((x) => mgOf(x) === maxMg));
+const crownWeakest = soleCrownable(weakest, ranked.filter((x) => mgOf(x) === minMg));
 
 const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
 const count = (n: number) => WORDS[n] ?? String(n);
@@ -86,16 +98,18 @@ const mover =
     .map((p) => ({ p, from: canRank.get(p.id)!, to: ozRank.get(p.id)! }))
     .sort((a, b) => Math.abs(b.from - b.to) - Math.abs(a.from - a.to))[0] ?? null;
 const moved = mover && mover.from !== mover.to ? mover : null;
+const crownOzLeader = soleCrownable(ozLeader, ozRanked.filter((x) => ozLeader && ozOf(x) === ozOf(ozLeader)));
+const crownOzTrailer = soleCrownable(ozTrailer, ozRanked.filter((x) => ozTrailer && ozOf(x) === ozOf(ozTrailer)));
 
 // --- how each figure is sourced. The site's rule is that a number is only ours
 // once it has been read off a can, so an unverified row says so here too.
 const sourcePhrase = (p: Row) =>
   p.data.caffeineNote
-    ? `${p.data.caffeineNote}${p.data.verified ? '' : ' — a brand figure we have not yet checked against a label'}.`
-    : p.data.verified
+    ? `${p.data.caffeineNote}${checked(p) ? '' : ' — a brand figure we have not yet checked against a label'}.`
+    : checked(p)
       ? 'Read off the can.'
       : 'From the brand, not yet checked against a label.';
-const unverified = ranked.filter((p) => !p.data.verified);
+const unverified = ranked.filter((p) => !checked(p));
 
 // --- FAQs, phrased as the queries that actually arrive, answered number first ---
 const byId = (id: string) => ranked.find((p) => p.id === id) ?? null;
@@ -126,8 +140,8 @@ const sizeClause = (p: Row) => {
     : ` That is the only ${p.data.sizeOz} oz can in a line that is otherwise ${commonSize} oz.`;
 };
 
-const oatVerified = oats.filter((p) => p.data.verified);
-const oatUnverified = oats.filter((p) => !p.data.verified);
+const oatVerified = oats.filter((p) => checked(p));
+const oatUnverified = oats.filter((p) => !checked(p));
 const oatSourcing = [
   oatVerified.length
     ? `${prose(oatVerified.map((p) => p.data.name))} ${oatVerified.length === 1 ? 'is' : 'are'} read off the can.`
@@ -198,9 +212,9 @@ const jsonLd: Record<string, unknown>[] = [
   </p>
 
   <div class="stats">
-    <div class="stat-card"><div class="n">{maxMg} mg</div><div class="l">strongest — {strongest.data.name}</div></div>
-    <div class="stat-card"><div class="n">{minMg} mg</div><div class="l">mildest — {weakest.data.name}{tea.includes(weakest) && ' (tea, not coffee)'}</div></div>
-    {ozLeader && ozOf(ozLeader) != null && (
+    {crownStrongest && <div class="stat-card"><div class="n">{maxMg} mg</div><div class="l">strongest — {strongest.data.name}</div></div>}
+    {crownWeakest && <div class="stat-card"><div class="n">{minMg} mg</div><div class="l">mildest — {weakest.data.name}{tea.includes(weakest) && ' (tea, not coffee)'}</div></div>}
+    {ozLeader && ozOf(ozLeader) != null && crownOzLeader && (
       <div class="stat-card"><div class="n">{ozOf(ozLeader)}</div><div class="l">mg per oz, {ozLeader.data.name}</div></div>
     )}
     <div class="stat-card"><div class="n">{ranked.length}</div><div class="l">flavors with a published figure</div></div>
@@ -215,7 +229,7 @@ const jsonLd: Record<string, unknown>[] = [
       <tbody>
         {ranked.map((p) => (
           <tr>
-            <th><a href={`/latte/${p.id}`}>{p.data.name}</a>{!p.data.verified && <> <span class="tag warn">unverified</span></>}</th>
+            <th><a href={`/latte/${p.id}`}>{p.data.name}</a>{!checked(p) && <> <span class="tag warn">unverified</span></>}</th>
             <td class="num">{mgOf(p)} mg</td>
             <td class="num">{fmt.oz(p.data.sizeOz)}</td>
             <td class="num">{ozText(p)}</td>
@@ -249,8 +263,9 @@ const jsonLd: Record<string, unknown>[] = [
   <h2>Reading the per-ounce column</h2>
   {ozLeader && ozTrailer && ozOf(ozLeader) != null && ozOf(ozTrailer) != null && (
     <p>
-      Because the line mixes can sizes, the per-ounce order is not the per-can order. {ozLeader.data.name} is the most
-      concentrated at {ozOf(ozLeader)} mg/oz and {ozTrailer.data.name} the least at {ozOf(ozTrailer)} mg/oz.
+      Because the line mixes can sizes, the per-ounce order is not the per-can order.
+      {crownOzLeader && crownOzTrailer && <> {ozLeader.data.name} is the most
+      concentrated at {ozOf(ozLeader)} mg/oz and {ozTrailer.data.name} the least at {ozOf(ozTrailer)} mg/oz.</>}
       {moved && ` ${moved.p.data.name} moves furthest between the two: #${moved.from} of ${ranked.length} by the can, #${moved.to} by the ounce.`}
     </p>
   )}

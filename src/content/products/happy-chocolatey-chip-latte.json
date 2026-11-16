@@ -42,6 +42,7 @@
   "name": "Chocolatey Chip Latte",
   "flavor": "Chocolatey Chip",
   "caffeineNote": "Brand states 70–80 mg",
+  "caffeineSource": "brand",
   "milk": "dairy",
   "dairyFree": false,
   "summary": "Chocolate-chip-cookie-inspired latte on Colombian arabica coffee and real milk, one of the stronger cans in the line at 70–80 mg of caffeine per 11 oz can. It is currently sold in a Tate's Bake Shop limited-edition can alongside the standard one.",

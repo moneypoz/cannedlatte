@@ -4,7 +4,8 @@ import ProductTable from '../components/ProductTable.astro';
 import Disclosure from '../components/Disclosure.astro';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { allProducts, bestPages, brandCaffeineGuides, comparePairs, fullName, lattesOnly, shortName, fmt, caffeineFigure } from '../lib/products';
+import { allProducts, bestPages, brandCaffeineGuides, comparePairs, fullName, lattesOnly, shortName, fmt, caffeineFigure, caffeineCrownable } from '../lib/products';
+import Caffeine from '../components/Caffeine.astro';
 
 const products = await allProducts();
 
@@ -40,10 +41,16 @@ const PICK_SPECS = [
   { label: 'Best value', key: 'pricePerCan', dir: 1, stat: (d: any) => `${fmt.usd(d.pricePerCan)}/can` },
 ] as const;
 
+// Each pick is a crown ("Strongest"), so it carries the same rule as a /best title.
+// `eligible` already demands a label-verified record; caffeine also has to be the
+// can's own printed figure and exact, since a label that prints no caffeine leaves
+// a verified record holding a brand number (caffeineCrownable).
+const crownableFor = (key: string, p: (typeof products)[number]) =>
+  key === 'caffeineMg' ? caffeineCrownable(p.data) : true;
 const taken = new Set<string>();
 const picks = PICK_SPECS.map(({ label, key, dir, stat }) => {
   const winner = eligible
-    .filter((p) => (p.data as any)[key] != null && !taken.has(p.id))
+    .filter((p) => (p.data as any)[key] != null && !taken.has(p.id) && crownableFor(key, p))
     .sort((a, b) => dir * ((a.data as any)[key] - (b.data as any)[key]))[0];
   if (!winner) return null;
   taken.add(winner.id);
@@ -70,7 +77,14 @@ const listTiles = bestPages.map((b) => {
   const RANKED_BY_CAFFEINE = new Set(['no-added-sugar', 'dairy-free']);
   const raw = leader && !RANKED_BY_CAFFEINE.has(b.slug) ? b.metric(leader.data) : null;
   const metric = raw && /^[$0-9]/.test(raw) ? raw : leader ? caffeineFigure(leader.data) : null;
-  return { href: `/best/${b.slug}`, short: b.short, count: list.length, leader, metric };
+  // A tile naming its list's leader beside a figure is a crown, so it follows the
+  // /best title rule: the figure the tile shows must be one we read off a can (and,
+  // for caffeine, an exact one). Otherwise the tile falls back to the list's count,
+  // which is what that list's own <title> does. It used to crown an unverified
+  // $2.00 here while /best/cheapest-per-can, one click away, correctly would not.
+  const showsCaffeine = metric != null && leader != null && metric === caffeineFigure(leader.data);
+  const crownable = !!leader && (showsCaffeine ? caffeineCrownable(leader.data) : leader.data.verified);
+  return { href: `/best/${b.slug}`, short: b.short, count: list.length, leader: crownable ? leader : null, metric };
 });
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -134,8 +148,11 @@ const jsonLd = {
           </span>
         )}
         <span class="tag">{fmt.ym(p.data.launched)}</span>
-        <h3 style="margin-top:8px" title={fullName(p.data)}>{shortName(p.data)}</h3>
-        <p style="margin:0">{caffeineFigure(p.data)} · {fmt.g(p.data.sugarG)} sugar · {fmt.usd(p.data.pricePerCan)}/can</p>
+        {/* Marked the way the table above marks a row: on the name when the whole
+            record is brand-sourced, on the caffeine figure when only that came from
+            the brand. The table's footnote explains the *. */}
+        <h3 style="margin-top:8px" title={fullName(p.data)}>{shortName(p.data)}{!p.data.verified && <sup class="unv" title="Specs not yet checked against a label">*</sup>}</h3>
+        <p style="margin:0"><Caffeine p={p.data} covered /> · {fmt.g(p.data.sugarG)} sugar · {fmt.usd(p.data.pricePerCan)}/can</p>
       </a>
     ))}
   </div>
@@ -143,7 +160,7 @@ const jsonLd = {
   <h2>Find your can</h2>
   <div class="tiles">
     {listTiles.map((t) => (
-      <a class="tile" href={t.href}>
+      <a class="tile" href={t.href} data-leader={t.leader?.id}>
         {t.leader && displayImage(t.leader.data.image) && (
           <span class="tile-media">
             <Image src={displayImage(t.leader.data.image)!} alt="" height={40} densities={[1, 2]} format="webp" loading="lazy" />
@@ -151,10 +168,15 @@ const jsonLd = {
         )}
         <span class="tile-body">
           <span class="tile-title">{t.short}</span>
-          {t.leader && (
+          {t.leader ? (
             <>
               <span class="tile-metric">{t.metric}</span>
               <span class="tile-leader" title={fullName(t.leader.data)}>{shortName(t.leader.data)}</span>
+            </>
+          ) : (
+            <>
+              <span class="tile-metric">{t.count}</span>
+              <span class="tile-leader">cans</span>
             </>
           )}
         </span>
@@ -259,6 +281,7 @@ const jsonLd = {
     filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.12));
   }
   .tile:hover { border-color: var(--primary); }
+  .unv { color: var(--muted-foreground); font-size: 11px; cursor: help; line-height: 1; }
   .tile-title { font-size: 12.5px; color: var(--muted-foreground); }
   .tile-metric {
     font-family: var(--mono); font-weight: 600; font-size: 20px; line-height: 1.15;
