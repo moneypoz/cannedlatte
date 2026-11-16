@@ -1,7 +1,7 @@
 {
   "type": "latte",
   "sizeOz": 11,
-  "caffeineMg": null,
+  "caffeineMg": 175,
   "sugarG": 1,
   "addedSugar": false,
   "addedSugarG": 0,
@@ -29,15 +29,18 @@
     }
   ],
   "verified": true,
-  "updated": "2026-09-06",
+  "updated": "2026-11-16",
   "sources": [
+    "/images/products/slate-caramel-latte.jpg",
+    "https://slatemilk.com/pages/slate-faqs",
     "https://slatemilk.com/"
   ],
   "brand": "Slate",
   "brandSlug": "slate",
   "name": "Caramel Latte",
   "flavor": "Caramel",
-  "caffeineNote": "Caffeine not printed on the label; sweetened with stevia and monk fruit",
+  "caffeineNote": "Not stated on the label; the brand publishes 175 mg",
+  "caffeineSource": "brand",
   "milk": "skim",
   "dairyFree": false,
   "image": "/images/products/slate-caramel-latte.jpg",

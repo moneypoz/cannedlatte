@@ -29,17 +29,19 @@
     }
   ],
   "verified": true,
-  "updated": "2026-09-06",
+  "updated": "2026-11-16",
   "sources": [
-    "https://slatemilk.com/"
+    "/images/products/slate-cinnamon-swirl-latte.jpg",
+    "https://slatemilk.com/",
+    "https://slatemilk.com/pages/slate-faqs"
   ],
   "brand": "Slate",
   "brandSlug": "slate",
   "name": "Cinnamon Swirl Latte",
   "flavor": "Cinnamon Swirl",
-  "caffeineNote": "Caffeine not printed on the label; sweetened with stevia and monk fruit",
+  "caffeineNote": "Not stated on the label, and not among the lattes Slate’s FAQ gives a caffeine figure for; sweetened with stevia",
   "milk": "lactose-free dairy",
   "dairyFree": false,
   "image": "/images/products/slate-cinnamon-swirl-latte.jpg",
-  "summary": "Cinnamon Swirl latte on lactose-free dairy milk with 20 g of protein and just 1 g of naturally occurring sugar per 11 oz can, sweetened with stevia and monk fruit at 100 calories."
+  "summary": "Cinnamon Swirl latte on lactose-free dairy milk with 20 g of protein and just 1 g of naturally occurring sugar per 11 oz can, sweetened with stevia at 100 calories."
 }
