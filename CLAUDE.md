@@ -148,7 +148,10 @@ Three checkers run around the build; all three must pass before a deploy.
   zero claims must fail.** Set that minimum near what the group actually inspects,
   not to 1 — a floor of 1 let the compare group fall from 45 claims to 6 and still
   report a pass.
-- `npm run check:urls` (postbuild) — canonical, `og:url` and sitemap agreement, and
+- `npm run check:urls` (postbuild) — canonical, `og:url` and sitemap agreement, the
+  sitemap's `<lastmod>` (a product page's `updated`, the newest `updated` among a
+  hub's or `/best` list's cans, and nothing at all on any other page — never a build
+  or git time; pages pass it to `Base` as `lastmod`), and
   the social card: every page must carry the full Open Graph and X set, and each
   `og:image` has to resolve to a real image file in `dist/` at the dimensions it
   declares. A card naming a path that 404s is indistinguishable from a working one

@@ -10,10 +10,16 @@ interface Props {
   /** True when the image survives a 1.91:1 crop. See twitterCard below. */
   imageWide?: boolean;
   ogType?: 'website' | 'article';
+  /** YYYY-MM-DD: the newest `updated` stamp among the cans this page renders. Only
+   *  pages whose content is those cans' data pass it — product pages, brand hubs
+   *  and /best lists. The sitemap reads it back out of the built HTML (see
+   *  astro.config.mjs), so its <lastmod> is the date the page itself prints and
+   *  never a build or git time. Everything else omits it and gets no <lastmod>. */
+  lastmod?: string;
 }
 const {
   title, description, jsonLd, noindex = false,
-  image, imageAlt, imageWide = false, ogType = 'website',
+  image, imageAlt, imageWide = false, ogType = 'website', lastmod,
 } = Astro.props;
 // build.format:'file' writes /advertise.html, and Astro.url.pathname carries that
 // suffix at build time — but the host 308-redirects /advertise.html to /advertise.
@@ -59,6 +65,7 @@ const fullTitle = title === 'Canned Latte' ? 'Canned Latte: every canned latte, 
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
   {noindex && <meta name="robots" content="noindex" />}
+  {lastmod && <meta name="cl-lastmod" content={lastmod} />}
   <meta property="og:site_name" content="Canned Latte" />
   <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description} />

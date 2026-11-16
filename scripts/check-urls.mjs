@@ -229,6 +229,61 @@ if (sitemapFile) {
   failures.push('no dist/sitemap-N.xml — the sitemap integration did not run');
 }
 
+// ---- sitemap <lastmod>: the data's date, and only where a page is the data ----
+// Product pages carry their record's `updated`; a brand hub, the newest `updated`
+// in its lineup; a /best list, the newest among the cans it lists (which this
+// script cannot re-filter, so it is held to the date the page itself prints and to
+// being one of the records' stamps). Every other page must carry none: a build or
+// git time on a page whose data did not change is the thing that teaches Google
+// to ignore the field site-wide.
+let lastmodChecks = 0;
+let lastmodPages = 0;
+if (sitemapFile) {
+  const xml = readFileSync(`dist/${sitemapFile}`, 'utf8');
+  const records = Object.fromEntries(
+    readdirSync('src/content/products').filter((f) => f.endsWith('.json'))
+      .map((f) => [f.replace(/\.json$/, ''), JSON.parse(readFileSync(`src/content/products/${f}`, 'utf8'))]),
+  );
+  const stamps = new Set(Object.values(records).map((r) => r.updated));
+  const newest = (rs) => rs.map((r) => r.updated).sort().at(-1);
+  const today = new Date().toISOString().slice(0, 10);
+  for (const [, body] of xml.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
+    const loc = (body.match(/<loc>([^<]*)<\/loc>/) || [])[1];
+    // @astrojs/sitemap writes the stamp as an ISO datetime at UTC midnight. Any
+    // other time of day means something other than a record stamp got in.
+    const rawLastmod = (body.match(/<lastmod>([^<]*)<\/lastmod>/) || [])[1] ?? null;
+    const lastmod = rawLastmod?.replace(/T00:00:00\.000Z$/, '') ?? null;
+    const path = loc.slice(SITE.length);
+    let want; // undefined = must carry none; a string = must equal it; true = /best rule
+    let m;
+    if ((m = /^\/latte\/([^/]+)$/.exec(path))) want = records[m[1]]?.updated ?? `(no record ${m[1]})`;
+    else if ((m = /^\/brands\/([^/]+)$/.exec(path))) want = newest(Object.values(records).filter((r) => r.brandSlug === m[1])) ?? `(no records for ${m[1]})`;
+    else if (/^\/best\/[^/]+$/.test(path)) want = true;
+    if (want === undefined) {
+      if (lastmod) failures.push(`sitemap: ${loc} carries <lastmod>${lastmod}</lastmod> but is not a page built from can records`);
+      continue;
+    }
+    lastmodPages++;
+    if (!lastmod) { failures.push(`sitemap: ${loc} has no <lastmod>`); continue; }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(lastmod)) { failures.push(`sitemap: ${loc} <lastmod>${lastmod}</lastmod> is not a bare YYYY-MM-DD record stamp`); continue; }
+    if (lastmod > today) failures.push(`sitemap: ${loc} <lastmod> ${lastmod} is in the future`);
+    if (want === true) {
+      const html = readFileSync(`dist${path}.html`, 'utf8');
+      const [y, mo, d] = lastmod.split('-');
+      if (!stamps.has(lastmod)) failures.push(`sitemap: ${loc} <lastmod> ${lastmod} is no record's \`updated\` stamp`);
+      if (!html.includes(`updated ${mo}-${d}-${y}`)) failures.push(`sitemap: ${loc} <lastmod> ${lastmod} does not match the "updated" date the page prints`);
+    } else if (lastmod !== want) {
+      failures.push(`sitemap: ${loc} <lastmod> ${lastmod}, but the records say ${want}`);
+    }
+    lastmodChecks++;
+  }
+  // Floor: every product, hub and list page. Far short of that means the <url>
+  // parse above broke, not that the pages vanished.
+  if (lastmodPages < Object.keys(records).length) {
+    failures.push(`sitemap lastmod: inspected only ${lastmodPages} record-built pages for ${Object.keys(records).length} records — the parse is broken`);
+  }
+}
+
 // ---- redirects: every target is a real page, no source is one ----
 // public/_redirects is where retired URLs go to keep what they earned — the 71
 // per-flavor /caffeine/<product> pages, renamed products. A 301 into a page that no
@@ -318,6 +373,7 @@ console.log(
   `${locs.length} sitemap URLs agree with them. ` +
   `${socialSets} pages carry a complete Open Graph + X card set, and their ${ogImageChecks} og:image URLs ` +
   `all resolve to one of ${cardFiles.size} real image file(s) in dist/. ` +
+  `${lastmodChecks} sitemap <lastmod> dates match their records; every other URL carries none. ` +
   `${redirectRules} redirect rules all land on a page that builds. ` +
   `${titled} indexable pages carry unique titles and descriptions.` +
   (warnings.length ? ` ${warnings.length} long meta description(s) — see above.` : ` All ${described} meta descriptions within ${DESC_WARN_AT} chars.`)

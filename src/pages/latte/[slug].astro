@@ -161,7 +161,7 @@ jsonLd.push({
   ],
 });
 ---
-<Base title={productTitle(p)} description={desc} jsonLd={jsonLd} ogType="article"
+<Base title={productTitle(p)} description={desc} jsonLd={jsonLd} ogType="article" lastmod={p.updated}
       image={p.image} imageAlt={p.image ? `${name} can` : undefined}>
   <div class="product-top">
     <div class="product-info">
