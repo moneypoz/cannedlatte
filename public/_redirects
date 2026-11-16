@@ -11,6 +11,12 @@
 /caffeine/quokka-brew-vanilla-dream-oat-milk-latte  /best/most-caffeine  301
 /caffeine/quokka-brew-vanilla-dream-oat-milk-latte/  /best/most-caffeine  301
 /caffeine/quokka-brew-vanilla-dream-oat-milk-latte.html  /best/most-caffeine  301
+# Quokka Brew's brand hub, live 2026-08-31 to 09-06 while its one can was in the
+# database. It went with the can but was missed when the can's own URLs were
+# redirected; Search Console reported it as a 404 on 2026-11-16. Same target.
+/brands/quokka-brew  /best/oat-milk  301
+/brands/quokka-brew/  /best/oat-milk  301
+/brands/quokka-brew.html  /best/oat-milk  301
 
 # Never one of ours: Starbucks Doubleshot Energy is off-category (energy line, not a
 # canned latte), so no page ever existed and no .html spelling was ever emitted.
