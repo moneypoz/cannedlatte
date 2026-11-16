@@ -535,7 +535,9 @@ for (const f of existsSync('dist/brands') ? readdirSync('dist/brands') : []) {
   const want = lineup.filter((d) => d.caffeineMg === top).map((d) => d.name).sort();
   const body = text(readFileSync('dist/brands/' + f, 'utf8'));
   const claims = [
-    ...[...body.matchAll(/The strongest is (.{1,120}?) at (?:up to )?\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)? mg\./g)].map((m) => [m[0], [m[1]]]),
+    // Either case: a hub with a caffeine guide folds the crown into its range
+    // sentence ("…per can; the strongest is X at N mg."), mid-sentence.
+    ...[...body.matchAll(/[Tt]he strongest is (.{1,120}?) at (?:up to )?\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)? mg\./g)].map((m) => [m[0], [m[1]]]),
     ...[...body.matchAll(/(?:^|\. |")([^."]{1,200}?) tie as the strongest, each at/g)].map((m) => [m[0], m[1].split(/, | and /)]),
   ];
   for (const [said, names] of claims) {

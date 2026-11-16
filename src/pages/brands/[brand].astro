@@ -107,6 +107,19 @@ const caffeineAnswer = !mgs.length
         ? `${theCans} carry ${prose(withCaffeine.map((p) => `${p.data.name} at ${caffeineFigure(p.data)}`))}.`
         : `${theCans} run from ${minMg} to ${maxMg} mg of caffeine.${teaClause} ${strongestSentence}`;
 
+// Where a brand has a caffeine guide, the hub does not answer the caffeine
+// question in full: a second copy of the guide's list (and a caffeine FAQ beside
+// it) left the two pages competing for the same query, and Search Console showed
+// the guide "Crawled – currently not indexed". The hub keeps one sentence — the
+// range and the strongest can — and hands off to the guide. A lineup that is
+// flat, or that carries a range or ceiling figure, has no honest single span to
+// quote, so it keeps the full list below instead.
+const guideSentence = guide && !oneCan && !flatMg && !anyQualified && strongest
+  ? topCans.length === 1
+    ? `${theCans} run from ${minMg} to ${maxMg} mg of caffeine per can; the strongest is ${strongest.data.name} at ${caffeineFigure(strongest.data)}.`
+    : `${theCans} run from ${minMg} to ${maxMg} mg of caffeine per can. ${strongestSentence}`
+  : null;
+
 const buyAnswer = [
   directLink ? `You can order ${name} direct from ${directLink.label}.` : null,
   retailers.length ? `Their cans are also sold at ${prose(retailers)}.` : null,
@@ -114,7 +127,7 @@ const buyAnswer = [
 ].filter(Boolean).join(' ');
 
 const faqs = [
-  { q: `How much caffeine is in ${name} canned coffee?`, a: caffeineAnswer },
+  ...(guideSentence ? [] : [{ q: `How much caffeine is in ${name} canned coffee?`, a: caffeineAnswer }]),
   { q: `Where can you buy ${name} canned lattes?`, a: buyAnswer },
 ];
 
@@ -137,7 +150,7 @@ const jsonLd: Record<string, unknown>[] = [
 
 const desc = `${name} canned lattes compared side by side: caffeine content, sugar, protein, milk and price for all ${items.length} cans we track.`;
 ---
-<Base title={brandTitle(name, items.length)} description={desc} jsonLd={jsonLd}>
+<Base title={brandTitle(name, items.length)} description={desc} jsonLd={jsonLd} lastmod={items.map((p) => p.data.updated).sort().at(-1)}>
   <p class="eyebrow"><a href="/">Canned Latte</a> · <a href="/brands">Brands</a> · {name}</p>
   <h1>{name} canned lattes</h1>
   <p class="lede">Every {name} {items.some((p) => p.data.base === 'tea') ? 'can' : 'coffee in a can'} we track, side by side.</p>
@@ -146,7 +159,14 @@ const desc = `${name} canned lattes compared side by side: caffeine content, sug
   <Disclosure />
 
   <div style="max-width:62ch">
-    {withCaffeine.length > 0 && (
+    {guideSentence && guide && (
+      <>
+        <h2>{name} caffeine</h2>
+        <p>{guideSentence}</p>
+        <p><strong><a href={`/caffeine/${guide.slug}`}>{guide.linkText} →</a></strong> every flavor in one table, with can size and milligrams per ounce.</p>
+      </>
+    )}
+    {!guideSentence && withCaffeine.length > 0 && (
       <>
         <h2>How much caffeine is in {name} canned coffee?</h2>
         {oneCan ? (
